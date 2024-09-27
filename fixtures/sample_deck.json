@@ -1,0 +1,18 @@
+{
+  "lands": [
+    {
+      "name": "Test-Mountain",
+      "colors":  ["red"],
+      "entersTapped":  false,
+      "activationCost":  [],
+      "quantity":  1
+    }
+  ],
+  "nonLands": [
+    {
+      "name": "Test-Nonland-1",
+      "castingCost": ["red"],
+      "quantity":  1
+    }
+  ]
+}

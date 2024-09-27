@@ -1,0 +1,9 @@
+{
+  "targetTurn": 3,
+  "manaCosts": [
+    {
+      "colorRequirements": ["white", "white"],
+      "genericCost": 1
+    }
+  ]
+}
