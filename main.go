@@ -57,7 +57,7 @@ type NonLand struct {
 	Quantity    int      `json:"quantity"`
 }
 
-type TestCondition struct {
+type TestObjective struct {
 	TargetTurn int        `json:"targetTurn"`
 	ManaCosts  []ManaCost `json:"manaCosts"`
 }
@@ -124,6 +124,27 @@ func (d *Deck) DrawCard(hand Deck) (updatedHand Deck) {
 
 type BoardState struct {
 	Lands []Land `json:"lands"`
+}
+
+func NewBoardState() BoardState {
+	return BoardState{
+		Lands: make([]Land, 0),
+	}
+}
+
+// PlayLand plays the best land from the hand based on the turn and target condition
+func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (updatedHand Deck) {
+	// Play a Land. If target turn, prioritize untapped. If not, prioritize tapped.
+	//  Prioritize lands which generate colors in mana costs.
+	// Update Hand.
+	// Update Board State
+
+	return hand
+}
+
+// ValidateTestObjective validates whether or not the TestObjective has been met
+func (b *BoardState) ValidateTestObjective(objective TestObjective) bool {
+	return true
 }
 
 const (
@@ -227,34 +248,38 @@ func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
 	return gameConfig, nil
 }
 
-func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration) {
+func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
 	logger := createLogger()
 	logger.Info("Starting deck simulation", zap.String("deck", deckList.toString()))
 
 	// Generate Randomized Deck
 	deck := GenerateDeck(deckList)
-
 	hand := NewDeck()
+	board := NewBoardState()
+
+	// TODO: Add validations like Validate deck is >= 60 cards
 
 	// Draw Initial Hand
-	// For i to initial hand size
-	// Draw Cards
-
-	// For i to target turn
-	// If i = 1 and on the play, skip draw
-	if !gameConfiguration.OnThePlay {
-		// Draw another card
+	for range gameConfiguration.InitialHandSize {
 		hand = deck.DrawCard(hand)
 	}
-	// Play a Land. If target turn, prioritize untapped. If not, prioritize tapped.
-	//  Prioritize lands which generate colors in mana costs.
-	// Update Hand.
-	// Update Board State
 
-	// Repeat until target turn
+	// For turnNumber to target turn
+	for turnNumber := range objective.TargetTurn {
+		// If turnNumber = 1 and on the play, skip draw
+		if turnNumber == 1 && gameConfiguration.OnThePlay {
+			// Skip your draw
+			logger.Info("Playing first, skipping draw")
+		} else {
+			hand = deck.DrawCard(hand)
+		}
+
+		board.PlayLand(hand, objective, turnNumber)
+	}
 
 	// Compute if target is met (possibly using backtracking?)
 	// Computation can start with the most restrictive lands by sorting based on number of colors it taps for.
+	return board.ValidateTestObjective(objective)
 }
 
 // GenerateDeck Creates a Deck instance from a DeckList.
