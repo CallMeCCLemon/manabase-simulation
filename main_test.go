@@ -1,13 +1,14 @@
 package main
 
 import (
+	"github.com/google/go-cmp/cmp"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("DeckList", func() {
 	When("Reading a JSON File", func() {
-		deck, err := ReadDeckJSON("./fixtures/sample_deck.json")
+		deck, err := ReadDeckListJSON("./fixtures/sample_deck.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -27,7 +28,7 @@ var _ = Describe("DeckList", func() {
 	})
 
 	When("Reading the lotus field JSON File", func() {
-		deck, err := ReadDeckJSON("./fixtures/lotus-field-deck.json")
+		deck, err := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -43,6 +44,57 @@ var _ = Describe("DeckList", func() {
 
 		It("Has the right card count", func() {
 			Expect(deck.getTotalCardCount()).To(Equal(60))
+		})
+	})
+})
+
+var _ = Describe("Deck", func() {
+	deckList, _ := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
+
+	When("Instantiating it from a decklist", func() {
+		deck := GenerateDeck(deckList)
+
+		It("Has 60 cards", func() {
+			Expect(deck.Cards).To(HaveLen(60))
+		})
+	})
+
+	When("DeepCopying a deck", func() {
+		deck := GenerateDeck(deckList)
+		copiedDeck := deck.DeepCopy()
+
+		It("Correctly deep copies", func() {
+			Expect(CompareDecks(deck, copiedDeck)).To(BeTrue())
+		})
+	})
+
+	When("Shuffling the deck", func() {
+		deck := GenerateDeck(deckList)
+		unshuffledDeck := deck.DeepCopy()
+		Expect(CompareDecks(deck, unshuffledDeck)).To(BeTrue())
+
+		It("Randomizes the deck", func() {
+			deck.Shuffle()
+			Expect(CompareDecks(deck, unshuffledDeck)).To(BeFalse())
+		})
+	})
+
+	When("Drawing a card from the deck", func() {
+		deck := GenerateDeck(deckList)
+		hand := NewDeck()
+		firstCard := deck.Cards[0]
+		Expect(hand.Cards).To(HaveLen(0))
+		Expect(deck.Cards).To(HaveLen(60))
+		hand = deck.DrawCard(hand)
+
+		It("Adds the first card to the hand", func() {
+			Expect(hand.Cards).To(HaveLen(1))
+			Expect(hand.Cards[0]).To(Equal(firstCard))
+		})
+
+		It("Removes the first card from the deck", func() {
+			Expect(deck.Cards).To(HaveLen(59))
+			Expect(deck.Cards[0]).ToNot(Equal(firstCard))
 		})
 	})
 })
@@ -67,7 +119,7 @@ var _ = Describe("DeckSimulation", func() {
 	var gameConfig GameConfiguration
 
 	BeforeEach(func() {
-		deck, _ = ReadDeckJSON("./fixtures/sample_deck.json")
+		deck, _ = ReadDeckListJSON("./fixtures/sample_deck.json")
 		gameConfig, _ = ReadGameConfigJSON("./fixtures/default-game-config.json")
 	})
 
@@ -77,3 +129,17 @@ var _ = Describe("DeckSimulation", func() {
 		})
 	})
 })
+
+// CompareDecks compares two different decks to one another.
+func CompareDecks(a Deck, b Deck) bool {
+	if len(a.Cards) != len(b.Cards) {
+		return false
+	}
+
+	for i, _ := range a.Cards {
+		if !cmp.Equal(a.Cards[i], b.Cards[i]) {
+			return false
+		}
+	}
+	return true
+}

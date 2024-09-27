@@ -5,7 +5,8 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"io/ioutil"
+	"io"
+	"math/rand/v2"
 	"os"
 )
 
@@ -73,18 +74,52 @@ type GameConfiguration struct {
 }
 
 type Card struct {
-	land    *Land
-	nonLand *NonLand
+	Land    *Land
+	NonLand *NonLand
+}
+
+func NewCard(land *Land, nonLand *NonLand) *Card {
+	return &Card{
+		Land:    land,
+		NonLand: nonLand,
+	}
 }
 
 type Deck struct {
-	cards []Card
+	Cards []Card
 }
 
 func NewDeck() Deck {
 	return Deck{
-		cards: []Card{},
+		Cards: []Card{},
 	}
+}
+
+func (d *Deck) Shuffle() {
+	shuffledCards := make([]Card, len(d.Cards))
+	perm := rand.Perm(len(d.Cards))
+
+	for i, v := range perm {
+		shuffledCards[v] = d.Cards[i]
+	}
+	d.Cards = shuffledCards
+}
+
+// DeepCopy Copies a Deck to a new obj.
+func (d *Deck) DeepCopy() Deck {
+	newDeck := NewDeck()
+	for _, card := range d.Cards {
+		newDeck.Cards = append(newDeck.Cards, card)
+	}
+
+	return newDeck
+}
+
+func (d *Deck) DrawCard(hand Deck) (updatedHand Deck) {
+	hand.Cards = append(hand.Cards, d.Cards[0])
+	d.Cards = d.Cards[1:]
+
+	return hand
 }
 
 type BoardState struct {
@@ -103,7 +138,7 @@ const (
 
 func main() {
 	println("Hello World")
-	deck, _ := ReadDeckJSON("./sample_deck.json")
+	deck, _ := ReadDeckListJSON("./sample_deck.json")
 	createLogger().Info(deck.toString())
 }
 
@@ -140,8 +175,8 @@ func createLogger() *zap.Logger {
 	return logger
 }
 
-// ReadDeckJSON Function to read JSON file into a struct
-func ReadDeckJSON(filename string) (DeckList, error) {
+// ReadDeckListJSON Function to read JSON file into a struct
+func ReadDeckListJSON(filename string) (DeckList, error) {
 	var deck DeckList
 
 	// Open the JSON file
@@ -152,7 +187,7 @@ func ReadDeckJSON(filename string) (DeckList, error) {
 	defer file.Close()
 
 	// Read the file contents
-	bytes, err := ioutil.ReadAll(file)
+	bytes, err := io.ReadAll(file)
 	if err != nil {
 		return deck, err
 	}
@@ -178,7 +213,7 @@ func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
 	defer file.Close()
 
 	// Read the file contents
-	bytes, err := ioutil.ReadAll(file)
+	bytes, err := io.ReadAll(file)
 	if err != nil {
 		return gameConfig, err
 	}
@@ -203,15 +238,15 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration) {
 
 	// Draw Initial Hand
 	// For i to initial hand size
-	// Draw cards
+	// Draw Cards
 
 	// For i to target turn
 	// If i = 1 and on the play, skip draw
 	if !gameConfiguration.OnThePlay {
 		// Draw another card
-		deck, hand = DrawCard(deck, hand)
+		hand = deck.DrawCard(hand)
 	}
-	// Play a land. If target turn, prioritize untapped. If not, prioritize tapped.
+	// Play a Land. If target turn, prioritize untapped. If not, prioritize tapped.
 	//  Prioritize lands which generate colors in mana costs.
 	// Update Hand.
 	// Update Board State
@@ -222,16 +257,26 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration) {
 	// Computation can start with the most restrictive lands by sorting based on number of colors it taps for.
 }
 
+// GenerateDeck Creates a Deck instance from a DeckList.
 func GenerateDeck(list DeckList) Deck {
 	deck := NewDeck()
 
-	return deck
-}
+	for _, l := range list.Lands {
+		quantity := l.Quantity
+		l.Quantity = 1
+		for range quantity {
+			deck.Cards = append(deck.Cards, *NewCard(&l, nil))
+		}
+	}
 
-func ShuffleDeck(deck Deck) Deck {
-	return deck
-}
+	for _, n := range list.NonLands {
+		quantity := n.Quantity
+		n.Quantity = 1
+		for range quantity {
+			deck.Cards = append(deck.Cards, *NewCard(nil, &n))
+		}
+	}
 
-func DrawCard(deck Deck, hand Deck) (updatedDeck Deck, updatedHand Deck) {
-	return Deck{}, Deck{}
+	deck.Shuffle()
+	return deck
 }
