@@ -1,6 +1,9 @@
 package main
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"slices"
+)
 
 type DeckList struct {
 	Lands    []Land    `json:"lands"`
@@ -41,6 +44,26 @@ type Land struct {
 	EntersTapped   bool        `json:"entersTapped"`
 	ActivationCost []string    `json:"activationCost"`
 	Quantity       int         `json:"quantity"`
+}
+
+func (l *Land) Equals(land Land) bool {
+	// TODO: Include other fields.
+	if l.EntersTapped != land.EntersTapped {
+		return false
+	}
+	if l.Name != land.Name {
+		return false
+	}
+	if len(l.Colors) != len(land.Colors) {
+		return false
+	}
+	for _, color := range l.Colors {
+		if !slices.Contains(land.Colors, color) {
+			return false
+		}
+	}
+
+	return true
 }
 
 type NonLand struct {

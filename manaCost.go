@@ -21,10 +21,16 @@ func (m *ManaCost) DeepCopy() ManaCost {
 	}
 }
 
-func (m *ManaCost) toString() string {
+// ToString Represents the ManaCost as a String.
+func (m *ManaCost) ToString() string {
 	var stringReqs []string
 	for _, requirement := range m.ColorRequirements {
 		stringReqs = append(stringReqs, string(requirement))
 	}
 	return strings.Join(stringReqs, "+") + "+" + strconv.Itoa(m.GenericCost)
+}
+
+// GetRemainingCost Computes the total cost which is remaining for this mana cost.
+func (m *ManaCost) GetRemainingCost() int {
+	return len(m.ColorRequirements) + m.GenericCost
 }

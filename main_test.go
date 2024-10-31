@@ -131,6 +131,7 @@ var _ = Describe("DeckSimulation", func() {
 		It("Logs correctly to stdout", func() {
 			SimulateDeck(deck, gameConfig, objective)
 		})
+
 	})
 })
 
@@ -138,11 +139,11 @@ var _ = Describe("Sorting a list of lands", func() {
 	When("Sorting a list of lands with different quantities of mana they can tap for", func() {
 		It("Returns a list where each subsequent len of land.Colors >= prevLand.Colors", func() {
 			var lands []Land
-			lands = append(lands, createUntappedLand([]ManaColor{white, green, red, black}))
-			lands = append(lands, createUntappedLand([]ManaColor{white}))
-			lands = append(lands, createUntappedLand([]ManaColor{white, green, red}))
-			lands = append(lands, createUntappedLand([]ManaColor{white, blue}))
-			lands = append(lands, createUntappedLand([]ManaColor{white, green, red, black, blue}))
+			lands = append(lands, *createUntappedLand([]ManaColor{white, green, red, black}))
+			lands = append(lands, *createUntappedLand([]ManaColor{white}))
+			lands = append(lands, *createUntappedLand([]ManaColor{white, green, red}))
+			lands = append(lands, *createUntappedLand([]ManaColor{white, blue}))
+			lands = append(lands, *createUntappedLand([]ManaColor{white, green, red, black, blue}))
 
 			sortedLands := SortLandsByRestrictiveness(lands)
 

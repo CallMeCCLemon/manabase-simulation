@@ -2,11 +2,21 @@ package main
 
 import "github.com/google/go-cmp/cmp"
 
-func createUntappedLand(colors []ManaColor) Land {
-	return Land{
-		Name:           "dummy-land",
+func createUntappedLand(colors []ManaColor) *Land {
+	return &Land{
+		Name:           "dummy-untapped-land",
 		Colors:         colors,
 		EntersTapped:   false,
+		ActivationCost: nil,
+		Quantity:       1,
+	}
+}
+
+func createTappedLand(colors []ManaColor) *Land {
+	return &Land{
+		Name:           "dummy-tapped-land",
+		Colors:         colors,
+		EntersTapped:   true,
 		ActivationCost: nil,
 		Quantity:       1,
 	}
