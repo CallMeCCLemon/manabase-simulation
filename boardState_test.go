@@ -359,7 +359,7 @@ var _ = Describe("BoardState", func() {
 				},
 			}
 
-			Expect(scoreLand(land, costOptions)).To(Equal(1))
+			Expect(scoreLand(land, costOptions)).To(Equal(12))
 		})
 
 		It("computes a perfect score with multiple mana costs correctly", func() {
@@ -386,7 +386,7 @@ var _ = Describe("BoardState", func() {
 				},
 			}
 
-			Expect(scoreLand(land, costOptions)).To(Equal(3))
+			Expect(scoreLand(land, costOptions)).To(Equal(33))
 		})
 
 		It("computes a simple 0 score correctly", func() {
@@ -405,10 +405,10 @@ var _ = Describe("BoardState", func() {
 				},
 			}
 
-			Expect(scoreLand(land, costOptions)).To(Equal(0))
+			Expect(scoreLand(land, costOptions)).To(Equal(1))
 		})
 
-		It("computes a 0 score with multiple mana costs correctly", func() {
+		It("computes a score == colors produced with multiple mana costs correctly", func() {
 			land := Land{
 				Name:           "test-land-1",
 				Colors:         []ManaColor{black},
@@ -432,7 +432,7 @@ var _ = Describe("BoardState", func() {
 				},
 			}
 
-			Expect(scoreLand(land, costOptions)).To(Equal(0))
+			Expect(scoreLand(land, costOptions)).To(Equal(1))
 		})
 
 		It("Computes a partially matching score correctly", func() {
@@ -459,7 +459,7 @@ var _ = Describe("BoardState", func() {
 				},
 			}
 
-			Expect(scoreLand(land, costOptions)).To(Equal(2))
+			Expect(scoreLand(land, costOptions)).To(Equal(22))
 		})
 
 		It("Doesn't double-count duplicate colors in costs", func() {
@@ -478,7 +478,7 @@ var _ = Describe("BoardState", func() {
 				},
 			}
 
-			Expect(scoreLand(land, costOptions)).To(Equal(1))
+			Expect(scoreLand(land, costOptions)).To(Equal(12))
 		})
 	})
 })

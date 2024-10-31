@@ -28,7 +28,6 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 		}
 	}
 
-	//  Prioritize lands which generate colors in mana costs.
 	prioritizeUntapped := false
 	if turn == objective.TargetTurn {
 		prioritizeUntapped = true
@@ -42,16 +41,12 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 		return hand
 	}
 
-	// Update Hand.
 	lands = slices.Delete(lands, i, i+1)
 	newHand.Cards = nonLands
-
 	for _, land := range lands {
 		newHand.Cards = append(newHand.Cards, *NewCard(&land, nil))
 	}
-
 	b.Lands = append(b.Lands, l)
-
 	return newHand
 }
 
@@ -109,6 +104,9 @@ func scoreLand(l Land, costOptions []ManaCost) int {
 			}
 		}
 	}
+
+	// Heavily weight lands which can produce pips for target, but also give a higher score to lands which produce multiple colors.
+	score = 10*score + len(l.Colors)
 
 	return score
 }
