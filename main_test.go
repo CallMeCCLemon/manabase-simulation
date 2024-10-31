@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/google/go-cmp/cmp"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -117,29 +116,41 @@ var _ = Describe("ReadGameConfigJSON", func() {
 var _ = Describe("DeckSimulation", func() {
 	var deck DeckList
 	var gameConfig GameConfiguration
+	var objective TestObjective
 
 	BeforeEach(func() {
 		deck, _ = ReadDeckListJSON("./fixtures/sample_deck.json")
 		gameConfig, _ = ReadGameConfigJSON("./fixtures/default-game-config.json")
+		objective = TestObjective{
+			TargetTurn: 3,
+			ManaCosts:  nil,
+		}
 	})
 
 	When("Simulating a deck", func() {
 		It("Logs correctly to stdout", func() {
-			SimulateDeck(deck, gameConfig)
+			SimulateDeck(deck, gameConfig, objective)
 		})
 	})
 })
 
-// CompareDecks compares two different decks to one another.
-func CompareDecks(a Deck, b Deck) bool {
-	if len(a.Cards) != len(b.Cards) {
-		return false
-	}
+var _ = Describe("Sorting a list of lands", func() {
+	When("Sorting a list of lands with different quantities of mana they can tap for", func() {
+		It("Returns a list where each subsequent len of land.Colors >= prevLand.Colors", func() {
+			var lands []Land
+			lands = append(lands, createUntappedLand([]ManaColor{white, green, red, black}))
+			lands = append(lands, createUntappedLand([]ManaColor{white}))
+			lands = append(lands, createUntappedLand([]ManaColor{white, green, red}))
+			lands = append(lands, createUntappedLand([]ManaColor{white, blue}))
+			lands = append(lands, createUntappedLand([]ManaColor{white, green, red, black, blue}))
 
-	for i, _ := range a.Cards {
-		if !cmp.Equal(a.Cards[i], b.Cards[i]) {
-			return false
-		}
-	}
-	return true
-}
+			sortedLands := SortLandsByRestrictiveness(lands)
+
+			Expect(sortedLands[0].Colors).To(HaveLen(1))
+			Expect(sortedLands[1].Colors).To(HaveLen(2))
+			Expect(sortedLands[2].Colors).To(HaveLen(3))
+			Expect(sortedLands[3].Colors).To(HaveLen(4))
+			Expect(sortedLands[4].Colors).To(HaveLen(5))
+		})
+	})
+})

@@ -6,65 +6,13 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
-	"math/rand/v2"
 	"os"
+	"sort"
 )
-
-type DeckList struct {
-	Lands    []Land    `json:"lands"`
-	NonLands []NonLand `json:"nonLands"`
-}
-
-func NewDeckList() *DeckList {
-	return &DeckList{
-		Lands:    []Land{},
-		NonLands: []NonLand{},
-	}
-}
-
-func (d *DeckList) toString() string {
-	jsonPayload, err := json.Marshal(d)
-	if err != nil {
-		return ""
-	}
-	return string(jsonPayload)
-}
-
-func (d *DeckList) getTotalCardCount() int {
-	count := 0
-	for _, l := range d.Lands {
-		count += l.Quantity
-	}
-
-	for _, n := range d.NonLands {
-		count += n.Quantity
-	}
-
-	return count
-}
-
-type Land struct {
-	Name           string   `json:"name"`
-	Colors         []string `json:"colors"`
-	EntersTapped   bool     `json:"entersTapped"`
-	ActivationCost []string `json:"activationCost"`
-	Quantity       int      `json:"quantity"`
-}
-
-type NonLand struct {
-	Name        string   `json:"name"`
-	CastingCost []string `json:"castingCost"`
-	Quantity    int      `json:"quantity"`
-}
 
 type TestObjective struct {
 	TargetTurn int        `json:"targetTurn"`
 	ManaCosts  []ManaCost `json:"manaCosts"`
-}
-
-type ManaCost struct {
-	ColorRequirements []string `json:"colorRequirements"`
-	GenericCost       int      `json:"genericCost"`
 }
 
 type GameConfiguration struct {
@@ -73,88 +21,24 @@ type GameConfiguration struct {
 	OnThePlay         bool `json:"onThePlay"`
 }
 
-type Card struct {
-	Land    *Land
-	NonLand *NonLand
+func SortLandsByRestrictiveness(lands []Land) []Land {
+	sort.Slice(lands, func(i, j int) bool {
+		return len(lands[i].Colors) < len(lands[j].Colors)
+	})
+
+	return lands
 }
 
-func NewCard(land *Land, nonLand *NonLand) *Card {
-	return &Card{
-		Land:    land,
-		NonLand: nonLand,
-	}
-}
-
-type Deck struct {
-	Cards []Card
-}
-
-func NewDeck() Deck {
-	return Deck{
-		Cards: []Card{},
-	}
-}
-
-func (d *Deck) Shuffle() {
-	shuffledCards := make([]Card, len(d.Cards))
-	perm := rand.Perm(len(d.Cards))
-
-	for i, v := range perm {
-		shuffledCards[v] = d.Cards[i]
-	}
-	d.Cards = shuffledCards
-}
-
-// DeepCopy Copies a Deck to a new obj.
-func (d *Deck) DeepCopy() Deck {
-	newDeck := NewDeck()
-	for _, card := range d.Cards {
-		newDeck.Cards = append(newDeck.Cards, card)
-	}
-
-	return newDeck
-}
-
-func (d *Deck) DrawCard(hand Deck) (updatedHand Deck) {
-	hand.Cards = append(hand.Cards, d.Cards[0])
-	d.Cards = d.Cards[1:]
-
-	return hand
-}
-
-type BoardState struct {
-	Lands []Land `json:"lands"`
-}
-
-func NewBoardState() BoardState {
-	return BoardState{
-		Lands: make([]Land, 0),
-	}
-}
-
-// PlayLand plays the best land from the hand based on the turn and target condition
-func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (updatedHand Deck) {
-	// Play a Land. If target turn, prioritize untapped. If not, prioritize tapped.
-	//  Prioritize lands which generate colors in mana costs.
-	// Update Hand.
-	// Update Board State
-
-	return hand
-}
-
-// ValidateTestObjective validates whether or not the TestObjective has been met
-func (b *BoardState) ValidateTestObjective(objective TestObjective) bool {
-	return true
-}
+type ManaColor string
 
 const (
-	white     = "white"
-	blue      = "blue"
-	black     = "black"
-	red       = "red"
-	green     = "green"
-	colorless = "colorless"
-	whatever  = "whatever"
+	white     ManaColor = "white"
+	blue      ManaColor = "blue"
+	black     ManaColor = "black"
+	red       ManaColor = "red"
+	green     ManaColor = "green"
+	colorless ManaColor = "colorless"
+	whatever  ManaColor = "whatever"
 )
 
 func main() {
@@ -279,7 +163,8 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, object
 
 	// Compute if target is met (possibly using backtracking?)
 	// Computation can start with the most restrictive lands by sorting based on number of colors it taps for.
-	return board.ValidateTestObjective(objective)
+	isMet, _ := board.ValidateTestObjective(objective)
+	return isMet
 }
 
 // GenerateDeck Creates a Deck instance from a DeckList.

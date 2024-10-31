@@ -12,14 +12,13 @@ var _ = Describe("Lotus-field", func() {
 		TargetTurn: 3,
 		ManaCosts: []ManaCost{
 			{
-				ColorRequirements: []string{},
+				ColorRequirements: []ManaColor{},
 				GenericCost:       1,
 			},
 		},
 	}
 
 	When("Running the simulation once", func() {
-
 		It("Should determine correctly whether or not the hand generated the right mana", func() {
 			success := SimulateDeck(deckList, gameConfig, objective)
 			Expect(success).To(BeTrue())
