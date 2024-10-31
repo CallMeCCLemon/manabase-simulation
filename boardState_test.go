@@ -179,5 +179,24 @@ var _ = Describe("BoardState", func() {
 			Expect(combos[0].ColorRequirements).To(HaveLen(1))
 			Expect(combos[0].ColorRequirements[0]).To(Equal(black))
 		})
+
+		It("All generic objectives can be met with equal number of lands", func() {
+			boardState.Lands = append(boardState.Lands, createUntappedLand([]ManaColor{white}))
+			boardState.Lands = append(boardState.Lands, createUntappedLand([]ManaColor{white, blue}))
+			boardState.Lands = append(boardState.Lands, createUntappedLand([]ManaColor{red, blue, green}))
+			boardState.Lands = append(boardState.Lands, createUntappedLand([]ManaColor{red, blue}))
+
+			obj := TestObjective{
+				TargetTurn: 3,
+				ManaCosts: []ManaCost{
+					{
+						ColorRequirements: []ManaColor{},
+						GenericCost:       4,
+					},
+				},
+			}
+			isMet, _ := boardState.ValidateTestObjective(obj)
+			Expect(isMet).To(BeTrue())
+		})
 	})
 })

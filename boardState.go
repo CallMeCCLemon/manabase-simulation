@@ -50,34 +50,6 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 // ValidateTestObjective validates if the TestObjective has been met
 func (b *BoardState) ValidateTestObjective(objective TestObjective) (bool, []ManaCost) {
 	// TODO: Evaluate how we can do this for multiple costs.
-	//manaCostLeftToPay := objective.ManaCosts[0]
-
-	//// Count all colors which lands can produce
-	//colorCounts := make(map[ManaColor]int)
-	//for _, l := range b.Lands {
-	//	for _, color := range l.Colors {
-	//		if _, ok := colorCounts[color]; !ok {
-	//			colorCounts[color] = 0
-	//		}
-	//		colorCounts[color]++
-	//	}
-	//}
-	//
-	//// Count all color costs
-	//costCounts := make(map[ManaColor]int)
-	//for _, cost := range manaCostLeftToPay.ColorRequirements {
-	//	if _, ok := costCounts[cost]; !ok {
-	//		costCounts[cost] = 0
-	//	}
-	//	costCounts[cost]++
-	//}
-
-	//// If any color in the mana cost does not have sufficient producers, short-circuit false
-	//for _, color := range manaCostLeftToPay.ColorRequirements {
-	//	if colorCounts[color] < costCounts[color] {
-	//		return false, objective.ManaCosts
-	//	}
-	//}
 
 	// Sort lands by most restrictive production where the first have most restricted colors
 	sortedLands := SortLandsByRestrictiveness(b.Lands)
