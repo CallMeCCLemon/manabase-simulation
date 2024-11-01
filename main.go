@@ -2,12 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/onsi/ginkgo/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
 	"os"
 	"sort"
+	"time"
 )
 
 type TestObjective struct {
@@ -42,9 +44,33 @@ const (
 )
 
 func main() {
-	println("Hello World")
-	deck, _ := ReadDeckListJSON("./sample_deck.json")
-	CreateLogger().Info(deck.toString())
+	deck, _ := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
+	logger := CreateLogger()
+	logger.Info(deck.toString())
+	gameConfig, _ := ReadGameConfigJSON("./fixtures/default-game-config.json")
+	objective := TestObjective{
+		TargetTurn: 3,
+		ManaCosts: []ManaCost{
+			{
+				ColorRequirements: []ManaColor{white, white},
+				GenericCost:       1,
+			},
+		},
+	}
+	now := time.Now()
+
+	successCount := 0
+	iterations := 10000
+	for i := 0; i < iterations; i++ {
+
+		if SimulateDeck(deck, gameConfig, objective) {
+			successCount++
+		}
+	}
+
+	logger.Info(fmt.Sprintf("Success count: %d", successCount))
+	logger.Info(fmt.Sprintf("Success Rate: %f", float32(successCount)/float32(iterations)*100.0))
+	logger.Info(fmt.Sprintf("Time taken: %s", time.Since(now)))
 }
 
 func CreateLogger() *zap.Logger {
@@ -76,7 +102,6 @@ func CreateLogger() *zap.Logger {
 	defer logger.Sync() // flushes buffer, if any
 
 	// Use the logger
-	logger.Info("This is an info message")
 	return logger
 }
 
@@ -134,7 +159,7 @@ func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
 
 func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
 	logger := CreateLogger()
-	logger.Info("Starting deck simulation", zap.String("deck", deckList.toString()))
+	logger.Debug("Starting deck simulation", zap.String("deck", deckList.toString()))
 
 	// Generate Randomized Deck
 	deck := GenerateDeck(deckList)
@@ -153,7 +178,7 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, object
 		// If turnNumber = 1 and on the play, skip draw
 		if turnNumber == 0 && gameConfiguration.OnThePlay {
 			// Skip your draw
-			logger.Info("Playing first, skipping draw")
+			logger.Debug("Playing first, skipping draw")
 		} else {
 			hand = deck.DrawCard(hand)
 		}
