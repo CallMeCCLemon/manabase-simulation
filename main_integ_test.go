@@ -12,7 +12,7 @@ var _ = Describe("Lotus-field", func() {
 		TargetTurn: 3,
 		ManaCosts: []ManaCost{
 			{
-				ColorRequirements: []ManaColor{},
+				ColorRequirements: []ManaColor{white, white},
 				GenericCost:       1,
 			},
 		},

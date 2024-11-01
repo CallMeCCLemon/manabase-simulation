@@ -1,16 +1,20 @@
 package main
 
 import (
+	"fmt"
+	"go.uber.org/zap"
 	"slices"
 )
 
 type BoardState struct {
-	Lands []Land `json:"lands"`
+	Logger *zap.Logger
+	Lands  []Land `json:"lands"`
 }
 
 func NewBoardState() BoardState {
 	return BoardState{
-		Lands: make([]Land, 0),
+		Logger: CreateLogger(),
+		Lands:  make([]Land, 0),
 	}
 }
 
@@ -28,6 +32,11 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 		}
 	}
 
+	if len(lands) == 0 {
+		b.Logger.Info(fmt.Sprintf("No lands found for turn %d", turn))
+		return hand
+	}
+
 	prioritizeUntapped := false
 	if turn == objective.TargetTurn {
 		prioritizeUntapped = true
@@ -38,6 +47,7 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 	i, l := b.selectLand(lands, combos, prioritizeUntapped)
 	if i < 0 {
 		// This implies no lands in hand. Womp womp.
+		b.Logger.Info(fmt.Sprintf("Something went wrong while selecting a land for turn %d", turn))
 		return hand
 	}
 
@@ -47,6 +57,7 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 		newHand.Cards = append(newHand.Cards, *NewCard(&land, nil))
 	}
 	b.Lands = append(b.Lands, l)
+	b.Logger.Info(fmt.Sprintf("Played %s for turn %d", l.Name, turn))
 	return newHand
 }
 
@@ -60,10 +71,14 @@ func (b *BoardState) selectLand(lands []Land, costOptions []ManaCost, prioritize
 				remainingLands = append(remainingLands, l)
 			}
 		}
+
+		if len(remainingLands) == 0 {
+			// otherwise accept any land choice.
+			b.Logger.Info("No untapped lands found when necessary! Results should be wrong")
+		}
 	}
 
 	if len(remainingLands) == 0 {
-		// otherwise accept any land choice.
 		remainingLands = lands
 	}
 

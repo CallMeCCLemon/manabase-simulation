@@ -44,10 +44,10 @@ const (
 func main() {
 	println("Hello World")
 	deck, _ := ReadDeckListJSON("./sample_deck.json")
-	createLogger().Info(deck.toString())
+	CreateLogger().Info(deck.toString())
 }
 
-func createLogger() *zap.Logger {
+func CreateLogger() *zap.Logger {
 	// Create a custom logger configuration
 	config := zap.NewProductionConfig()
 
@@ -133,7 +133,7 @@ func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
 }
 
 func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
-	logger := createLogger()
+	logger := CreateLogger()
 	logger.Info("Starting deck simulation", zap.String("deck", deckList.toString()))
 
 	// Generate Randomized Deck
@@ -151,14 +151,14 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, object
 	// For turnNumber to target turn
 	for turnNumber := range objective.TargetTurn {
 		// If turnNumber = 1 and on the play, skip draw
-		if turnNumber == 1 && gameConfiguration.OnThePlay {
+		if turnNumber == 0 && gameConfiguration.OnThePlay {
 			// Skip your draw
 			logger.Info("Playing first, skipping draw")
 		} else {
 			hand = deck.DrawCard(hand)
 		}
 
-		board.PlayLand(hand, objective, turnNumber)
+		hand = board.PlayLand(hand, objective, turnNumber+1)
 	}
 
 	// Compute if target is met (possibly using backtracking?)

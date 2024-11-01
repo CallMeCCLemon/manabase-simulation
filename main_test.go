@@ -22,7 +22,7 @@ var _ = Describe("DeckList", func() {
 		})
 
 		It("Has the right card count", func() {
-			Expect(deck.getTotalCardCount()).To(Equal(2))
+			Expect(deck.getTotalCardCount()).To(Equal(10))
 		})
 	})
 
@@ -123,7 +123,12 @@ var _ = Describe("DeckSimulation", func() {
 		gameConfig, _ = ReadGameConfigJSON("./fixtures/default-game-config.json")
 		objective = TestObjective{
 			TargetTurn: 3,
-			ManaCosts:  nil,
+			ManaCosts: []ManaCost{
+				{
+					ColorRequirements: []ManaColor{},
+					GenericCost:       1,
+				},
+			},
 		}
 	})
 
