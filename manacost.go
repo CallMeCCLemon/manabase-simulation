@@ -5,11 +5,13 @@ import (
 	"strings"
 )
 
+// ManaCost is a cost which can be paid to resolve a non-land card.
 type ManaCost struct {
 	ColorRequirements []ManaColor `json:"colorRequirements"`
 	GenericCost       int         `json:"genericCost"`
 }
 
+// DeepCopy Creates a deep copy of the ManaCost.
 func (m *ManaCost) DeepCopy() ManaCost {
 	requirements := make([]ManaColor, len(m.ColorRequirements))
 	for i, r := range m.ColorRequirements {

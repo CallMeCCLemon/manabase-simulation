@@ -22,6 +22,14 @@ func createTappedLand(colors []ManaColor) *Land {
 	}
 }
 
+func createSampleNonLand() *NonLand {
+	return &NonLand{
+		Name:        "dummy-nonland",
+		CastingCost: []string{"white"},
+		Quantity:    1,
+	}
+}
+
 // CompareDecks compares two different decks to one another.
 func CompareDecks(a Deck, b Deck) bool {
 	if len(a.Cards) != len(b.Cards) {

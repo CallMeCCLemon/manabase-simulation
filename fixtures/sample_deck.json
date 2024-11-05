@@ -5,14 +5,62 @@
       "colors":  ["red"],
       "entersTapped":  false,
       "activationCost":  [],
-      "quantity":  7
+      "quantity":  1
+    },
+    {
+      "name": "Test-Plains",
+      "colors":  ["white"],
+      "entersTapped":  false,
+      "activationCost":  [],
+      "quantity":  1
+    },
+    {
+      "name": "Test-Swamp",
+      "colors":  ["black"],
+      "entersTapped":  false,
+      "activationCost":  [],
+      "quantity":  1
+    },
+    {
+      "name": "Test-Island",
+      "colors":  ["blue"],
+      "entersTapped":  false,
+      "activationCost":  [],
+      "quantity":  1
+    },
+    {
+      "name": "Test-Forest",
+      "colors":  ["green"],
+      "entersTapped":  false,
+      "activationCost":  [],
+      "quantity":  1
     }
   ],
   "nonLands": [
     {
       "name": "Test-Nonland-1",
       "castingCost": ["red"],
-      "quantity":  3
+      "quantity":  1
+    },
+    {
+      "name": "Test-Nonland-2",
+      "castingCost": ["red"],
+      "quantity":  1
+    },
+    {
+      "name": "Test-Nonland-3",
+      "castingCost": ["red"],
+      "quantity":  1
+    },
+    {
+      "name": "Test-Nonland-4",
+      "castingCost": ["red"],
+      "quantity":  1
+    },
+    {
+      "name": "Test-Nonland-5",
+      "castingCost": ["red"],
+      "quantity":  1
     }
   ]
 }

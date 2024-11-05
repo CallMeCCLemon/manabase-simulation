@@ -5,8 +5,8 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("DeckList", func() {
-	When("Reading a JSON File", func() {
+var _ = Describe("Decklist JSON Parsing Functions", func() {
+	When("Reading a JSON Decklist File", func() {
 		deck, err := ReadDeckListJSON("./fixtures/sample_deck.json")
 
 		It("Doesn't throw an error", func() {
@@ -14,15 +14,15 @@ var _ = Describe("DeckList", func() {
 		})
 
 		It("Correctly parses all of the lands", func() {
-			Expect(deck.Lands).To(HaveLen(1))
+			Expect(deck.Lands).To(HaveLen(5))
 		})
 
 		It("Correctly parses all of the non-lands", func() {
-			Expect(deck.NonLands).To(HaveLen(1))
+			Expect(deck.NonLands).To(HaveLen(5))
 		})
 
 		It("Has the right card count", func() {
-			Expect(deck.getTotalCardCount()).To(Equal(10))
+			Expect(deck.GetTotalCardCount()).To(Equal(10))
 		})
 	})
 
@@ -42,58 +42,7 @@ var _ = Describe("DeckList", func() {
 		})
 
 		It("Has the right card count", func() {
-			Expect(deck.getTotalCardCount()).To(Equal(60))
-		})
-	})
-})
-
-var _ = Describe("Deck", func() {
-	deckList, _ := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
-
-	When("Instantiating it from a decklist", func() {
-		deck := GenerateDeck(deckList)
-
-		It("Has 60 cards", func() {
-			Expect(deck.Cards).To(HaveLen(60))
-		})
-	})
-
-	When("DeepCopying a deck", func() {
-		deck := GenerateDeck(deckList)
-		copiedDeck := deck.DeepCopy()
-
-		It("Correctly deep copies", func() {
-			Expect(CompareDecks(deck, copiedDeck)).To(BeTrue())
-		})
-	})
-
-	When("Shuffling the deck", func() {
-		deck := GenerateDeck(deckList)
-		unshuffledDeck := deck.DeepCopy()
-		Expect(CompareDecks(deck, unshuffledDeck)).To(BeTrue())
-
-		It("Randomizes the deck", func() {
-			deck.Shuffle()
-			Expect(CompareDecks(deck, unshuffledDeck)).To(BeFalse())
-		})
-	})
-
-	When("Drawing a card from the deck", func() {
-		deck := GenerateDeck(deckList)
-		hand := NewDeck()
-		firstCard := deck.Cards[0]
-		Expect(hand.Cards).To(HaveLen(0))
-		Expect(deck.Cards).To(HaveLen(60))
-		hand = deck.DrawCard(hand)
-
-		It("Adds the first card to the hand", func() {
-			Expect(hand.Cards).To(HaveLen(1))
-			Expect(hand.Cards[0]).To(Equal(firstCard))
-		})
-
-		It("Removes the first card from the deck", func() {
-			Expect(deck.Cards).To(HaveLen(59))
-			Expect(deck.Cards[0]).ToNot(Equal(firstCard))
+			Expect(deck.GetTotalCardCount()).To(Equal(60))
 		})
 	})
 })

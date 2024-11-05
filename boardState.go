@@ -6,11 +6,13 @@ import (
 	"slices"
 )
 
+// BoardState Represents the state of the board. This is the primary data model used during the simulation.
 type BoardState struct {
 	Logger *zap.Logger
 	Lands  []Land `json:"lands"`
 }
 
+// NewBoardState Creates a new BoardState instance.
 func NewBoardState() BoardState {
 	return BoardState{
 		Logger: CreateLogger(),
@@ -18,7 +20,7 @@ func NewBoardState() BoardState {
 	}
 }
 
-// PlayLand plays the best land from the hand based on the turn and target condition
+// PlayLand plays the best land from the hand based on the turn and target condition.
 func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (updatedHand Deck) {
 	// Play a Land. If target turn, prioritize untapped. If not, prioritize tapped.
 	lands := make([]Land, 0)
@@ -200,16 +202,6 @@ func (b *BoardState) ValidateTestObjective(objective TestObjective) (bool, []Man
 	}
 
 	return isObjectiveMet, remainingManaCosts
-}
-
-// indexOf finds the index of a specific value in a slice. If not found, returns -1.
-func indexOf[T comparable](slice []T, value T) int {
-	for index, v := range slice {
-		if v == value {
-			return index
-		}
-	}
-	return -1
 }
 
 // GetManaCombinations returns all the possible mana combinations.

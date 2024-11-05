@@ -5,19 +5,13 @@ import (
 	"slices"
 )
 
+// DeckList Represents a playable deck of cards. Quantities are not guaranteed to be 1. This is what a user should be uploading for simplicity.
 type DeckList struct {
 	Lands    []Land    `json:"lands"`
 	NonLands []NonLand `json:"nonLands"`
 }
 
-func NewDeckList() *DeckList {
-	return &DeckList{
-		Lands:    []Land{},
-		NonLands: []NonLand{},
-	}
-}
-
-func (d *DeckList) toString() string {
+func (d *DeckList) ToString() string {
 	jsonPayload, err := json.Marshal(d)
 	if err != nil {
 		return ""
@@ -25,7 +19,8 @@ func (d *DeckList) toString() string {
 	return string(jsonPayload)
 }
 
-func (d *DeckList) getTotalCardCount() int {
+// GetTotalCardCount Returns the total number of cards in the deck.
+func (d *DeckList) GetTotalCardCount() int {
 	count := 0
 	for _, l := range d.Lands {
 		count += l.Quantity
@@ -38,6 +33,31 @@ func (d *DeckList) getTotalCardCount() int {
 	return count
 }
 
+// GenerateDeck Creates a Deck instance from a DeckList.
+func (d *DeckList) GenerateDeck() Deck {
+	deck := NewDeck()
+
+	for _, l := range d.Lands {
+		quantity := l.Quantity
+		l.Quantity = 1
+		for range quantity {
+			deck.Cards = append(deck.Cards, *NewCard(&l, nil))
+		}
+	}
+
+	for _, n := range d.NonLands {
+		quantity := n.Quantity
+		n.Quantity = 1
+		for range quantity {
+			deck.Cards = append(deck.Cards, *NewCard(nil, &n))
+		}
+	}
+
+	deck.Shuffle()
+	return deck
+}
+
+// Land Represents a Land type of card which can produce mana.
 type Land struct {
 	Name           string      `json:"name"`
 	Colors         []ManaColor `json:"colors"`
@@ -46,6 +66,7 @@ type Land struct {
 	Quantity       int         `json:"quantity"`
 }
 
+// Equals Checks if two lands are equal.
 func (l *Land) Equals(land Land) bool {
 	// TODO: Include other fields.
 	if l.EntersTapped != land.EntersTapped {
@@ -66,6 +87,7 @@ func (l *Land) Equals(land Land) bool {
 	return true
 }
 
+// NonLand Represents a Non-Land type of card is will need mana to be cast.
 type NonLand struct {
 	Name        string   `json:"name"`
 	CastingCost []string `json:"castingCost"`

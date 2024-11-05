@@ -12,17 +12,13 @@ import (
 	"time"
 )
 
-type TestObjective struct {
-	TargetTurn int        `json:"targetTurn"`
-	ManaCosts  []ManaCost `json:"manaCosts"`
-}
-
 type GameConfiguration struct {
 	InitialHandSize   int  `json:"initialHandSize"`
 	CardsDrawnPerTurn int  `json:"cardsDrawnPerTurn"`
 	OnThePlay         bool `json:"onThePlay"`
 }
 
+// SortLandsByRestrictiveness Sorts a list of lands by the number of colors they produce.
 func SortLandsByRestrictiveness(lands []Land) []Land {
 	sort.Slice(lands, func(i, j int) bool {
 		return len(lands[i].Colors) < len(lands[j].Colors)
@@ -31,22 +27,36 @@ func SortLandsByRestrictiveness(lands []Land) []Land {
 	return lands
 }
 
+// ManaColor Represents a color of mana in the game.
 type ManaColor string
 
 const (
-	white     ManaColor = "white"
-	blue      ManaColor = "blue"
-	black     ManaColor = "black"
-	red       ManaColor = "red"
-	green     ManaColor = "green"
+	// white Represents the white color of mana.
+	white ManaColor = "white"
+
+	// blue Represents the blue color of mana.
+	blue ManaColor = "blue"
+
+	// black Represents the black color of mana.
+	black ManaColor = "black"
+
+	// red Represents the red color of mana.
+	red ManaColor = "red"
+
+	// green Represents the green color of mana.
+	green ManaColor = "green"
+
+	// colorless Represents the colorless mana.
 	colorless ManaColor = "colorless"
-	whatever  ManaColor = "whatever"
+
+	// whatever Represents any color of mana. This is used primarily for wildcard mana producers, but I'm unsure if this is really necessary.
+	whatever ManaColor = "whatever"
 )
 
 func main() {
 	deck, _ := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
 	logger := CreateLogger()
-	logger.Info(deck.toString())
+	logger.Info(deck.ToString())
 	gameConfig, _ := ReadGameConfigJSON("./fixtures/default-game-config.json")
 	objective := TestObjective{
 		TargetTurn: 3,
@@ -68,11 +78,13 @@ func main() {
 		}
 	}
 
+	// Capture results to be consumes.
 	logger.Info(fmt.Sprintf("Success count: %d", successCount))
 	logger.Info(fmt.Sprintf("Success Rate: %f", float32(successCount)/float32(iterations)*100.0))
 	logger.Info(fmt.Sprintf("Time taken: %s", time.Since(now)))
 }
 
+// CreateLogger Creates a new logger with the default configuration.
 func CreateLogger() *zap.Logger {
 	// Create a custom logger configuration
 	config := zap.NewProductionConfig()
@@ -157,12 +169,13 @@ func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
 	return gameConfig, nil
 }
 
+// SimulateDeck Simulates a deck against a given objective with the provided configuration.
 func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
 	logger := CreateLogger()
-	logger.Debug("Starting deck simulation", zap.String("deck", deckList.toString()))
+	logger.Debug("Starting deck simulation", zap.String("deck", deckList.ToString()))
 
 	// Generate Randomized Deck
-	deck := GenerateDeck(deckList)
+	deck := deckList.GenerateDeck()
 	hand := NewDeck()
 	board := NewBoardState()
 
@@ -214,4 +227,14 @@ func GenerateDeck(list DeckList) Deck {
 
 	deck.Shuffle()
 	return deck
+}
+
+// indexOf finds the index of a specific value in a slice. If not found, returns -1.
+func indexOf[T comparable](slice []T, value T) int {
+	for index, v := range slice {
+		if v == value {
+			return index
+		}
+	}
+	return -1
 }
