@@ -72,7 +72,6 @@ func main() {
 	successCount := 0
 	iterations := 10000
 	for i := 0; i < iterations; i++ {
-
 		if SimulateDeck(deck, gameConfig, objective) {
 			successCount++
 		}
@@ -172,7 +171,7 @@ func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
 // SimulateDeck Simulates a deck against a given objective with the provided configuration.
 func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
 	logger := CreateLogger()
-	logger.Debug("Starting deck simulation", zap.String("deck", deckList.ToString()))
+	logger.Debug("Starting deck simulation")
 
 	// Generate Randomized Deck
 	deck := deckList.GenerateDeck()
