@@ -37,7 +37,7 @@ A single iteration of the simulation is as follows:
 The formula for the success evaluation of the simulation is a simple ratio:
 
 $$
-p = \frac{s}{i} \times 100 \%
+p = \frac{success}{iterations} \times 100 \%
 $$
 
 where:
