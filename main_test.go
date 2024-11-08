@@ -7,7 +7,7 @@ import (
 
 var _ = Describe("Decklist JSON Parsing Functions", func() {
 	When("Reading a JSON Decklist File", func() {
-		deck, err := ReadDeckListJSON("./fixtures/sample_deck.json")
+		deck, err := ReadJSONFile[DeckList]("./fixtures/sample_deck.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -27,7 +27,7 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 	})
 
 	When("Reading the lotus field JSON File", func() {
-		deck, err := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
+		deck, err := ReadJSONFile[DeckList]("./fixtures/lotus-field-deck.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -49,7 +49,7 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 
 var _ = Describe("ReadGameConfigJSON", func() {
 	When("Reading a JSON File", func() {
-		gameConfig, err := ReadGameConfigJSON("./fixtures/default-game-config.json")
+		gameConfig, err := ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -68,8 +68,8 @@ var _ = Describe("DeckSimulation", func() {
 	var objective TestObjective
 
 	BeforeEach(func() {
-		deck, _ = ReadDeckListJSON("./fixtures/sample_deck.json")
-		gameConfig, _ = ReadGameConfigJSON("./fixtures/default-game-config.json")
+		deck, _ = ReadJSONFile[DeckList]("./fixtures/sample_deck.json")
+		gameConfig, _ = ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
 		objective = TestObjective{
 			TargetTurn: 3,
 			ManaCosts: []ManaCost{

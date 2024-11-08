@@ -7,8 +7,12 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"io"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"sort"
+	"sync"
 	"time"
 )
 
@@ -54,10 +58,14 @@ const (
 )
 
 func main() {
-	deck, _ := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
+	deck, _ := ReadJSONFile[DeckList]("./fixtures/lotus-field-deck.json")
 	logger := CreateLogger()
 	logger.Info(deck.ToString())
-	gameConfig, _ := ReadGameConfigJSON("./fixtures/default-game-config.json")
+	gameConfig, _ := ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
 	objective := TestObjective{
 		TargetTurn: 3,
 		ManaCosts: []ManaCost{
@@ -70,9 +78,23 @@ func main() {
 	now := time.Now()
 
 	successCount := 0
-	iterations := 10000
+	iterations := 10000000
+
+	c := make(chan bool, 100)
+	wg := new(sync.WaitGroup)
+
 	for i := 0; i < iterations; i++ {
-		if SimulateDeck(deck, gameConfig, objective) {
+		wg.Add(1)
+		go start(deck, gameConfig, objective, c, wg)
+	}
+
+	go func() {
+		wg.Wait()
+		close(c)
+	}()
+
+	for result := range c {
+		if result {
 			successCount++
 		}
 	}
@@ -81,6 +103,11 @@ func main() {
 	logger.Info(fmt.Sprintf("Success count: %d", successCount))
 	logger.Info(fmt.Sprintf("Success Rate: %f", float32(successCount)/float32(iterations)*100.0))
 	logger.Info(fmt.Sprintf("Time taken: %s", time.Since(now)))
+}
+
+func start(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective, c chan bool, wg *sync.WaitGroup) {
+	defer wg.Done()
+	c <- SimulateDeck(deckList, gameConfiguration, objective)
 }
 
 // CreateLogger Creates a new logger with the default configuration.
@@ -104,7 +131,7 @@ func CreateLogger() *zap.Logger {
 		return zapcore.NewCore(
 			zapcore.NewConsoleEncoder(config.EncoderConfig),
 			zapcore.AddSync(ginkgo.GinkgoWriter), // Send logs to GinkgoWriter
-			zapcore.DebugLevel,
+			zapcore.InfoLevel,
 		)
 	}))
 	if err != nil {
@@ -116,62 +143,33 @@ func CreateLogger() *zap.Logger {
 	return logger
 }
 
-// ReadDeckListJSON Function to read JSON file into a struct
-func ReadDeckListJSON(filename string) (DeckList, error) {
-	var deck DeckList
-
-	// Open the JSON file
+func ReadJSONFile[T any](filename string) (T, error) {
+	var data T
 	file, err := os.Open(filename)
 	if err != nil {
-		return deck, err
+		return data, err
 	}
 	defer file.Close()
 
 	// Read the file contents
 	bytes, err := io.ReadAll(file)
 	if err != nil {
-		return deck, err
+		return data, err
 	}
 
 	// Unmarshal the JSON data into the struct
-	err = json.Unmarshal(bytes, &deck)
+	err = json.Unmarshal(bytes, &data)
 	if err != nil {
-		return deck, err
+		return data, err
 	}
 
-	return deck, nil
-}
-
-// ReadGameConfigJSON Reads a game config JSON file.
-func ReadGameConfigJSON(filename string) (GameConfiguration, error) {
-	var gameConfig GameConfiguration
-
-	// Open the JSON file
-	file, err := os.Open(filename)
-	if err != nil {
-		return gameConfig, err
-	}
-	defer file.Close()
-
-	// Read the file contents
-	bytes, err := io.ReadAll(file)
-	if err != nil {
-		return gameConfig, err
-	}
-
-	// Unmarshal the JSON data into the struct
-	err = json.Unmarshal(bytes, &gameConfig)
-	if err != nil {
-		return gameConfig, err
-	}
-
-	return gameConfig, nil
+	return data, nil
 }
 
 // SimulateDeck Simulates a deck against a given objective with the provided configuration.
 func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
-	logger := CreateLogger()
-	logger.Debug("Starting deck simulation")
+	//logger := CreateLogger()
+	//logger.Debug("Starting deck simulation")
 
 	// Generate Randomized Deck
 	deck := deckList.GenerateDeck()
@@ -190,7 +188,7 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, object
 		// If turnNumber = 1 and on the play, skip draw
 		if turnNumber == 0 && gameConfiguration.OnThePlay {
 			// Skip your draw
-			logger.Debug("Playing first, skipping draw")
+			//logger.Debug("Playing first, skipping draw")
 		} else {
 			hand = deck.DrawCard(hand)
 		}
@@ -202,30 +200,6 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, object
 	// Computation can start with the most restrictive lands by sorting based on number of colors it taps for.
 	isMet, _ := board.ValidateTestObjective(objective)
 	return isMet
-}
-
-// GenerateDeck Creates a Deck instance from a DeckList.
-func GenerateDeck(list DeckList) Deck {
-	deck := NewDeck()
-
-	for _, l := range list.Lands {
-		quantity := l.Quantity
-		l.Quantity = 1
-		for range quantity {
-			deck.Cards = append(deck.Cards, *NewCard(&l, nil))
-		}
-	}
-
-	for _, n := range list.NonLands {
-		quantity := n.Quantity
-		n.Quantity = 1
-		for range quantity {
-			deck.Cards = append(deck.Cards, *NewCard(nil, &n))
-		}
-	}
-
-	deck.Shuffle()
-	return deck
 }
 
 // indexOf finds the index of a specific value in a slice. If not found, returns -1.

@@ -1,22 +1,20 @@
 package main
 
 import (
-	"fmt"
-	"go.uber.org/zap"
 	"slices"
 )
 
 // BoardState Represents the state of the board. This is the primary data model used during the simulation.
 type BoardState struct {
-	Logger *zap.Logger
-	Lands  []Land `json:"lands"`
+	//Logger *zap.Logger
+	Lands []Land `json:"lands"`
 }
 
 // NewBoardState Creates a new BoardState instance.
 func NewBoardState() BoardState {
 	return BoardState{
-		Logger: CreateLogger(),
-		Lands:  make([]Land, 0),
+		//Logger: CreateLogger(),
+		Lands: make([]Land, 0),
 	}
 }
 
@@ -49,7 +47,7 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 	i, l := b.selectLand(lands, combos, prioritizeUntapped)
 	if i < 0 && !prioritizeUntapped {
 		// This implies no lands in hand. Womp womp.
-		b.Logger.Warn(fmt.Sprintf("Something went wrong while selecting a land for turn %d", turn))
+		//b.Logger.Warn(fmt.Sprintf("Something went wrong while selecting a land for turn %d", turn))
 		return hand
 	}
 
@@ -59,7 +57,7 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 		newHand.Cards = append(newHand.Cards, *NewCard(&land, nil))
 	}
 	b.Lands = append(b.Lands, l)
-	b.Logger.Debug(fmt.Sprintf("Played %s for turn %d", l.Name, turn))
+	//b.Logger.Debug(fmt.Sprintf("Played %s for turn %d", l.Name, turn))
 	return newHand
 }
 
@@ -76,7 +74,7 @@ func (b *BoardState) selectLand(lands []Land, costOptions []ManaCost, prioritize
 
 		if len(remainingLands) == 0 {
 			// otherwise accept any land choice.
-			b.Logger.Warn("No untapped lands found when necessary! Results should be wrong")
+			//b.Logger.Warn("No untapped lands found when necessary! Results should be wrong")
 		}
 	}
 

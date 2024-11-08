@@ -6,13 +6,13 @@ import (
 )
 
 var _ = Describe("Deck", func() {
-	deckList, _ := ReadDeckListJSON("./fixtures/lotus-field-deck.json")
+	deckList, _ := ReadJSONFile[DeckList]("./fixtures/sample_deck.json")
 
 	When("Instantiating it from a decklist", func() {
 		deck := deckList.GenerateDeck()
 
-		It("Has 60 cards", func() {
-			Expect(deck.Cards).To(HaveLen(60))
+		It("Has 10 cards", func() {
+			Expect(deck.Cards).To(HaveLen(10))
 		})
 	})
 
@@ -40,17 +40,19 @@ var _ = Describe("Deck", func() {
 		deck := deckList.GenerateDeck()
 		hand := NewDeck()
 		firstCard := deck.Cards[0]
-		Expect(hand.Cards).To(HaveLen(0))
-		Expect(deck.Cards).To(HaveLen(60))
-		hand = deck.DrawCard(hand)
+		It("Has 10 cards", func() {
+			Expect(hand.Cards).To(HaveLen(0))
+			Expect(deck.Cards).To(HaveLen(10))
+		})
 
 		It("Adds the first card to the hand", func() {
+			hand = deck.DrawCard(hand)
 			Expect(hand.Cards).To(HaveLen(1))
 			Expect(hand.Cards[0]).To(Equal(firstCard))
 		})
 
 		It("Removes the first card from the deck", func() {
-			Expect(deck.Cards).To(HaveLen(59))
+			Expect(deck.Cards).To(HaveLen(9))
 			Expect(deck.Cards[0]).ToNot(Equal(firstCard))
 		})
 	})
