@@ -136,4 +136,4 @@ reality, but was a good ballpark estimate which matched my experiences while pra
 - Allow tapped lands to be played on the target turn.
 - Allow all non-lands to simultaneously be the objective for the deck.
 - Update the simulation success to be equal to the number of castable non-lands in the hands by target turn.
-
+- Allow for more complex lands to be used (filter lands, verges, fetchlands, etc.)
