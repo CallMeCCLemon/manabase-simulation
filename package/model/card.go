@@ -1,4 +1,4 @@
-package main
+package model
 
 // Card Represents a card in a deck. This can be either a land or a non-land.
 type Card struct {

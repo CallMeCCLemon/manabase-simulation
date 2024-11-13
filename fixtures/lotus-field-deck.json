@@ -66,8 +66,13 @@
   ],
   "nonLands": [
     {
-      "name": "Test-Nonland-Card",
-      "castingCost": ["green"],
+      "name": "Llanowar Elves",
+      "castingCost": [
+        {
+          "colorRequirements": ["white", "white", "white"],
+          "genericCost": 1
+        }
+      ],
       "quantity":  34
     }
   ]

@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"encoding/json"
@@ -59,11 +59,20 @@ func (d *DeckList) GenerateDeck() Deck {
 
 // Land Represents a Land type of card which can produce mana.
 type Land struct {
-	Name           string      `json:"name"`
-	Colors         []ManaColor `json:"colors"`
-	EntersTapped   bool        `json:"entersTapped"`
-	ActivationCost []string    `json:"activationCost"`
-	Quantity       int         `json:"quantity"`
+	// Name the name of the land.
+	Name string `json:"name"`
+
+	// Colors is the list of colors which can be produced by the land.
+	Colors []ManaColor `json:"colors"`
+
+	// EntersTapped is whether the land enters tapped.
+	EntersTapped bool `json:"entersTapped"`
+
+	// ActivationCost is the list of colors which must be used to activate the land.
+	ActivationCost []string `json:"activationCost"`
+
+	// Quantity is the number of copies of this card in a deck.
+	Quantity int `json:"quantity"`
 }
 
 // Equals Checks if two lands are equal.
@@ -89,7 +98,12 @@ func (l *Land) Equals(land Land) bool {
 
 // NonLand Represents a Non-Land type of card is will need mana to be cast.
 type NonLand struct {
-	Name        string   `json:"name"`
-	CastingCost []string `json:"castingCost"`
-	Quantity    int      `json:"quantity"`
+	// Name the name of the land.
+	Name string `json:"name"`
+
+	// CastingCost the mana which is required to cast the given spell.
+	CastingCost []ManaCost `json:"castingCost"`
+
+	// Quantity is the number of copies of this card in a deck.
+	Quantity int `json:"quantity"`
 }

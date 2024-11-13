@@ -1,12 +1,13 @@
-package main
+package model
 
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"manabase-simulation/package/reader"
 )
 
 var _ = Describe("Deck", func() {
-	deckList, _ := ReadJSONFile[DeckList]("./fixtures/sample_deck.json")
+	deckList, _ := reader.ReadJSONFile[DeckList]("../../fixtures/sample_deck.json")
 
 	When("Instantiating it from a decklist", func() {
 		deck := deckList.GenerateDeck()

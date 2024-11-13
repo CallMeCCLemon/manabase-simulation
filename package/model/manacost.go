@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"strconv"
@@ -36,3 +36,29 @@ func (m *ManaCost) ToString() string {
 func (m *ManaCost) GetRemainingCost() int {
 	return len(m.ColorRequirements) + m.GenericCost
 }
+
+// ManaColor Represents a color of mana in the game.
+type ManaColor string
+
+const (
+	// White Represents the White color of mana.
+	White ManaColor = "White"
+
+	// Blue Represents the Blue color of mana.
+	Blue ManaColor = "Blue"
+
+	// Black Represents the Black color of mana.
+	Black ManaColor = "Black"
+
+	// Red Represents the Red color of mana.
+	Red ManaColor = "Red"
+
+	// Green Represents the Green color of mana.
+	Green ManaColor = "Green"
+
+	// Colorless Represents the Colorless mana.
+	Colorless ManaColor = "Colorless"
+
+	// Whatever Represents any color of mana. This is used primarily for wildcard mana producers, but I'm unsure if this is really necessary.
+	Whatever ManaColor = "Whatever"
+)

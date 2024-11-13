@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	. "github.com/onsi/ginkgo/v2"
@@ -9,7 +9,7 @@ var _ = Describe("ManaCost", func() {
 	When("Using a ManaCost", func() {
 		It("Computes the remaining cost correctly when it has both generic and color-specific requirements", func() {
 			cost := ManaCost{
-				ColorRequirements: []ManaColor{white, white},
+				ColorRequirements: []ManaColor{White, White},
 				GenericCost:       1,
 			}
 			Expect(cost.GetRemainingCost()).To(Equal(3))
@@ -25,7 +25,7 @@ var _ = Describe("ManaCost", func() {
 
 		It("Computes the remaining cost correctly when it only has color-specific requirements", func() {
 			cost := ManaCost{
-				ColorRequirements: []ManaColor{white, white},
+				ColorRequirements: []ManaColor{White, White},
 				GenericCost:       0,
 			}
 			Expect(cost.GetRemainingCost()).To(Equal(2))

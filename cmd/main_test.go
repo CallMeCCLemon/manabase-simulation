@@ -3,11 +3,13 @@ package main
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"manabase-simulation/package/model"
+	"manabase-simulation/package/reader"
 )
 
 var _ = Describe("Decklist JSON Parsing Functions", func() {
 	When("Reading a JSON Decklist File", func() {
-		deck, err := ReadJSONFile[DeckList]("./fixtures/sample_deck.json")
+		deck, err := reader.ReadJSONFile[model.DeckList]("../fixtures/sample_deck.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -27,7 +29,7 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 	})
 
 	When("Reading the lotus field JSON File", func() {
-		deck, err := ReadJSONFile[DeckList]("./fixtures/lotus-field-deck.json")
+		deck, err := reader.ReadJSONFile[model.DeckList]("../fixtures/lotus-field-deck.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -49,7 +51,7 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 
 var _ = Describe("ReadGameConfigJSON", func() {
 	When("Reading a JSON File", func() {
-		gameConfig, err := ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
+		gameConfig, err := reader.ReadJSONFile[GameConfiguration]("../fixtures/default-game-config.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -63,18 +65,18 @@ var _ = Describe("ReadGameConfigJSON", func() {
 })
 
 var _ = Describe("DeckSimulation", func() {
-	var deck DeckList
+	var deck model.DeckList
 	var gameConfig GameConfiguration
-	var objective TestObjective
+	var objective model.TestObjective
 
 	BeforeEach(func() {
-		deck, _ = ReadJSONFile[DeckList]("./fixtures/sample_deck.json")
-		gameConfig, _ = ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
-		objective = TestObjective{
+		deck, _ = reader.ReadJSONFile[model.DeckList]("../fixtures/sample_deck.json")
+		gameConfig, _ = reader.ReadJSONFile[GameConfiguration]("../fixtures/default-game-config.json")
+		objective = model.TestObjective{
 			TargetTurn: 3,
-			ManaCosts: []ManaCost{
+			ManaCosts: []model.ManaCost{
 				{
-					ColorRequirements: []ManaColor{},
+					ColorRequirements: []model.ManaColor{},
 					GenericCost:       1,
 				},
 			},
@@ -86,26 +88,5 @@ var _ = Describe("DeckSimulation", func() {
 			SimulateDeck(deck, gameConfig, objective)
 		})
 
-	})
-})
-
-var _ = Describe("Sorting a list of lands", func() {
-	When("Sorting a list of lands with different quantities of mana they can tap for", func() {
-		It("Returns a list where each subsequent len of land.Colors >= prevLand.Colors", func() {
-			var lands []Land
-			lands = append(lands, *createUntappedLand([]ManaColor{white, green, red, black}))
-			lands = append(lands, *createUntappedLand([]ManaColor{white}))
-			lands = append(lands, *createUntappedLand([]ManaColor{white, green, red}))
-			lands = append(lands, *createUntappedLand([]ManaColor{white, blue}))
-			lands = append(lands, *createUntappedLand([]ManaColor{white, green, red, black, blue}))
-
-			sortedLands := SortLandsByRestrictiveness(lands)
-
-			Expect(sortedLands[0].Colors).To(HaveLen(1))
-			Expect(sortedLands[1].Colors).To(HaveLen(2))
-			Expect(sortedLands[2].Colors).To(HaveLen(3))
-			Expect(sortedLands[3].Colors).To(HaveLen(4))
-			Expect(sortedLands[4].Colors).To(HaveLen(5))
-		})
 	})
 })

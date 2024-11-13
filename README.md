@@ -3,6 +3,8 @@
 This is a simulation tool for testing deck list manabases using a monte-carlo style simulation to compute the frequency
 a player will have the mana to cast a spell by a target turn.
 
+For how to use this simulation, see [Usage](docs/Usage.md).
+
 ## Background
 
 I recently played in the North American Regional Championship (RC) for Magic: The Gathering (MTG) in Ocotober 2024. The

@@ -1,17 +1,15 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/onsi/ginkgo/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"io"
 	"log"
+	"manabase-simulation/package/model"
+	"manabase-simulation/package/reader"
 	"net/http"
 	_ "net/http/pprof"
-	"os"
-	"sort"
 	"sync"
 	"time"
 )
@@ -22,55 +20,20 @@ type GameConfiguration struct {
 	OnThePlay         bool `json:"onThePlay"`
 }
 
-// SortLandsByRestrictiveness Sorts a list of lands by the number of colors they produce.
-func SortLandsByRestrictiveness(lands []Land) []Land {
-	sort.Slice(lands, func(i, j int) bool {
-		return len(lands[i].Colors) < len(lands[j].Colors)
-	})
-
-	return lands
-}
-
-// ManaColor Represents a color of mana in the game.
-type ManaColor string
-
-const (
-	// white Represents the white color of mana.
-	white ManaColor = "white"
-
-	// blue Represents the blue color of mana.
-	blue ManaColor = "blue"
-
-	// black Represents the black color of mana.
-	black ManaColor = "black"
-
-	// red Represents the red color of mana.
-	red ManaColor = "red"
-
-	// green Represents the green color of mana.
-	green ManaColor = "green"
-
-	// colorless Represents the colorless mana.
-	colorless ManaColor = "colorless"
-
-	// whatever Represents any color of mana. This is used primarily for wildcard mana producers, but I'm unsure if this is really necessary.
-	whatever ManaColor = "whatever"
-)
-
 func main() {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	deck, _ := ReadJSONFile[DeckList]("./fixtures/lotus-field-deck.json")
+	deck, _ := reader.ReadJSONFile[model.DeckList]("./fixtures/lotus-field-deck.json")
 	logger := CreateLogger()
 	logger.Info(deck.ToString())
-	gameConfig, _ := ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
-	objective := TestObjective{
+	gameConfig, _ := reader.ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
+	objective := model.TestObjective{
 		TargetTurn: 3,
-		ManaCosts: []ManaCost{
+		ManaCosts: []model.ManaCost{
 			{
-				ColorRequirements: []ManaColor{white, white},
+				ColorRequirements: []model.ManaColor{model.White, model.White},
 				GenericCost:       1,
 			},
 		},
@@ -105,7 +68,7 @@ func main() {
 	logger.Info(fmt.Sprintf("Time taken: %s", time.Since(now)))
 }
 
-func start(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective, c chan bool, wg *sync.WaitGroup) {
+func start(deckList model.DeckList, gameConfiguration GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	c <- SimulateDeck(deckList, gameConfiguration, objective)
 }
@@ -143,38 +106,15 @@ func CreateLogger() *zap.Logger {
 	return logger
 }
 
-func ReadJSONFile[T any](filename string) (T, error) {
-	var data T
-	file, err := os.Open(filename)
-	if err != nil {
-		return data, err
-	}
-	defer file.Close()
-
-	// Read the file contents
-	bytes, err := io.ReadAll(file)
-	if err != nil {
-		return data, err
-	}
-
-	// Unmarshal the JSON data into the struct
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		return data, err
-	}
-
-	return data, nil
-}
-
 // SimulateDeck Simulates a deck against a given objective with the provided configuration.
-func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, objective TestObjective) bool {
+func SimulateDeck(deckList model.DeckList, gameConfiguration GameConfiguration, objective model.TestObjective) bool {
 	//logger := CreateLogger()
 	//logger.Debug("Starting deck simulation")
 
 	// Generate Randomized Deck
 	deck := deckList.GenerateDeck()
-	hand := NewDeck()
-	board := NewBoardState()
+	hand := model.NewDeck()
+	board := model.NewBoardState()
 
 	// TODO: Add validations like Validate deck is >= 60 cards
 
@@ -200,14 +140,4 @@ func SimulateDeck(deckList DeckList, gameConfiguration GameConfiguration, object
 	// Computation can start with the most restrictive lands by sorting based on number of colors it taps for.
 	isMet, _ := board.ValidateTestObjective(objective)
 	return isMet
-}
-
-// indexOf finds the index of a specific value in a slice. If not found, returns -1.
-func indexOf[T comparable](slice []T, value T) int {
-	for index, v := range slice {
-		if v == value {
-			return index
-		}
-	}
-	return -1
 }

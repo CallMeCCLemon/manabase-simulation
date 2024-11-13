@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"slices"
@@ -145,7 +145,7 @@ func (b *BoardState) ValidateTestObjective(objective TestObjective) (bool, []Man
 			for _, color := range l.Colors {
 				// Use the land to remove a color if possible
 				if slices.Contains(cost.ColorRequirements, color) {
-					idx := indexOf(cost.ColorRequirements, color)
+					idx := IndexOf(cost.ColorRequirements, color)
 					tmpManaCost := cost.DeepCopy()
 					tmpManaCost.ColorRequirements = slices.Delete(tmpManaCost.ColorRequirements, idx, idx+1)
 					upcomingManaCosts = append(upcomingManaCosts, tmpManaCost)

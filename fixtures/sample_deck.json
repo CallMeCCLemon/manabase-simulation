@@ -39,27 +39,52 @@
   "nonLands": [
     {
       "name": "Test-Nonland-1",
-      "castingCost": ["red"],
+      "castingCost": [
+        {
+          "colorRequirements": ["white", "white", "white"],
+          "genericCost": 1
+        }
+      ],
       "quantity":  1
     },
     {
       "name": "Test-Nonland-2",
-      "castingCost": ["red"],
+      "castingCost": [
+        {
+          "colorRequirements": ["white", "white", "white"],
+          "genericCost": 1
+        }
+      ],
       "quantity":  1
     },
     {
       "name": "Test-Nonland-3",
-      "castingCost": ["red"],
+      "castingCost": [
+        {
+          "colorRequirements": ["white", "white", "white"],
+          "genericCost": 1
+        }
+      ],
       "quantity":  1
     },
     {
       "name": "Test-Nonland-4",
-      "castingCost": ["red"],
+      "castingCost": [
+        {
+          "colorRequirements": ["white", "white", "white"],
+          "genericCost": 1
+        }
+      ],
       "quantity":  1
     },
     {
       "name": "Test-Nonland-5",
-      "castingCost": ["red"],
+      "castingCost": [
+        {
+          "colorRequirements": ["white", "white", "white"],
+          "genericCost": 1
+        }
+      ],
       "quantity":  1
     }
   ]

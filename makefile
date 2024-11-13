@@ -5,4 +5,4 @@ run:
 	rm manabase-simulation
 
 test:
-	go test
+	go test ./...

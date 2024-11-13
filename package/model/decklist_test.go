@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	. "github.com/onsi/ginkgo/v2"
@@ -10,15 +10,15 @@ var _ = Describe("DeckList", func() {
 		It("correctly counts all of the lands and nonlands", func() {
 			deckList := DeckList{
 				Lands: []Land{
-					*createUntappedLand([]ManaColor{white}),
-					*createUntappedLand([]ManaColor{white, blue}),
-					*createUntappedLand([]ManaColor{red, blue}),
-					*createUntappedLand([]ManaColor{red, blue, white}),
+					*CreateUntappedLand([]ManaColor{White}),
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+					*CreateUntappedLand([]ManaColor{Red, Blue}),
+					*CreateUntappedLand([]ManaColor{Red, Blue, White}),
 				},
 				NonLands: []NonLand{
-					*createSampleNonLand(),
-					*createSampleNonLand(),
-					*createSampleNonLand(),
+					*CreateSampleNonLand(),
+					*CreateSampleNonLand(),
+					*CreateSampleNonLand(),
 				},
 			}
 

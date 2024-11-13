@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	. "github.com/onsi/ginkgo/v2"
@@ -20,18 +20,18 @@ var _ = Describe("BoardState", func() {
 
 	When("Validating a test objective", func() {
 		It("Is able to solve for a simple objective with basic lands as met", func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							white,
-							white,
-							blue,
+							White,
+							White,
+							Blue,
 						},
 						GenericCost: 0,
 					},
@@ -42,18 +42,18 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Is able to solve for an objective with basic and dual lands as met", func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							white,
-							white,
-							blue,
+							White,
+							White,
+							Blue,
 						},
 						GenericCost: 0,
 					},
@@ -67,9 +67,9 @@ var _ = Describe("BoardState", func() {
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							white,
-							red,
-							blue,
+							White,
+							Red,
+							Blue,
 						},
 						GenericCost: 0,
 					},
@@ -81,20 +81,20 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Is able to solve for an objective with basic, dual, and triome lands as met", func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue, green}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue, Green}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							white,
-							white,
-							blue,
-							red,
+							White,
+							White,
+							Blue,
+							Red,
 						},
 						GenericCost: 0,
 					},
@@ -106,20 +106,20 @@ var _ = Describe("BoardState", func() {
 
 		It("Is able to determine an infeasible solution with 'dead' lands", func() {
 			// Dead land is a plains here.
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue, green}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue, Green}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							blue,
-							blue,
-							blue,
-							green,
+							Blue,
+							Blue,
+							Blue,
+							Green,
 						},
 						GenericCost: 0,
 					},
@@ -131,19 +131,19 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Verify Generic costs are able to be paid by unusable lands", func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue, green}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue, Green}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							blue,
-							blue,
-							green,
+							Blue,
+							Blue,
+							Green,
 						},
 						GenericCost: 1,
 					},
@@ -154,19 +154,19 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Verify Generic costs are able to be paid when a validation doesn't pass", func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue, green}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue, Green}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							blue,
-							green,
-							black,
+							Blue,
+							Green,
+							Black,
 						},
 						GenericCost: 1,
 					},
@@ -177,14 +177,14 @@ var _ = Describe("BoardState", func() {
 			Expect(combos).To(HaveLen(1))
 			Expect(combos[0].GenericCost).To(Equal(0))
 			Expect(combos[0].ColorRequirements).To(HaveLen(1))
-			Expect(combos[0].ColorRequirements[0]).To(Equal(black))
+			Expect(combos[0].ColorRequirements[0]).To(Equal(Black))
 		})
 
 		It("All generic objectives can be met with equal number of lands", func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue, green}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue, Green}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			obj := TestObjective{
 				TargetTurn: 3,
@@ -205,22 +205,22 @@ var _ = Describe("BoardState", func() {
 		var obj TestObjective
 
 		BeforeEach(func() {
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{white, blue}))
-			boardState.Lands = append(boardState.Lands, *createUntappedLand([]ManaColor{red, blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{White, Blue}))
+			boardState.Lands = append(boardState.Lands, *CreateUntappedLand([]ManaColor{Red, Blue}))
 
 			hand = NewDeck()
 			hand.Cards = []Card{
 				{
-					Land:    createUntappedLand([]ManaColor{white}),
+					Land:    CreateUntappedLand([]ManaColor{White}),
 					NonLand: nil,
 				},
 				{
-					Land:    createUntappedLand([]ManaColor{blue}),
+					Land:    CreateUntappedLand([]ManaColor{Blue}),
 					NonLand: nil,
 				},
 				{
-					Land:    createUntappedLand([]ManaColor{red}),
+					Land:    CreateUntappedLand([]ManaColor{Red}),
 					NonLand: nil,
 				},
 			}
@@ -230,9 +230,9 @@ var _ = Describe("BoardState", func() {
 				ManaCosts: []ManaCost{
 					{
 						ColorRequirements: []ManaColor{
-							white,
-							white,
-							blue,
+							White,
+							White,
+							Blue,
 						},
 						GenericCost: 0,
 					},
@@ -252,23 +252,23 @@ var _ = Describe("BoardState", func() {
 
 		BeforeEach(func() {
 			lands = []Land{
-				*createUntappedLand([]ManaColor{white}),
-				*createTappedLand([]ManaColor{white, blue}),
+				*CreateUntappedLand([]ManaColor{White}),
+				*CreateTappedLand([]ManaColor{White, Blue}),
 			}
 		})
 
 		It("Chooses a land with the highest score", func() {
 			costs := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white},
+					ColorRequirements: []ManaColor{White},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{blue},
+					ColorRequirements: []ManaColor{Blue},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{green},
+					ColorRequirements: []ManaColor{Green},
 					GenericCost:       0,
 				},
 			}
@@ -281,15 +281,15 @@ var _ = Describe("BoardState", func() {
 		It("Prioritizes an untapped land with the highest score", func() {
 			costs := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white},
+					ColorRequirements: []ManaColor{White},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{blue},
+					ColorRequirements: []ManaColor{Blue},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{green},
+					ColorRequirements: []ManaColor{Green},
 					GenericCost:       0,
 				},
 			}
@@ -301,16 +301,16 @@ var _ = Describe("BoardState", func() {
 
 		It("Selects a land in a more complex scenario", func() {
 			lands = []Land{
-				*createUntappedLand([]ManaColor{white}),
-				*createTappedLand([]ManaColor{black, red}),
-				*createTappedLand([]ManaColor{green, red}),
-				*createTappedLand([]ManaColor{white, blue, green}),
-				*createTappedLand([]ManaColor{white, black, red}),
+				*CreateUntappedLand([]ManaColor{White}),
+				*CreateTappedLand([]ManaColor{Black, Red}),
+				*CreateTappedLand([]ManaColor{Green, Red}),
+				*CreateTappedLand([]ManaColor{White, Blue, Green}),
+				*CreateTappedLand([]ManaColor{White, Black, Red}),
 			}
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white, red, black},
+					ColorRequirements: []ManaColor{White, Red, Black},
 					GenericCost:       1,
 				},
 			}
@@ -322,16 +322,16 @@ var _ = Describe("BoardState", func() {
 
 		It("Selects a land in a more complex scenario where untapped is priority", func() {
 			lands = []Land{
-				*createUntappedLand([]ManaColor{white}),
-				*createUntappedLand([]ManaColor{black, red}),
-				*createTappedLand([]ManaColor{green, red}),
-				*createTappedLand([]ManaColor{white, blue, green}),
-				*createTappedLand([]ManaColor{white, black, red}),
+				*CreateUntappedLand([]ManaColor{White}),
+				*CreateUntappedLand([]ManaColor{Black, Red}),
+				*CreateTappedLand([]ManaColor{Green, Red}),
+				*CreateTappedLand([]ManaColor{White, Blue, Green}),
+				*CreateTappedLand([]ManaColor{White, Black, Red}),
 			}
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white, red, black},
+					ColorRequirements: []ManaColor{White, Red, Black},
 					GenericCost:       1,
 				},
 			}
@@ -346,7 +346,7 @@ var _ = Describe("BoardState", func() {
 		It("computes a simple perfect score correctly", func() {
 			land := Land{
 				Name:           "test-land-1",
-				Colors:         []ManaColor{white, blue},
+				Colors:         []ManaColor{White, Blue},
 				EntersTapped:   false,
 				ActivationCost: nil,
 				Quantity:       1,
@@ -354,7 +354,7 @@ var _ = Describe("BoardState", func() {
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white},
+					ColorRequirements: []ManaColor{White},
 					GenericCost:       0,
 				},
 			}
@@ -365,7 +365,7 @@ var _ = Describe("BoardState", func() {
 		It("computes a perfect score with multiple mana costs correctly", func() {
 			land := Land{
 				Name:           "test-land-1",
-				Colors:         []ManaColor{white, green, blue},
+				Colors:         []ManaColor{White, Green, Blue},
 				EntersTapped:   false,
 				ActivationCost: nil,
 				Quantity:       1,
@@ -373,15 +373,15 @@ var _ = Describe("BoardState", func() {
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white},
+					ColorRequirements: []ManaColor{White},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{green},
+					ColorRequirements: []ManaColor{Green},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{blue},
+					ColorRequirements: []ManaColor{Blue},
 					GenericCost:       0,
 				},
 			}
@@ -392,7 +392,7 @@ var _ = Describe("BoardState", func() {
 		It("computes a simple 0 score correctly", func() {
 			land := Land{
 				Name:           "test-land-1",
-				Colors:         []ManaColor{black},
+				Colors:         []ManaColor{Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
 				Quantity:       1,
@@ -400,7 +400,7 @@ var _ = Describe("BoardState", func() {
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white},
+					ColorRequirements: []ManaColor{White},
 					GenericCost:       0,
 				},
 			}
@@ -411,7 +411,7 @@ var _ = Describe("BoardState", func() {
 		It("computes a score == colors produced with multiple mana costs correctly", func() {
 			land := Land{
 				Name:           "test-land-1",
-				Colors:         []ManaColor{black},
+				Colors:         []ManaColor{Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
 				Quantity:       1,
@@ -419,15 +419,15 @@ var _ = Describe("BoardState", func() {
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white},
+					ColorRequirements: []ManaColor{White},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{green},
+					ColorRequirements: []ManaColor{Green},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{blue},
+					ColorRequirements: []ManaColor{Blue},
 					GenericCost:       0,
 				},
 			}
@@ -438,7 +438,7 @@ var _ = Describe("BoardState", func() {
 		It("Computes a partially matching score correctly", func() {
 			land := Land{
 				Name:           "test-land-1",
-				Colors:         []ManaColor{white, black},
+				Colors:         []ManaColor{White, Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
 				Quantity:       1,
@@ -446,15 +446,15 @@ var _ = Describe("BoardState", func() {
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white, blue},
+					ColorRequirements: []ManaColor{White, Blue},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{green, black},
+					ColorRequirements: []ManaColor{Green, Black},
 					GenericCost:       0,
 				},
 				{
-					ColorRequirements: []ManaColor{blue, green},
+					ColorRequirements: []ManaColor{Blue, Green},
 					GenericCost:       0,
 				},
 			}
@@ -465,7 +465,7 @@ var _ = Describe("BoardState", func() {
 		It("Doesn't double-count duplicate colors in costs", func() {
 			land := Land{
 				Name:           "test-land-1",
-				Colors:         []ManaColor{white, black},
+				Colors:         []ManaColor{White, Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
 				Quantity:       1,
@@ -473,7 +473,7 @@ var _ = Describe("BoardState", func() {
 
 			costOptions := []ManaCost{
 				{
-					ColorRequirements: []ManaColor{white, white},
+					ColorRequirements: []ManaColor{White, White},
 					GenericCost:       0,
 				},
 			}

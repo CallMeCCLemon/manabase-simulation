@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestManabaseSimulation(t *testing.T) {
+func TestCmd(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "ManabaseSimulation Suite")
+	RunSpecs(t, "Cmd Suite")
 }
