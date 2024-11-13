@@ -17,8 +17,10 @@ MTG has many different nonlands (artifacts, creatures, etc) which produce mana b
 Using this simulation in its current form requires a user to define a JSON decklist with the lands and non-lands separated. 
 These will then be converted into an instance of a Deck during the simulation and tested against. 
 
+Sample Lotus Field decklist can be found [here](../fixtures/lotus-field-deck.json).
+
 ### Lands
-The current land structure is documented [here](package/model/decklist.go):
+The current land structure is documented [here](package/model/decklist.go).
 
 #### Sample
 ```json
@@ -32,7 +34,7 @@ The current land structure is documented [here](package/model/decklist.go):
 ```
 
 ### Non-Lands
-The current non-land structure is documented [here](package/model/decklist.go):
+The current non-land structure is documented [here](package/model/decklist.go).
 
 ```json
 {
@@ -48,6 +50,29 @@ The current non-land structure is documented [here](package/model/decklist.go):
 ```
 
 ## Defining a Test Objective
+The current test objective structure is documented [here](package/model/objective.go).
 
+### Example
+```json
+{
+  "targetTurn": 3,
+  "manaCosts": [
+    {
+      "colorRequirements": ["white", "white"],
+      "genericCost": 1
+    }
+  ]
+}
+```
 
 ## Defining a Game Configuration
+The current test objective structure is documented [here](package/model/config.go).
+
+### Example
+```json
+{
+  "initialHandSize": 7,
+  "cardsDrawnPerTurn": 1,
+  "onThePlay": true
+}
+```
