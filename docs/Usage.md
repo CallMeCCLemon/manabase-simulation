@@ -22,14 +22,25 @@ Sample Lotus Field decklist can be found [here](../fixtures/lotus-field-deck.jso
 ### Lands
 The current land structure is documented [here](package/model/decklist.go).
 
+NOTE: untappedCondition and activationCost are optional.
+
 #### Sample
 ```json
 {
-  "name": "Forest",
-  "colors":  ["green"],
-  "entersTapped":  false,
-  "activationCost":  [],
-  "quantity":  1
+  "name": "Steam Vents",
+  "colors":  ["red", "blue"],
+  "entersTapped":  true,
+  "untappedCondition": {
+    "type": "ShockLand"
+  },
+  "activationCost":  {
+    "life": 3,
+    "manaCost": {
+      "colorRequirements": ["white", "white"],
+      "genericCost": 1
+    }
+  },
+  "quantity":  2
 }
 ```
 
