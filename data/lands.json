@@ -36,7 +36,7 @@
     "quantity": 1
   },
   {
-    "name": "SacRed Foundry",
+    "name": "Sacred Foundry",
     "colors": ["Red", "White"],
     "entersTapped": true,
     "untappedCondition": {
