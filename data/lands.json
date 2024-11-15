@@ -1,11 +1,92 @@
 [
   {
-    "name": "Steam Vents",
-    "colors":  ["red", "blue"],
-    "entersTapped":  true,
+    "name": "Stomping Ground",
+    "colors": ["Green", "Red"],
+    "entersTapped": true,
     "untappedCondition": {
       "type": "ShockLand"
     },
-    "quantity":  2
+    "quantity": 1
+  },
+  {
+    "name": "Steam Vents",
+    "colors": ["Blue", "Red"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Breeding Pool",
+    "colors": ["Green", "Blue"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Blood Crypt",
+    "colors": ["Black", "Red"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "SacRed Foundry",
+    "colors": ["Red", "White"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Godless Shrine",
+    "colors": ["White", "Black"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Overgrown Tomb",
+    "colors": ["Black", "Green"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Hallowed Fountain",
+    "colors": ["White", "Blue"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Temple Garden",
+    "colors": ["Green", "White"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Watery Grave",
+    "colors": ["Blue", "Black"],
+    "entersTapped": true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity": 1
   }
 ]
