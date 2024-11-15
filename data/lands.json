@@ -88,5 +88,95 @@
       "type": "ShockLand"
     },
     "quantity": 1
+  },
+  {
+    "name": "Adarkar Wastes",
+    "colors": ["White", "Blue"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Underground River",
+    "colors": ["Blue", "Black"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Sulfurous Springs",
+    "colors": ["Black", "Red"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Karplusan Forest",
+    "colors": ["Red", "Green"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Brushland",
+    "colors": ["Green", "White"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Caves of Koilos",
+    "colors": ["White", "Black"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Shivan Reef",
+    "colors": ["Blue", "Red"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Llanowar Wastes",
+    "colors": ["Black", "Green"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Battlefield Forge",
+    "colors": ["Red", "White"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
+  },
+  {
+    "name": "Yavimaya Coast",
+    "colors": ["Green", "Blue"],
+    "entersTapped": false,
+    "activationCost": {
+      "life": -1
+    },
+    "quantity": 1
   }
 ]
