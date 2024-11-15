@@ -2,13 +2,13 @@
   "lands": [
     {
       "name": "Boseiju",
-      "colors":  ["green"],
+      "colors":  ["Green"],
       "entersTapped":  false,
       "quantity":  2
     },
     {
       "name": "Forest",
-      "colors":  ["green"],
+      "colors":  ["Green"],
       "entersTapped":  false,
       "quantity":  1
     },
@@ -20,25 +20,25 @@
     },
     {
       "name": "Mana Confluence",
-      "colors":  ["white", "blue", "black", "red", "green"],
+      "colors":  ["White", "Blue", "Black", "Red", "Green"],
       "entersTapped":  false,
       "quantity":  4
     },
     {
       "name": "Otawara",
-      "colors":  ["blue"],
+      "colors":  ["Blue"],
       "entersTapped":  false,
       "quantity":  1
     },
     {
       "name": "Razorverge",
-      "colors":  ["white", "green"],
+      "colors":  ["White", "Green"],
       "entersTapped":  false,
       "quantity":  4
     },
     {
       "name": "Spara's HQ",
-      "colors":  ["white", "green", "blue"],
+      "colors":  ["White", "Green", "Blue"],
       "entersTapped":  true,
       "quantity":  4
     },
@@ -50,7 +50,7 @@
     },
     {
       "name": "Bala-Ged Land",
-      "colors":  ["green"],
+      "colors":  ["Green"],
       "entersTapped":  true,
       "quantity":  3
     }
@@ -60,7 +60,7 @@
       "name": "Llanowar Elves",
       "castingCost": [
         {
-          "colorRequirements": ["green"],
+          "colorRequirements": ["Green"],
           "genericCost": 1
         }
       ],

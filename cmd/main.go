@@ -41,7 +41,7 @@ func main() {
 	now := time.Now()
 
 	successCount := 0
-	iterations := 10000000
+	iterations := 10000
 
 	c := make(chan bool, 100)
 	wg := new(sync.WaitGroup)

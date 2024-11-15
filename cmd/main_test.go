@@ -85,8 +85,28 @@ var _ = Describe("DeckSimulation", func() {
 
 	When("Simulating a deck", func() {
 		It("Logs correctly to stdout", func() {
-			SimulateDeck(deck, gameConfig, objective)
+			result := SimulateDeck(deck, gameConfig, objective)
+			Expect(result).To(BeTrue())
 		})
+	})
 
+	When("Simulating Lotus Field", func() {
+		deck, err := reader.ReadJSONFile[model.DeckList]("../fixtures/lotus-field-deck.json")
+		Expect(err).ToNot(HaveOccurred())
+		gameConfig, _ := reader.ReadJSONFile[GameConfiguration]("../fixtures/default-game-config.json")
+		objective := model.TestObjective{
+			TargetTurn: 3,
+			ManaCosts: []model.ManaCost{
+				{
+					ColorRequirements: []model.ManaColor{model.White, model.White},
+					GenericCost:       1,
+				},
+			},
+		}
+		It("Eventually Lotus field succeeds", func() {
+			Eventually(func() bool {
+				return SimulateDeck(deck, gameConfig, objective)
+			}, 3).Should(BeTrue())
+		})
 	})
 })

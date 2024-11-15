@@ -8,7 +8,7 @@ build: test
 
 run: fetch-data build
 	echo "Now running main"
-	./buid/main
+	./build/main
 
 test: fetch-data
 	go test ./...
