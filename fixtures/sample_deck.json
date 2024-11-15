@@ -4,35 +4,30 @@
       "name": "Test-Mountain",
       "colors":  ["red"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     },
     {
       "name": "Test-Plains",
       "colors":  ["white"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     },
     {
       "name": "Test-Swamp",
       "colors":  ["black"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     },
     {
       "name": "Test-Island",
       "colors":  ["blue"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     },
     {
       "name": "Test-Forest",
       "colors":  ["green"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     }
   ],

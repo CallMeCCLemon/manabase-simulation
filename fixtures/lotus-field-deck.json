@@ -4,63 +4,54 @@
       "name": "Boseiju",
       "colors":  ["green"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  2
     },
     {
       "name": "Forest",
       "colors":  ["green"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     },
     {
       "name": "Lotus Field",
       "colors":  [],
       "entersTapped":  true,
-      "activationCost":  [],
       "quantity":  4
     },
     {
       "name": "Mana Confluence",
       "colors":  ["white", "blue", "black", "red", "green"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  4
     },
     {
       "name": "Otawara",
       "colors":  ["blue"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  1
     },
     {
       "name": "Razorverge",
       "colors":  ["white", "green"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  4
     },
     {
       "name": "Spara's HQ",
       "colors":  ["white", "green", "blue"],
       "entersTapped":  true,
-      "activationCost":  [],
       "quantity":  4
     },
     {
       "name": "Thespian Stage",
       "colors":  ["colorless"],
       "entersTapped":  false,
-      "activationCost":  [],
       "quantity":  3
     },
     {
       "name": "Bala-Ged Land",
       "colors":  ["green"],
       "entersTapped":  true,
-      "activationCost":  [],
       "quantity":  3
     }
   ],
@@ -69,7 +60,7 @@
       "name": "Llanowar Elves",
       "castingCost": [
         {
-          "colorRequirements": ["white", "white", "white"],
+          "colorRequirements": ["green"],
           "genericCost": 1
         }
       ],

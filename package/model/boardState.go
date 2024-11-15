@@ -8,6 +8,9 @@ import (
 type BoardState struct {
 	//Logger *zap.Logger
 	Lands []Land `json:"lands"`
+
+	// Life Is the simulated player's life total.
+	Life int `json:"life"`
 }
 
 // NewBoardState Creates a new BoardState instance.
@@ -15,12 +18,13 @@ func NewBoardState() BoardState {
 	return BoardState{
 		//Logger: CreateLogger(),
 		Lands: make([]Land, 0),
+		Life:  20,
 	}
 }
 
 // PlayLand plays the best land from the hand based on the turn and target condition.
 func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (updatedHand Deck) {
-	// Play a Land. If target turn, prioritize untapped. If not, prioritize tapped.
+	// PayUntappedCost a Land. If target turn, prioritize untapped. If not, prioritize tapped.
 	lands := make([]Land, 0)
 	nonLands := make([]Card, 0)
 	newHand := NewDeck()
@@ -47,8 +51,14 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 	i, l := b.selectLand(lands, combos, prioritizeUntapped)
 	if i < 0 && !prioritizeUntapped {
 		// This implies no lands in hand. Womp womp.
-		//b.Logger.Warn(fmt.Sprintf("Something went wrong while selecting a land for turn %d", turn))
 		return hand
+	}
+
+	if prioritizeUntapped {
+		err := l.PayUntappedCost(b)
+		if err != nil {
+			return hand
+		}
 	}
 
 	lands = slices.Delete(lands, i, i+1)
@@ -67,7 +77,7 @@ func (b *BoardState) selectLand(lands []Land, costOptions []ManaCost, prioritize
 	var remainingLands []Land
 	if prioritizeUntapped {
 		for _, l := range lands {
-			if !l.EntersTapped {
+			if !l.EntersTapped || l.CanEnterUntapped(*b) {
 				remainingLands = append(remainingLands, l)
 			}
 		}

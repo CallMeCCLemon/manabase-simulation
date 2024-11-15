@@ -2,6 +2,7 @@ package model
 
 import (
 	"encoding/json"
+	"errors"
 	"slices"
 )
 
@@ -68,12 +69,31 @@ type Land struct {
 	// EntersTapped is whether the land enters tapped.
 	EntersTapped bool `json:"entersTapped"`
 
-	// ActivationCost is the list of colors which must be used to activate the land.
-	ActivationCost []string `json:"activationCost"`
+	// ActivationCost is the cost which must be paid to activate the land.
+	ActivationCost *ActivationCost `json:"activationCost"`
+
+	UntappedCondition *UntappedCondition `json:"untappedCondition,omitempty"`
 
 	// Quantity is the number of copies of this card in a deck.
 	Quantity int `json:"quantity"`
 }
+
+type ActivationCost struct {
+	Life *int      `json:"life,omitempty"`
+	Mana *ManaCost `json:"manaCost,omitempty"`
+}
+
+type UntappedCondition struct {
+	Type ConditionType `json:"type"`
+	Data *string       `json:"data,omitempty"`
+}
+
+type ConditionType string
+
+const (
+	// ShockLand is a condition where a land enters tapped unless 2 life is paid.
+	ShockLand ConditionType = "ShockLand"
+)
 
 // Equals Checks if two lands are equal.
 func (l *Land) Equals(land Land) bool {
@@ -94,6 +114,51 @@ func (l *Land) Equals(land Land) bool {
 	}
 
 	return true
+}
+
+// PayUntappedCost Pays the cost of the land to enter untapped.
+func (l *Land) PayUntappedCost(b *BoardState) error {
+	if l.EntersTapped == false {
+		return nil
+	}
+
+	if l.UntappedCondition == nil {
+		return errors.New("untapped condition not found")
+	}
+
+	// Switch for all the untapped conditions.
+	switch l.UntappedCondition.Type {
+	case ShockLand:
+		if b.Life > 2 {
+			b.Life -= 2
+			return nil
+		} else {
+			return errors.New("not enough life to enter untapped")
+		}
+	default:
+		return errors.New("unknown untapped condition")
+	}
+}
+
+func (l *Land) CanEnterUntapped(b BoardState) bool {
+	if l.EntersTapped == false {
+		return true
+	}
+
+	if l.UntappedCondition == nil {
+		return false
+	}
+
+	switch l.UntappedCondition.Type {
+	case ShockLand:
+		if b.Life > 2 {
+			return true
+		} else {
+			return false
+		}
+	default:
+		return false
+	}
 }
 
 // NonLand Represents a Non-Land type of card is will need mana to be cast.

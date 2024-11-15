@@ -1,0 +1,11 @@
+[
+  {
+    "name": "Steam Vents",
+    "colors":  ["red", "blue"],
+    "entersTapped":  true,
+    "untappedCondition": {
+      "type": "ShockLand"
+    },
+    "quantity":  2
+  }
+]
