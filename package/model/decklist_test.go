@@ -210,3 +210,123 @@ var _ = Describe("FastLand", func() {
 		})
 	})
 })
+
+var _ = Describe("CheckLand", func() {
+	When("Determining if the land can enter untapped", func() {
+		It("Can enter untapped when there is a land of the right type", func() {
+			c := CheckLandData{Plains, Forest}
+			cString, _ := c.ToString()
+
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: CheckLand,
+					Data: &cString,
+				},
+				Quantity: 1,
+			}
+
+			l := CreateUntappedLand([]ManaColor{White, Blue})
+			l.Types = []LandType{Plains}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*l,
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.CanEnterUntapped(boardState)).To(BeTrue())
+		})
+
+		It("Can NOT enter untapped when there is no land of the right type", func() {
+			c := CheckLandData{Plains, Forest}
+			cString, _ := c.ToString()
+
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: CheckLand,
+					Data: &cString,
+				},
+				Quantity: 1,
+			}
+
+			l := CreateUntappedLand([]ManaColor{White, Blue})
+			l.Types = []LandType{Swamp}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*l,
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.CanEnterUntapped(boardState)).To(BeFalse())
+		})
+	})
+
+	When("Paying the untapped cost", func() {
+		It("Pays the cost correctly", func() {
+			c := CheckLandData{Plains, Forest}
+			cString, _ := c.ToString()
+
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: CheckLand,
+					Data: &cString,
+				},
+				Quantity: 1,
+			}
+
+			l := CreateUntappedLand([]ManaColor{White, Blue})
+			l.Types = []LandType{Plains}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*l,
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.PayUntappedCost(&boardState)).ToNot(HaveOccurred())
+			Expect(boardState.Life).To(Equal(3))
+		})
+
+		It("Doesn't pay the untapped cost when there is no land of the right type", func() {
+			c := CheckLandData{Plains, Forest}
+			cString, _ := c.ToString()
+
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: CheckLand,
+					Data: &cString,
+				},
+				Quantity: 1,
+			}
+
+			l := CreateUntappedLand([]ManaColor{White, Blue})
+			l.Types = []LandType{Swamp}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*l,
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.PayUntappedCost(&boardState)).To(HaveOccurred())
+			Expect(boardState.Life).To(Equal(3))
+		})
+	})
+})

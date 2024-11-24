@@ -29,6 +29,29 @@ func ReadJSONFile[T any](filename string) (T, error) {
 	return data, nil
 }
 
+// ReadJSONString Reads a JSON string and returns a struct.
+func ReadJSONString[T any](input string) (T, error) {
+	// Read the file contents
+	var data T
+
+	// Unmarshal the JSON data into the struct
+	err := json.Unmarshal([]byte(input), &data)
+	if err != nil {
+		return data, err
+	}
+
+	return data, nil
+}
+
+// WriteJSONString writes an object as JSON to a string.
+func WriteJSONString[T any](input T) (string, error) {
+	jsonPayload, err := json.Marshal(input)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonPayload), nil
+}
+
 // WriteJSONFile writes an object as JSON to disk.
 func WriteJSONFile[T any](filename string, data T) error {
 	jsonPayload, err := json.Marshal(data)
