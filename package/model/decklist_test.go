@@ -27,9 +27,45 @@ var _ = Describe("DeckList", func() {
 	})
 })
 
-var _ = Describe("Land", func() {
+var _ = Describe("ShockLand", func() {
+	When("Determining if the land can enter untapped", func() {
+		It("Can enter untapped when there is 2 life", func() {
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: ShockLand,
+				},
+				Quantity: 1,
+			}
+
+			boardState := BoardState{
+				Life: 3,
+			}
+			Expect(land.CanEnterUntapped(boardState)).To(BeTrue())
+		})
+
+		It("Can NOT enter untapped when there is not enough life", func() {
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: ShockLand,
+				},
+				Quantity: 1,
+			}
+
+			boardState := BoardState{
+				Life: 1,
+			}
+			Expect(land.CanEnterUntapped(boardState)).To(BeFalse())
+		})
+	})
+
 	When("Paying the untapped cost", func() {
-		It("Pays the untapped cost correctly", func() {
+		It("Pays the cost correctly", func() {
 			land := Land{
 				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
@@ -47,7 +83,7 @@ var _ = Describe("Land", func() {
 			Expect(boardState.Life).To(Equal(1))
 		})
 
-		It("Doesn't pay the untapped cost when it's not enough life", func() {
+		It("Doesn't pay the untapped cost when there is not enough life", func() {
 			land := Land{
 				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
@@ -81,6 +117,96 @@ var _ = Describe("Land", func() {
 			}
 			Expect(land.PayUntappedCost(&boardState)).ToNot(HaveOccurred())
 			Expect(boardState.Life).To(Equal(2))
+		})
+	})
+})
+
+var _ = Describe("FastLand", func() {
+	When("Determining if the land can enter untapped", func() {
+		It("Can enter untapped when there are 2 or less lands", func() {
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: FastLand,
+				},
+				Quantity: 1,
+			}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.CanEnterUntapped(boardState)).To(BeTrue())
+		})
+
+		It("Can NOT enter untapped when there are 3 or more lands", func() {
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: FastLand,
+				},
+				Quantity: 1,
+			}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.CanEnterUntapped(boardState)).To(BeFalse())
+		})
+	})
+
+	When("Paying the untapped cost", func() {
+		It("Pays the cost correctly", func() {
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: FastLand,
+				},
+				Quantity: 1,
+			}
+
+			boardState := BoardState{
+				Life: 3,
+			}
+			Expect(land.PayUntappedCost(&boardState)).ToNot(HaveOccurred())
+			Expect(boardState.Life).To(Equal(3))
+		})
+
+		It("Doesn't pay the untapped cost when there are too many lands", func() {
+			land := Land{
+				Name:         "test-land-1",
+				Colors:       []ManaColor{White, Blue},
+				EntersTapped: true,
+				UntappedCondition: &UntappedCondition{
+					Type: FastLand,
+				},
+				Quantity: 1,
+			}
+
+			boardState := BoardState{
+				Life: 3,
+				Lands: []Land{
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+					*CreateUntappedLand([]ManaColor{White, Blue}),
+				},
+			}
+			Expect(land.PayUntappedCost(&boardState)).To(HaveOccurred())
+			Expect(boardState.Life).To(Equal(3))
 		})
 	})
 })

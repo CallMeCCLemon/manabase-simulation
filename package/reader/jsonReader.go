@@ -28,3 +28,17 @@ func ReadJSONFile[T any](filename string) (T, error) {
 
 	return data, nil
 }
+
+// WriteJSONFile writes an object as JSON to disk.
+func WriteJSONFile[T any](filename string, data T) error {
+	jsonPayload, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(filename, jsonPayload, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -72,27 +72,34 @@ type Land struct {
 	// ActivationCost is the cost which must be paid to activate the land.
 	ActivationCost *ActivationCost `json:"activationCost"`
 
+	// UntappedCondition is the condition which must be met to enter untapped.
 	UntappedCondition *UntappedCondition `json:"untappedCondition,omitempty"`
 
 	// Quantity is the number of copies of this card in a deck.
 	Quantity int `json:"quantity"`
 }
 
+// ActivationCost Represents the cost which must be paid to activate the land.
 type ActivationCost struct {
 	Life *int      `json:"life,omitempty"`
 	Mana *ManaCost `json:"manaCost,omitempty"`
 }
 
+// UntappedCondition Represents a condition which must be met to enter untapped.
 type UntappedCondition struct {
 	Type ConditionType `json:"type"`
 	Data *string       `json:"data,omitempty"`
 }
 
+// ConditionType Represents the type of condition for a land to enter untapped.
 type ConditionType string
 
 const (
 	// ShockLand is a condition where a land enters tapped unless 2 life is paid.
 	ShockLand ConditionType = "ShockLand"
+
+	// FastLand is a condition where a land enters tapped if the total number of lands before playing is 2 or less.
+	FastLand ConditionType = "FastLand"
 )
 
 // Equals Checks if two lands are equal.
@@ -135,11 +142,18 @@ func (l *Land) PayUntappedCost(b *BoardState) error {
 		} else {
 			return errors.New("not enough life to enter untapped")
 		}
+	case FastLand:
+		if len(b.Lands) <= 2 {
+			return nil
+		} else {
+			return errors.New("too many lands to enter untapped")
+		}
 	default:
 		return errors.New("unknown untapped condition")
 	}
 }
 
+// CanEnterUntapped checks if the land can enter untapped based on the BoardState and UntappedCondition.
 func (l *Land) CanEnterUntapped(b BoardState) bool {
 	if l.EntersTapped == false {
 		return true
@@ -156,6 +170,8 @@ func (l *Land) CanEnterUntapped(b BoardState) bool {
 		} else {
 			return false
 		}
+	case FastLand:
+		return len(b.Lands) <= 2
 	default:
 		return false
 	}

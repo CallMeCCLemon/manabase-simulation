@@ -22,7 +22,8 @@ Sample Lotus Field decklist can be found [here](../fixtures/lotus-field-deck.jso
 ### Lands
 The current land structure is documented [here](package/model/decklist.go).
 
-NOTE: untappedCondition and activationCost are optional.
+NOTE: untappedCondition and activationCost are optional and are not currently used.
+It is recommended at this time to leave them out.
 
 #### Sample
 ```json
@@ -86,4 +87,11 @@ The current test objective structure is documented [here](package/model/config.g
   "cardsDrawnPerTurn": 1,
   "onThePlay": true
 }
+```
+
+# Running the Simulation
+To run the simulation, you will need to have Go 1.22 and make installed.
+
+```bash
+make run
 ```
