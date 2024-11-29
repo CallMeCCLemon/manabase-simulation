@@ -1,0 +1,91 @@
+
+syntax = "proto3";
+
+package manabase_simulation;
+option go_package = "mana-sim.latentlab.cc/manabase-simulation/api";
+
+service ManabaseSimulator {
+  // SimulateDeck simulates a deck against a given objective with the provided configuration.
+  rpc SimulateDeck(SimulateDeckRequest) returns (SimulateDeckResponse);
+}
+
+message SimulateDeckRequest {
+  DeckList deckList = 1;
+  GameConfiguration gameConfiguration = 2;
+  Objective objective = 3;
+}
+
+message SimulateDeckResponse {
+  string message = 1;
+  float successRate = 2;
+}
+
+message DeckList {
+  repeated Land lands = 1;
+  repeated NonLand nonLands = 2;
+}
+
+message Land {
+  string name = 1;
+  repeated ManaColor colors = 2;
+  bool entersTapped = 3;
+  ActivationCost activationCost = 4;
+  repeated LandType types = 5;
+  UntappedCondition untappedCondition = 6;
+  int32 quantity = 7;
+}
+
+message NonLand {
+  string name = 1;
+  ManaCost castingCost = 2;
+  int32 quantity = 3;
+}
+
+message ActivationCost {
+  int32 life = 1;
+  optional ManaCost manaCost = 2;
+}
+
+enum LandType {
+  PLAINS = 0;
+  MOUNTAIN = 1;
+  FOREST = 2;
+  ISLAND = 3;
+  SWAMP = 4;
+}
+
+message UntappedCondition {
+  ConditionType type = 1;
+  string data = 2;
+}
+
+message ManaCost {
+  repeated ManaColor colorRequirements = 1;
+  int32 genericCost = 2;
+}
+
+enum ManaColor {
+  WHITE = 0;
+  BLUE = 1;
+  BLACK = 2;
+  RED = 3;
+  GREEN = 4;
+  COLORLESS = 5;
+}
+
+enum ConditionType {
+  SHOCK_LAND = 0;
+  FAST_LAND = 1;
+  CHECK_LAND = 2;
+}
+
+message Objective {
+  int32 targetTurn = 1;
+  ManaCost manaCosts = 2;
+}
+
+message GameConfiguration {
+  int32 initialHandSize = 1;
+  int32 cardsDrawnPerTurn = 2;
+  bool onThePlay = 3;
+}
