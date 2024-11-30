@@ -23,3 +23,21 @@ clean:
 
 generate:
 	protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --graphql_out=.. "api/manabase-simulation.proto"
+
+deploy: docker-build docker-push
+
+docker-build: docker-build-server docker-build-gateway
+
+docker-push: docker-push-server docker-push-gateway
+
+docker-build-server:
+	docker build --platform=linux/amd64 -t 100.69.236.43:32000/manabase-simulation-server:latest -f Dockerfile .
+
+docker-push-server:
+	docker push 100.69.236.43:32000/manabase-simulation-server:latest
+
+docker-build-gateway:
+	docker build --platform=linux/amd64 -t 100.69.236.43:32000/manabase-simulation-gql-gateway:latest -f gateway/Dockerfile .
+
+docker-push-gateway:
+	docker push 100.69.236.43:32000/manabase-simulation-gql-gateway:latest
