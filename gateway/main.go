@@ -14,5 +14,5 @@ func main() {
 		log.Fatalln(err)
 	}
 	http.Handle("/graphql", mux)
-	log.Fatalln(http.ListenAndServe(":8888", nil))
+	log.Fatalln(http.ListenAndServe("mtg-mana-sim-app-server-service:8888", nil))
 }
