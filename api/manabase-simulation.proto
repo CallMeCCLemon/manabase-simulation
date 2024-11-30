@@ -8,7 +8,7 @@ import "api/grpc-graphql-gateway/include/graphql/graphql.proto";
 
 service ManabaseSimulator {
   option (graphql.service) = {
-    host: "localhost:50051"
+    host: "mtg-mana-sim-app-server-service:50051"
     insecure: true
   };
 
