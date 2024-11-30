@@ -64,7 +64,7 @@ func (s *manabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest)
 func main() {
 	flag.Parse()
 	log.Println(fmt.Sprintf("Starting Listening on port %d", *port))
-	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -80,6 +80,7 @@ func main() {
 	grpcServer := grpc.NewServer(opts...)
 	api.RegisterManabaseSimulatorServer(grpcServer, newServer())
 	reflection.Register(grpcServer)
+	log.Println("Serving gRPC traffic now")
 	grpcServer.Serve(lis)
 }
 

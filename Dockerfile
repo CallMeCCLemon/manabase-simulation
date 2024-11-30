@@ -10,5 +10,6 @@ RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=builder /app/main .
 
-EXPOSE 8889
-CMD ["./main"]
+ENV GODEBUG="http2debug=1"
+EXPOSE 9000
+CMD ["./main", "-port=9000"]
