@@ -9,6 +9,7 @@ service ManabaseSimulator {
   rpc SimulateDeck(SimulateDeckRequest) returns (SimulateDeckResponse);
 }
 
+// SimulateDeckRequest Represents the request to simulate a deck.
 message SimulateDeckRequest {
   DeckList deckList = 1;
   GameConfiguration gameConfiguration = 2;

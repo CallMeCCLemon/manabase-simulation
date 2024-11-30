@@ -1,13 +1,21 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"fmt"
 	"github.com/onsi/ginkgo/v2"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/reflection"
+
 	"log"
+	"manabase-simulation/api"
 	"manabase-simulation/package/model"
 	"manabase-simulation/package/reader"
+	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"sync"
@@ -20,7 +28,55 @@ type GameConfiguration struct {
 	OnThePlay         bool `json:"onThePlay"`
 }
 
+var (
+	tls      = flag.Bool("tls", false, "Connection uses TLS if true, else plain TCP")
+	certFile = flag.String("cert_file", "", "The TLS cert file")
+	keyFile  = flag.String("key_file", "", "The TLS key file")
+	port     = flag.Int("port", 50051, "The server port")
+)
+
+type manabaseSimulatorServer struct {
+	api.UnimplementedManabaseSimulatorServer
+
+	mu sync.Mutex // protects routeNotes
+}
+
+func newServer() *manabaseSimulatorServer {
+	s := &manabaseSimulatorServer{}
+	return s
+}
+
+func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.SimulateDeckRequest) (*api.SimulateDeckResponse, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	return &api.SimulateDeckResponse{
+		Message:     "The server did the thing!",
+		SuccessRate: 0.5,
+	}, nil
+}
+
 func main() {
+	flag.Parse()
+	log.Println(fmt.Sprintf("Starting Listening on port %d", *port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+	var opts []grpc.ServerOption
+	if *tls {
+		creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
+		if err != nil {
+			log.Fatalf("Failed to generate credentials: %v", err)
+		}
+		opts = []grpc.ServerOption{grpc.Creds(creds)}
+	}
+	grpcServer := grpc.NewServer(opts...)
+	api.RegisterManabaseSimulatorServer(grpcServer, newServer())
+	reflection.Register(grpcServer)
+	grpcServer.Serve(lis)
+}
+
+func simulate() {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()

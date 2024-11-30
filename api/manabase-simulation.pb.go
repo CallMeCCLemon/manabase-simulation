@@ -182,6 +182,7 @@ func (ConditionType) EnumDescriptor() ([]byte, []int) {
 	return file_api_manabase_simulation_proto_rawDescGZIP(), []int{2}
 }
 
+// SimulateDeckRequest Represents the request to simulate a deck.
 type SimulateDeckRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
