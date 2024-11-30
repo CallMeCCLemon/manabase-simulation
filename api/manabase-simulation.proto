@@ -2,11 +2,38 @@
 syntax = "proto3";
 
 package manabase_simulation;
-option go_package = "mana-sim.latentlab.cc/manabase-simulation/api";
+option go_package = "manabase-simulation/api";
+
+import "api/grpc-graphql-gateway/include/graphql/graphql.proto";
 
 service ManabaseSimulator {
+  option (graphql.service) = {
+    host: "localhost:50051"
+    insecure: true
+  };
+
+  rpc Echo(EchoRequest) returns (EchoResponse) {
+    option (graphql.schema) = {
+      type: QUERY   // declare as Query
+      name: "echo" // query name
+    };
+  };
+
   // SimulateDeck simulates a deck against a given objective with the provided configuration.
-  rpc SimulateDeck(SimulateDeckRequest) returns (SimulateDeckResponse);
+  rpc SimulateDeck(SimulateDeckRequest) returns (SimulateDeckResponse) {
+    option (graphql.schema) = {
+      type: QUERY   // declare as Query
+      name: "simulate" // query name
+    };
+  };
+}
+
+message EchoRequest {
+  string message = 1;
+}
+
+message EchoResponse {
+  string message = 1;
 }
 
 // SimulateDeckRequest Represents the request to simulate a deck.
@@ -27,7 +54,7 @@ message DeckList {
 }
 
 message Land {
-  string name = 1;
+  string name = 1 [(graphql.field) = {required: true}];
   repeated ManaColor colors = 2;
   bool entersTapped = 3;
   ActivationCost activationCost = 4;

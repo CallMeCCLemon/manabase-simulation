@@ -22,4 +22,4 @@ clean:
 	rm -r ./build
 
 generate:
-	protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative "api/manabase-simulation.proto"
+	protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --graphql_out=.. "api/manabase-simulation.proto"

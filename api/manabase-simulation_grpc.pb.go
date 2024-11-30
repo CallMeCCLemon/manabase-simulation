@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	ManabaseSimulator_Echo_FullMethodName         = "/manabase_simulation.ManabaseSimulator/Echo"
 	ManabaseSimulator_SimulateDeck_FullMethodName = "/manabase_simulation.ManabaseSimulator/SimulateDeck"
 )
 
@@ -26,6 +27,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ManabaseSimulatorClient interface {
+	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 	// SimulateDeck simulates a deck against a given objective with the provided configuration.
 	SimulateDeck(ctx context.Context, in *SimulateDeckRequest, opts ...grpc.CallOption) (*SimulateDeckResponse, error)
 }
@@ -36,6 +38,16 @@ type manabaseSimulatorClient struct {
 
 func NewManabaseSimulatorClient(cc grpc.ClientConnInterface) ManabaseSimulatorClient {
 	return &manabaseSimulatorClient{cc}
+}
+
+func (c *manabaseSimulatorClient) Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EchoResponse)
+	err := c.cc.Invoke(ctx, ManabaseSimulator_Echo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *manabaseSimulatorClient) SimulateDeck(ctx context.Context, in *SimulateDeckRequest, opts ...grpc.CallOption) (*SimulateDeckResponse, error) {
@@ -52,6 +64,7 @@ func (c *manabaseSimulatorClient) SimulateDeck(ctx context.Context, in *Simulate
 // All implementations must embed UnimplementedManabaseSimulatorServer
 // for forward compatibility.
 type ManabaseSimulatorServer interface {
+	Echo(context.Context, *EchoRequest) (*EchoResponse, error)
 	// SimulateDeck simulates a deck against a given objective with the provided configuration.
 	SimulateDeck(context.Context, *SimulateDeckRequest) (*SimulateDeckResponse, error)
 	mustEmbedUnimplementedManabaseSimulatorServer()
@@ -64,6 +77,9 @@ type ManabaseSimulatorServer interface {
 // pointer dereference when methods are called.
 type UnimplementedManabaseSimulatorServer struct{}
 
+func (UnimplementedManabaseSimulatorServer) Echo(context.Context, *EchoRequest) (*EchoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Echo not implemented")
+}
 func (UnimplementedManabaseSimulatorServer) SimulateDeck(context.Context, *SimulateDeckRequest) (*SimulateDeckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SimulateDeck not implemented")
 }
@@ -86,6 +102,24 @@ func RegisterManabaseSimulatorServer(s grpc.ServiceRegistrar, srv ManabaseSimula
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&ManabaseSimulator_ServiceDesc, srv)
+}
+
+func _ManabaseSimulator_Echo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EchoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManabaseSimulatorServer).Echo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ManabaseSimulator_Echo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManabaseSimulatorServer).Echo(ctx, req.(*EchoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ManabaseSimulator_SimulateDeck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -113,6 +147,10 @@ var ManabaseSimulator_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "manabase_simulation.ManabaseSimulator",
 	HandlerType: (*ManabaseSimulatorServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Echo",
+			Handler:    _ManabaseSimulator_Echo_Handler,
+		},
 		{
 			MethodName: "SimulateDeck",
 			Handler:    _ManabaseSimulator_SimulateDeck_Handler,

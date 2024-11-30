@@ -55,6 +55,12 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 	}, nil
 }
 
+func (s *manabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest) (*api.EchoResponse, error) {
+	return &api.EchoResponse{
+		Message: in.Message,
+	}, nil
+}
+
 func main() {
 	flag.Parse()
 	log.Println(fmt.Sprintf("Starting Listening on port %d", *port))
@@ -62,6 +68,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	defer lis.Close()
 	var opts []grpc.ServerOption
 	if *tls {
 		creds, err := credentials.NewServerTLSFromFile(*certFile, *keyFile)
