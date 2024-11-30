@@ -579,7 +579,7 @@ type graphql__resolver_ManabaseSimulator struct {
 func new_graphql_resolver_ManabaseSimulator(conn *grpc.ClientConn) *graphql__resolver_ManabaseSimulator {
 	return &graphql__resolver_ManabaseSimulator{
 		conn: conn,
-		host: "mtg-mana-sim-app-server-service:50051",
+		host: "mtg-mana-sim-app-server-service:8889",
 		dialOptions: []grpc.DialOption{
 			grpc.WithInsecure(),
 		},
