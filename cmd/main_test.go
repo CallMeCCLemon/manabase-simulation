@@ -51,7 +51,7 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 
 var _ = Describe("ReadGameConfigJSON", func() {
 	When("Reading a JSON File", func() {
-		gameConfig, err := reader.ReadJSONFile[GameConfiguration]("../fixtures/default-game-config.json")
+		gameConfig, err := reader.ReadJSONFile[model.GameConfiguration]("../fixtures/default-game-config.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
@@ -66,12 +66,12 @@ var _ = Describe("ReadGameConfigJSON", func() {
 
 var _ = Describe("DeckSimulation", func() {
 	var deck model.DeckList
-	var gameConfig GameConfiguration
+	var gameConfig model.GameConfiguration
 	var objective model.TestObjective
 
 	BeforeEach(func() {
 		deck, _ = reader.ReadJSONFile[model.DeckList]("../fixtures/sample_deck.json")
-		gameConfig, _ = reader.ReadJSONFile[GameConfiguration]("../fixtures/default-game-config.json")
+		gameConfig, _ = reader.ReadJSONFile[model.GameConfiguration]("../fixtures/default-game-config.json")
 		objective = model.TestObjective{
 			TargetTurn: 3,
 			ManaCosts: []model.ManaCost{
@@ -93,7 +93,7 @@ var _ = Describe("DeckSimulation", func() {
 	When("Simulating Lotus Field", func() {
 		deck, err := reader.ReadJSONFile[model.DeckList]("../fixtures/lotus-field-deck.json")
 		Expect(err).ToNot(HaveOccurred())
-		gameConfig, _ := reader.ReadJSONFile[GameConfiguration]("../fixtures/default-game-config.json")
+		gameConfig, _ := reader.ReadJSONFile[model.GameConfiguration]("../fixtures/default-game-config.json")
 		objective := model.TestObjective{
 			TargetTurn: 3,
 			ManaCosts: []model.ManaCost{

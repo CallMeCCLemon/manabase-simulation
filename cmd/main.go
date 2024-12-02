@@ -90,19 +90,9 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	//deck, _ := reader.ReadJSONFile[model.DeckList]("./fixtures/lotus-field-deck.json")
 	logger := CreateLogger()
 	logger.Info(decklist.ToString())
-	//gameConfig, _ := reader.ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
-	//objective := model.TestObjective{
-	//	TargetTurn: 3,
-	//	ManaCosts: []model.ManaCost{
-	//		{
-	//			ColorRequirements: []model.ManaColor{model.White, model.White},
-	//			GenericCost:       1,
-	//		},
-	//	},
-	//}
+
 	now := time.Now()
 
 	successCount := 0
