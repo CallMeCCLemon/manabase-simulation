@@ -56,6 +56,7 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 }
 
 func (s *manabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest) (*api.EchoResponse, error) {
+	log.Println(fmt.Sprintf("EchoRequest: %s", in.Message))
 	return &api.EchoResponse{
 		Message: in.Message,
 	}, nil
