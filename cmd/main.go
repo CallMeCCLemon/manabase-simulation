@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
+	"manabase-simulation/package/facade"
 
 	"log"
 	"manabase-simulation/api"
@@ -49,6 +50,10 @@ func newServer() *manabaseSimulatorServer {
 func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.SimulateDeckRequest) (*api.SimulateDeckResponse, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
+	//deckList := facade.ToInternalDeckList(in.DeckList)
+
+	//simulate(deckList, in.GameConfiguration, in.Objective)
 	return &api.SimulateDeckResponse{
 		Message:     "The server did the thing!",
 		SuccessRate: 0.5,
@@ -85,24 +90,24 @@ func main() {
 	grpcServer.Serve(lis)
 }
 
-func simulate() {
+func simulate(decklist model.DeckList, configuration GameConfiguration, objective model.TestObjective) float32 {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	deck, _ := reader.ReadJSONFile[model.DeckList]("./fixtures/lotus-field-deck.json")
+	//deck, _ := reader.ReadJSONFile[model.DeckList]("./fixtures/lotus-field-deck.json")
 	logger := CreateLogger()
-	logger.Info(deck.ToString())
-	gameConfig, _ := reader.ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
-	objective := model.TestObjective{
-		TargetTurn: 3,
-		ManaCosts: []model.ManaCost{
-			{
-				ColorRequirements: []model.ManaColor{model.White, model.White},
-				GenericCost:       1,
-			},
-		},
-	}
+	logger.Info(decklist.ToString())
+	//gameConfig, _ := reader.ReadJSONFile[GameConfiguration]("./fixtures/default-game-config.json")
+	//objective := model.TestObjective{
+	//	TargetTurn: 3,
+	//	ManaCosts: []model.ManaCost{
+	//		{
+	//			ColorRequirements: []model.ManaColor{model.White, model.White},
+	//			GenericCost:       1,
+	//		},
+	//	},
+	//}
 	now := time.Now()
 
 	successCount := 0
@@ -113,7 +118,7 @@ func simulate() {
 
 	for i := 0; i < iterations; i++ {
 		wg.Add(1)
-		go start(deck, gameConfig, objective, c, wg)
+		go start(decklist, gameConfig, objective, c, wg)
 	}
 
 	go func() {
@@ -126,11 +131,14 @@ func simulate() {
 			successCount++
 		}
 	}
+	successRate := float32(successCount) / float32(iterations) * 100.0
 
 	// Capture results to be consumes.
 	logger.Info(fmt.Sprintf("Success count: %d", successCount))
-	logger.Info(fmt.Sprintf("Success Rate: %f", float32(successCount)/float32(iterations)*100.0))
+	logger.Info(fmt.Sprintf("Success Rate: %f", successRate))
 	logger.Info(fmt.Sprintf("Time taken: %s", time.Since(now)))
+
+	return successRate
 }
 
 func start(deckList model.DeckList, gameConfiguration GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {

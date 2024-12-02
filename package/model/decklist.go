@@ -86,8 +86,8 @@ type Land struct {
 
 // ActivationCost Represents the cost which must be paid to activate the land.
 type ActivationCost struct {
-	Life *int      `json:"life,omitempty"`
-	Mana *ManaCost `json:"manaCost,omitempty"`
+	Life     *int      `json:"life,omitempty"`
+	ManaCost *ManaCost `json:"manaCost,omitempty"`
 }
 
 // UntappedCondition Represents a condition which must be met to enter untapped.
@@ -247,7 +247,7 @@ type NonLand struct {
 	Name string `json:"name"`
 
 	// CastingCost the mana which is required to cast the given spell.
-	CastingCost []ManaCost `json:"castingCost"`
+	CastingCost ManaCost `json:"castingCost"`
 
 	// Quantity is the number of copies of this card in a deck.
 	Quantity int `json:"quantity"`

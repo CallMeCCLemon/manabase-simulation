@@ -2,69 +2,92 @@
   "lands": [
     {
       "name": "Boseiju",
-      "colors":  ["Green"],
-      "entersTapped":  false,
-      "quantity":  2
+      "colors": [
+        "Green"
+      ],
+      "entersTapped": false,
+      "quantity": 2
     },
     {
       "name": "Forest",
-      "colors":  ["Green"],
-      "entersTapped":  false,
-      "quantity":  1
+      "colors": [
+        "Green"
+      ],
+      "entersTapped": false,
+      "quantity": 1
     },
     {
       "name": "Lotus Field",
-      "colors":  [],
-      "entersTapped":  true,
-      "quantity":  4
+      "colors": [],
+      "entersTapped": true,
+      "quantity": 4
     },
     {
       "name": "Mana Confluence",
-      "colors":  ["White", "Blue", "Black", "Red", "Green"],
-      "entersTapped":  false,
-      "quantity":  4
+      "colors": [
+        "White",
+        "Blue",
+        "Black",
+        "Red",
+        "Green"
+      ],
+      "entersTapped": false,
+      "quantity": 4
     },
     {
       "name": "Otawara",
-      "colors":  ["Blue"],
-      "entersTapped":  false,
-      "quantity":  1
+      "colors": [
+        "Blue"
+      ],
+      "entersTapped": false,
+      "quantity": 1
     },
     {
       "name": "Razorverge",
-      "colors":  ["White", "Green"],
-      "entersTapped":  false,
-      "quantity":  4
+      "colors": [
+        "White",
+        "Green"
+      ],
+      "entersTapped": false,
+      "quantity": 4
     },
     {
       "name": "Spara's HQ",
-      "colors":  ["White", "Green", "Blue"],
-      "entersTapped":  true,
-      "quantity":  4
+      "colors": [
+        "White",
+        "Green",
+        "Blue"
+      ],
+      "entersTapped": true,
+      "quantity": 4
     },
     {
       "name": "Thespian Stage",
-      "colors":  ["colorless"],
-      "entersTapped":  false,
-      "quantity":  3
+      "colors": [
+        "colorless"
+      ],
+      "entersTapped": false,
+      "quantity": 3
     },
     {
       "name": "Bala-Ged Land",
-      "colors":  ["Green"],
-      "entersTapped":  true,
-      "quantity":  3
+      "colors": [
+        "Green"
+      ],
+      "entersTapped": true,
+      "quantity": 3
     }
   ],
   "nonLands": [
     {
       "name": "Llanowar Elves",
-      "castingCost": [
-        {
-          "colorRequirements": ["Green"],
-          "genericCost": 1
-        }
-      ],
-      "quantity":  34
+      "castingCost": {
+        "colorRequirements": [
+          "Green"
+        ],
+        "genericCost": 1
+      },
+      "quantity": 34
     }
   ]
 }

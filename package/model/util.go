@@ -28,11 +28,9 @@ func CreateTappedLand(colors []ManaColor) *Land {
 func CreateSampleNonLand() *NonLand {
 	return &NonLand{
 		Name: "dummy-nonland",
-		CastingCost: []ManaCost{
-			{
-				ColorRequirements: []ManaColor{White},
-				GenericCost:       1,
-			},
+		CastingCost: ManaCost{
+			ColorRequirements: []ManaColor{White},
+			GenericCost:       1,
 		},
 		Quantity: 1,
 	}
