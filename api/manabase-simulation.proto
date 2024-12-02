@@ -109,7 +109,7 @@ enum ConditionType {
 
 message Objective {
   int32 targetTurn = 1;
-  ManaCost manaCosts = 2;
+  repeated ManaCost manaCosts = 2;
 }
 
 message GameConfiguration {

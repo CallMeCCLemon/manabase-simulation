@@ -15,19 +15,12 @@ import (
 	"log"
 	"manabase-simulation/api"
 	"manabase-simulation/package/model"
-	"manabase-simulation/package/reader"
 	"net"
 	"net/http"
 	_ "net/http/pprof"
 	"sync"
 	"time"
 )
-
-type GameConfiguration struct {
-	InitialHandSize   int  `json:"initialHandSize"`
-	CardsDrawnPerTurn int  `json:"cardsDrawnPerTurn"`
-	OnThePlay         bool `json:"onThePlay"`
-}
 
 var (
 	tls      = flag.Bool("tls", false, "Connection uses TLS if true, else plain TCP")
@@ -51,12 +44,14 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	//deckList := facade.ToInternalDeckList(in.DeckList)
+	decklist := facade.ToInternalDeckList(in.DeckList)
+	gameConfig := facade.ToInternalGameConfiguration(in.GameConfiguration)
+	objective := facade.ToInternalTestObjective(in.Objective)
 
-	//simulate(deckList, in.GameConfiguration, in.Objective)
+	result := simulate(ctx, decklist, gameConfig, objective)
 	return &api.SimulateDeckResponse{
 		Message:     "The server did the thing!",
-		SuccessRate: 0.5,
+		SuccessRate: result,
 	}, nil
 }
 
@@ -90,7 +85,7 @@ func main() {
 	grpcServer.Serve(lis)
 }
 
-func simulate(decklist model.DeckList, configuration GameConfiguration, objective model.TestObjective) float32 {
+func simulate(ctx context.Context, decklist model.DeckList, configuration model.GameConfiguration, objective model.TestObjective) float32 {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
@@ -118,7 +113,7 @@ func simulate(decklist model.DeckList, configuration GameConfiguration, objectiv
 
 	for i := 0; i < iterations; i++ {
 		wg.Add(1)
-		go start(decklist, gameConfig, objective, c, wg)
+		go start(decklist, configuration, objective, c, wg)
 	}
 
 	go func() {
@@ -141,7 +136,7 @@ func simulate(decklist model.DeckList, configuration GameConfiguration, objectiv
 	return successRate
 }
 
-func start(deckList model.DeckList, gameConfiguration GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
+func start(deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	c <- SimulateDeck(deckList, gameConfiguration, objective)
 }
@@ -180,7 +175,7 @@ func CreateLogger() *zap.Logger {
 }
 
 // SimulateDeck Simulates a deck against a given objective with the provided configuration.
-func SimulateDeck(deckList model.DeckList, gameConfiguration GameConfiguration, objective model.TestObjective) bool {
+func SimulateDeck(deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective) bool {
 	//logger := CreateLogger()
 	//logger.Debug("Starting deck simulation")
 

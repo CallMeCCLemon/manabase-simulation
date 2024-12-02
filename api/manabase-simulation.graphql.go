@@ -179,7 +179,7 @@ func Gql__type_Objective() *graphql.Object {
 					Type: graphql.Int,
 				},
 				"manaCosts": &graphql.Field{
-					Type: Gql__type_ManaCost(),
+					Type: graphql.NewList(Gql__type_ManaCost()),
 				},
 			},
 		})
@@ -401,7 +401,7 @@ func Gql__input_Objective() *graphql.InputObject {
 					Type: graphql.Int,
 				},
 				"manaCosts": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_ManaCost(),
+					Type: graphql.NewList(Gql__input_ManaCost()),
 				},
 			},
 		})
