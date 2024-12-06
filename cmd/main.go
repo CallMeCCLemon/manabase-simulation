@@ -9,6 +9,8 @@ import (
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"manabase-simulation/package/facade"
 
@@ -40,15 +42,21 @@ func newServer() *manabaseSimulatorServer {
 	return s
 }
 
+func newHealthServer() *health.Server {
+	s := health.NewServer()
+	return s
+}
+
 func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.SimulateDeckRequest) (*api.SimulateDeckResponse, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	log.Println(fmt.Sprintf("SimulateDeckRequest: %s", in))
 
-	decklist := facade.ToInternalDeckList(in.DeckList)
+	deckList := facade.ToInternalDeckList(in.DeckList)
 	gameConfig := facade.ToInternalGameConfiguration(in.GameConfiguration)
 	objective := facade.ToInternalTestObjective(in.Objective)
 
-	result := simulate(ctx, decklist, gameConfig, objective)
+	result := simulate(ctx, deckList, gameConfig, objective)
 	return &api.SimulateDeckResponse{
 		Message:     "The server did the thing!",
 		SuccessRate: result,
@@ -80,6 +88,7 @@ func main() {
 	}
 	grpcServer := grpc.NewServer(opts...)
 	api.RegisterManabaseSimulatorServer(grpcServer, newServer())
+	grpc_health_v1.RegisterHealthServer(grpcServer, newHealthServer())
 	reflection.Register(grpcServer)
 	log.Println("Serving gRPC traffic now")
 	grpcServer.Serve(lis)

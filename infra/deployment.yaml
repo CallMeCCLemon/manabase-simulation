@@ -1,0 +1,150 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manabase-simulation-webapp-deployment
+  namespace: mtg-mana-sim-app
+  labels:
+    app: manabase-simulation-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: manabase-simulation-webapp
+  template:
+    metadata:
+      labels:
+        app: manabase-simulation-webapp
+    spec:
+      containers:
+        - name: manabase-simulation-webapp
+          image: 10.0.0.108:32000/manabase-simulation-webapp:thomas-latest
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  namespace: mtg-mana-sim-app
+spec:
+  selector:
+    app: manabase-simulation-webapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manabase-simulation-gql-deployment
+  namespace: mtg-mana-sim-app
+  labels:
+    app: manabase-simulation-gql
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: manabase-simulation-gql
+  template:
+    metadata:
+      labels:
+        app: manabase-simulation-gql
+    spec:
+      containers:
+        - name: manabase-simulation-gql
+          image: 10.0.0.108:32000/manabase-simulation-gql-gateway:latest
+          ports:
+            - containerPort: 8888
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtg-mana-sim-app-gql-service
+  namespace: mtg-mana-sim-app
+spec:
+  selector:
+    app: manabase-simulation-gql
+  ports:
+    - name: graphql
+      protocol: TCP
+      port: 8888
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtg-mana-sim-app-gql-nodeport-service
+  namespace: mtg-mana-sim-app
+spec:
+  type: NodePort
+  selector:
+    app: manabase-simulation-gql
+  ports:
+    - name: graphql-nodeport
+      protocol: TCP
+      port: 8890
+      targetPort: 8888
+      nodePort: 30001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: manabase-simulation-server-deployment
+  namespace: mtg-mana-sim-app
+  labels:
+    app: manabase-simulation-server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: manabase-simulation-server
+  template:
+    metadata:
+      labels:
+        app: manabase-simulation-server
+    spec:
+      containers:
+        - name: manabase-simulation-server
+          image: 10.0.0.108:32000/manabase-simulation-server:latest
+          ports:
+            - containerPort: 9000
+          livenessProbe:
+            grpc:
+              port: 9000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "128Mi"
+            requests:
+              cpu: "250m"
+              memory: "64Mi"
+          imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mtg-mana-sim-app-server-service
+  namespace: mtg-mana-sim-app
+spec:
+  selector:
+    app: manabase-simulation-server
+  ports:
+    - name: grpc
+      protocol: TCP
+      port: 9000
