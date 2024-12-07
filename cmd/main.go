@@ -107,7 +107,7 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 	now := time.Now()
 
 	successCount := 0
-	iterations := 10000
+	iterations := 1000
 
 	c := make(chan bool, 100)
 	wg := new(sync.WaitGroup)
