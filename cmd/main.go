@@ -37,7 +37,7 @@ type manabaseSimulatorServer struct {
 	mu sync.Mutex // protects routeNotes
 }
 
-func newServer() *manabaseSimulatorServer {
+func newManabaseSimulatorServer() *manabaseSimulatorServer {
 	s := &manabaseSimulatorServer{}
 	return s
 }
@@ -57,10 +57,12 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 	objective := facade.ToInternalTestObjective(in.Objective)
 
 	result := simulate(ctx, deckList, gameConfig, objective)
-	return &api.SimulateDeckResponse{
+	response := &api.SimulateDeckResponse{
 		Message:     "The server did the thing!",
 		SuccessRate: result,
-	}, nil
+	}
+	log.Println(fmt.Sprintf("SimulateDeckResponse SuccessRate: %s, Message: %s", response.SuccessRate, response.Message))
+	return response, nil
 }
 
 func (s *manabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest) (*api.EchoResponse, error) {
@@ -87,7 +89,7 @@ func main() {
 		opts = []grpc.ServerOption{grpc.Creds(creds)}
 	}
 	grpcServer := grpc.NewServer(opts...)
-	api.RegisterManabaseSimulatorServer(grpcServer, newServer())
+	api.RegisterManabaseSimulatorServer(grpcServer, newManabaseSimulatorServer())
 	grpc_health_v1.RegisterHealthServer(grpcServer, newHealthServer())
 	reflection.Register(grpcServer)
 	log.Println("Serving gRPC traffic now")
