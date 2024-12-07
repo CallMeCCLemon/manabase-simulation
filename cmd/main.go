@@ -61,7 +61,7 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 		Message:     "The server did the thing!",
 		SuccessRate: result,
 	}
-	log.Println(fmt.Sprintf("SimulateDeckResponse SuccessRate: %s, Message: %s", response.SuccessRate, response.Message))
+	log.Println(fmt.Sprintf("SimulateDeckResponse SuccessRate: %f, Message: %s", response.SuccessRate, response.Message))
 	return response, nil
 }
 
