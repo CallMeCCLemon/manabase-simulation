@@ -103,6 +103,7 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 
 	logger := CreateLogger()
 	logger.Info(decklist.ToString())
+	logger.Info(objective.ToString())
 
 	now := time.Now()
 
