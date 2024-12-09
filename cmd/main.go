@@ -4,15 +4,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/onsi/ginkgo/v2"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"manabase-simulation/package/facade"
+	"manabase-simulation/package/logging"
 
 	"log"
 	"manabase-simulation/api"
@@ -56,10 +54,16 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 	gameConfig := facade.ToInternalGameConfiguration(in.GameConfiguration)
 	objective := facade.ToInternalTestObjective(in.Objective)
 
-	result := simulate(ctx, deckList, gameConfig, objective)
+	checkpoints := simulate(ctx, deckList, gameConfig, objective)
+	externalCheckpoints := make([]*api.ResultCheckpoint, len(checkpoints))
+	for i, c := range checkpoints {
+		externalCheckpoints[i] = facade.ToExternalResultCheckpoint(c)
+	}
+
 	response := &api.SimulateDeckResponse{
 		Message:     "The server did the thing!",
-		SuccessRate: result,
+		SuccessRate: checkpoints[len(checkpoints)-1].GetSuccessRate(),
+		Checkpoints: externalCheckpoints,
 	}
 	log.Println(fmt.Sprintf("SimulateDeckResponse SuccessRate: %f, Message: %s", response.SuccessRate, response.Message))
 	return response, nil
@@ -96,84 +100,64 @@ func main() {
 	grpcServer.Serve(lis)
 }
 
-func simulate(ctx context.Context, decklist model.DeckList, configuration model.GameConfiguration, objective model.TestObjective) float32 {
+func simulate(ctx context.Context, decklist model.DeckList, configuration model.GameConfiguration, objective model.TestObjective) []model.ResultCheckpoint {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
 
-	logger := CreateLogger()
+	logger := logging.CreateLogger()
 	logger.Info(decklist.ToString())
 	logger.Info(objective.ToString())
 
 	now := time.Now()
 
 	successCount := 0
-	iterations := 1000
+	checkpointInterval := 1000
+	totalCheckpoints := 10
+	iterations := checkpointInterval * totalCheckpoints
 
-	c := make(chan bool, 100)
+	resultChannel := make(chan bool, 100)
 	wg := new(sync.WaitGroup)
 
 	for i := 0; i < iterations; i++ {
 		wg.Add(1)
-		go start(decklist, configuration, objective, c, wg)
+		go start(decklist, configuration, objective, resultChannel, wg)
 	}
 
 	go func() {
 		wg.Wait()
-		close(c)
+		close(resultChannel)
 	}()
 
-	for result := range c {
+	completedIterations := 0
+	checkpoints := make([]model.ResultCheckpoint, totalCheckpoints)
+	for result := range resultChannel {
+		completedIterations++
 		if result {
 			successCount++
 		}
+
+		if completedIterations%checkpointInterval == 0 {
+			checkpoints[(completedIterations/checkpointInterval)-1] = model.ResultCheckpoint{
+				Iterations: int32(completedIterations),
+				Successes:  int32(successCount),
+			}
+		}
+
 	}
-	successRate := float32(successCount) / float32(iterations) * 100.0
 
 	// Capture results to be consumes.
-	logger.Info(fmt.Sprintf("Success count: %d", successCount))
-	logger.Info(fmt.Sprintf("Success Rate: %f", successRate))
+	logger.Info(fmt.Sprintf("Success count: %d", checkpoints[len(checkpoints)-1].Successes))
+	logger.Info(fmt.Sprintf("Success Rate: %f", checkpoints[len(checkpoints)-1].GetSuccessRate()))
+	logger.Info(fmt.Sprintf("Checkpoints: %v", checkpoints))
 	logger.Info(fmt.Sprintf("Time taken: %s", time.Since(now)))
 
-	return successRate
+	return checkpoints
 }
 
 func start(deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	c <- SimulateDeck(deckList, gameConfiguration, objective)
-}
-
-// CreateLogger Creates a new logger with the default configuration.
-func CreateLogger() *zap.Logger {
-	// Create a custom logger configuration
-	config := zap.NewProductionConfig()
-
-	// Set the output to stdout
-	config.OutputPaths = []string{"stdout"}
-
-	// Set the error output to stderr
-	config.ErrorOutputPaths = []string{"stderr"}
-
-	// Configure the encoder to use a human-readable format (good for testing)
-	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder // Optional: Colorize log levels
-
-	// Build the logger
-	logger, err := config.Build(zap.WrapCore(func(c zapcore.Core) zapcore.Core {
-		// Redirect the core output to GinkgoWriter
-		return zapcore.NewCore(
-			zapcore.NewConsoleEncoder(config.EncoderConfig),
-			zapcore.AddSync(ginkgo.GinkgoWriter), // Send logs to GinkgoWriter
-			zapcore.InfoLevel,
-		)
-	}))
-	if err != nil {
-		panic(err)
-	}
-	defer logger.Sync() // flushes buffer, if any
-
-	// Use the logger
-	return logger
 }
 
 // SimulateDeck Simulates a deck against a given objective with the provided configuration.

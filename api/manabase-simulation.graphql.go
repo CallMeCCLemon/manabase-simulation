@@ -17,6 +17,7 @@ var (
 	gql__type_UntappedCondition     *graphql.Object      // message UntappedCondition in api/manabase-simulation.proto
 	gql__type_SimulateDeckResponse  *graphql.Object      // message SimulateDeckResponse in api/manabase-simulation.proto
 	gql__type_SimulateDeckRequest   *graphql.Object      // message SimulateDeckRequest in api/manabase-simulation.proto
+	gql__type_ResultCheckpoint      *graphql.Object      // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__type_Objective             *graphql.Object      // message Objective in api/manabase-simulation.proto
 	gql__type_NonLand               *graphql.Object      // message NonLand in api/manabase-simulation.proto
 	gql__type_ManaCost              *graphql.Object      // message ManaCost in api/manabase-simulation.proto
@@ -29,6 +30,7 @@ var (
 	gql__input_UntappedCondition    *graphql.InputObject // message UntappedCondition in api/manabase-simulation.proto
 	gql__input_SimulateDeckResponse *graphql.InputObject // message SimulateDeckResponse in api/manabase-simulation.proto
 	gql__input_SimulateDeckRequest  *graphql.InputObject // message SimulateDeckRequest in api/manabase-simulation.proto
+	gql__input_ResultCheckpoint     *graphql.InputObject // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__input_Objective            *graphql.InputObject // message Objective in api/manabase-simulation.proto
 	gql__input_NonLand              *graphql.InputObject // message NonLand in api/manabase-simulation.proto
 	gql__input_ManaCost             *graphql.InputObject // message ManaCost in api/manabase-simulation.proto
@@ -143,6 +145,9 @@ func Gql__type_SimulateDeckResponse() *graphql.Object {
 				"successRate": &graphql.Field{
 					Type: graphql.Float,
 				},
+				"checkpoints": &graphql.Field{
+					Type: graphql.NewList(Gql__type_ResultCheckpoint()),
+				},
 			},
 		})
 	}
@@ -168,6 +173,23 @@ func Gql__type_SimulateDeckRequest() *graphql.Object {
 		})
 	}
 	return gql__type_SimulateDeckRequest
+}
+
+func Gql__type_ResultCheckpoint() *graphql.Object {
+	if gql__type_ResultCheckpoint == nil {
+		gql__type_ResultCheckpoint = graphql.NewObject(graphql.ObjectConfig{
+			Name: "Api_Type_ResultCheckpoint",
+			Fields: graphql.Fields{
+				"iterations": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"successes": &graphql.Field{
+					Type: graphql.Int,
+				},
+			},
+		})
+	}
+	return gql__type_ResultCheckpoint
 }
 
 func Gql__type_Objective() *graphql.Object {
@@ -366,6 +388,9 @@ func Gql__input_SimulateDeckResponse() *graphql.InputObject {
 				"successRate": &graphql.InputObjectFieldConfig{
 					Type: graphql.Float,
 				},
+				"checkpoints": &graphql.InputObjectFieldConfig{
+					Type: graphql.NewList(Gql__input_ResultCheckpoint()),
+				},
 			},
 		})
 	}
@@ -390,6 +415,23 @@ func Gql__input_SimulateDeckRequest() *graphql.InputObject {
 		})
 	}
 	return gql__input_SimulateDeckRequest
+}
+
+func Gql__input_ResultCheckpoint() *graphql.InputObject {
+	if gql__input_ResultCheckpoint == nil {
+		gql__input_ResultCheckpoint = graphql.NewInputObject(graphql.InputObjectConfig{
+			Name: "Api_Input_ResultCheckpoint",
+			Fields: graphql.InputObjectConfigFieldMap{
+				"iterations": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"successes": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+			},
+		})
+	}
+	return gql__input_ResultCheckpoint
 }
 
 func Gql__input_Objective() *graphql.InputObject {
@@ -579,7 +621,7 @@ type graphql__resolver_ManabaseSimulator struct {
 func new_graphql_resolver_ManabaseSimulator(conn *grpc.ClientConn) *graphql__resolver_ManabaseSimulator {
 	return &graphql__resolver_ManabaseSimulator{
 		conn: conn,
-		host: "mtg-mana-sim-app-server-service:9000",
+		host: "localhost:8889",
 		dialOptions: []grpc.DialOption{
 			grpc.WithInsecure(),
 		},
