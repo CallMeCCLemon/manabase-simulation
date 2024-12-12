@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"manabase-simulation/package/facade"
 	"manabase-simulation/package/logging"
+	"manabase-simulation/package/simulation"
 
 	"log"
 	"manabase-simulation/api"
@@ -27,6 +28,14 @@ var (
 	certFile = flag.String("cert_file", "", "The TLS cert file")
 	keyFile  = flag.String("key_file", "", "The TLS key file")
 	port     = flag.Int("port", 8889, "The server port")
+)
+
+const (
+	// CheckpointInterval is the number of iterations between checkpoints.
+	CheckpointInterval = 100
+
+	// TotalCheckpoints is the total number of checkpoints to generate.
+	TotalCheckpoints = 30
 )
 
 type manabaseSimulatorServer struct {
@@ -48,7 +57,8 @@ func newHealthServer() *health.Server {
 func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.SimulateDeckRequest) (*api.SimulateDeckResponse, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	log.Println(fmt.Sprintf("SimulateDeckRequest: %s", in))
+	logger := logging.CreateLogger()
+	logger.Info(fmt.Sprintf("SimulateDeckRequest: %s", in))
 
 	deckList := facade.ToInternalDeckList(in.DeckList)
 	gameConfig := facade.ToInternalGameConfiguration(in.GameConfiguration)
@@ -65,7 +75,7 @@ func (s *manabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 		SuccessRate: checkpoints[len(checkpoints)-1].GetSuccessRate(),
 		Checkpoints: externalCheckpoints,
 	}
-	log.Println(fmt.Sprintf("SimulateDeckResponse SuccessRate: %f, Message: %s", response.SuccessRate, response.Message))
+	logger.Info(fmt.Sprintf("SimulateDeckResponse SuccessRate: %f, Message: %s", response.SuccessRate, response.Message))
 	return response, nil
 }
 
@@ -112,16 +122,14 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 	now := time.Now()
 
 	successCount := 0
-	checkpointInterval := 1000
-	totalCheckpoints := 10
-	iterations := checkpointInterval * totalCheckpoints
+	iterations := CheckpointInterval * TotalCheckpoints
 
 	resultChannel := make(chan bool, 100)
 	wg := new(sync.WaitGroup)
 
 	for i := 0; i < iterations; i++ {
 		wg.Add(1)
-		go start(decklist, configuration, objective, resultChannel, wg)
+		go start(ctx, decklist, configuration, objective, resultChannel, wg)
 	}
 
 	go func() {
@@ -130,15 +138,15 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 	}()
 
 	completedIterations := 0
-	checkpoints := make([]model.ResultCheckpoint, totalCheckpoints)
+	checkpoints := make([]model.ResultCheckpoint, TotalCheckpoints)
 	for result := range resultChannel {
 		completedIterations++
 		if result {
 			successCount++
 		}
 
-		if completedIterations%checkpointInterval == 0 {
-			checkpoints[(completedIterations/checkpointInterval)-1] = model.ResultCheckpoint{
+		if completedIterations%CheckpointInterval == 0 {
+			checkpoints[(completedIterations/CheckpointInterval)-1] = model.ResultCheckpoint{
 				Iterations: int32(completedIterations),
 				Successes:  int32(successCount),
 			}
@@ -155,43 +163,7 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 	return checkpoints
 }
 
-func start(deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
+func start(ctx context.Context, deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
-	c <- SimulateDeck(deckList, gameConfiguration, objective)
-}
-
-// SimulateDeck Simulates a deck against a given objective with the provided configuration.
-func SimulateDeck(deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective) bool {
-	//logger := CreateLogger()
-	//logger.Debug("Starting deck simulation")
-
-	// Generate Randomized Deck
-	deck := deckList.GenerateDeck()
-	hand := model.NewDeck()
-	board := model.NewBoardState()
-
-	// TODO: Add validations like Validate deck is >= 60 cards
-
-	// Draw Initial Hand
-	for range gameConfiguration.InitialHandSize {
-		hand = deck.DrawCard(hand)
-	}
-
-	// For turnNumber to target turn
-	for turnNumber := range objective.TargetTurn {
-		// If turnNumber = 1 and on the play, skip draw
-		if turnNumber == 0 && gameConfiguration.OnThePlay {
-			// Skip your draw
-			//logger.Debug("Playing first, skipping draw")
-		} else {
-			hand = deck.DrawCard(hand)
-		}
-
-		hand = board.PlayLand(hand, objective, turnNumber+1)
-	}
-
-	// Compute if target is met (possibly using backtracking?)
-	// Computation can start with the most restrictive lands by sorting based on number of colors it taps for.
-	isMet, _ := board.ValidateTestObjective(objective)
-	return isMet
+	c <- simulation.SimulateDeck(ctx, deckList, gameConfiguration, objective)
 }

@@ -1,14 +1,23 @@
 
 all: build
 
-build: test
+build: generate test
 	if [ ! -d "build" ]; then mkdir build; fi
 	echo "Building main.go"
 	go build -o build/main ./cmd/main.go
 
+build-gql: test
+	if [ ! -d "build" ]; then mkdir build; fi
+	echo "Building main.go"
+	go build -o build/gql-main ./gateway/main.go
+
 run: fetch-data build
 	echo "Now running main"
 	./build/main
+
+run-gql: build-gql
+	echo "Running GraphQL Server"
+	./build/gql-main
 
 test: fetch-data
 	go test ./...
