@@ -86,6 +86,10 @@ func (s *manabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest)
 	}, nil
 }
 
+//cfg := postgres.Config{
+//		DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", address, username, password, dbname, port),
+//	}
+
 func main() {
 	flag.Parse()
 	log.Println(fmt.Sprintf("Starting Listening on port %d", *port))
