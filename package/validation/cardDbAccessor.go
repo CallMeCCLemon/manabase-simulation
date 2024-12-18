@@ -72,58 +72,19 @@ func toModelCard(card *GormCard) (*model.Card, error) {
 	}, nil
 }
 
-func toGormLand(land *model.Land) (*GormLand, error) {
-	c, err := json.Marshal(land.Colors)
-	if err != nil {
-		return nil, err
-	}
-
-	t, err := json.Marshal(land.Types)
-	if err != nil {
-		return nil, err
-	}
-
-	u, err := json.Marshal(land.UntappedCondition)
-	if err != nil {
-		return nil, err
-	}
-
-	ac, err := json.Marshal(land.ActivationCost)
-	if err != nil {
-		return nil, err
-	}
-	l := &GormLand{
-		Name:              land.Name,
-		EntersTapped:      land.EntersTapped,
-		Colors:            string(c),
-		Types:             string(t),
-		UntappedCondition: string(u),
-		ActivationCost:    string(ac),
-	}
-
-	return l, nil
-}
-
-func toGormNonLand(nonLand *model.NonLand) (*GormNonLand, error) {
-	c, err := json.Marshal(nonLand.CastingCost)
-	if err != nil {
-		return nil, err
-	}
-
-	return &GormNonLand{
-		Name:        nonLand.Name,
-		CastingCost: string(c),
-		Quantity:    nonLand.Quantity,
-	}, nil
-}
-
+// CardDbAccessor is an interface for accessing the card database.
 type CardDbAccessor interface {
 	// CreateTables creates all necessary tables for the card database to work.
 	CreateTables() error
 
+	// GetCard returns a card from the database.
 	GetCard(name string) (*model.Card, error)
 
+	// WriteCard writes a single card to the database.
 	WriteCard(card *model.Card) (int64, error)
+
+	// WriteCards writes a batch of cards to the database.
+	WriteCards(card []*model.Card) (int64, error)
 }
 
 var _ CardDbAccessor = &CardDbAccessorImpl{}
@@ -202,38 +163,6 @@ func (c *CardDbAccessorImpl) WriteCards(cards []*model.Card) (int64, error) {
 	}
 
 	res := c.GormDB.Save(gormCards)
-
-	return res.RowsAffected, res.Error
-}
-
-func (c *CardDbAccessorImpl) WriteLands(lands []model.Land) (int64, error) {
-	gormLands := make([]*GormLand, len(lands))
-	for i, card := range lands {
-		gormCard, err := toGormLand(&card)
-		if err != nil {
-			return 0, err
-		}
-
-		gormLands[i] = gormCard
-	}
-
-	res := c.GormDB.Save(gormLands)
-
-	return res.RowsAffected, res.Error
-}
-
-func (c *CardDbAccessorImpl) WriteNonLands(nonLands []model.NonLand) (int64, error) {
-	gormNonLands := make([]*GormNonLand, len(nonLands))
-	for i, card := range nonLands {
-		gormNonLand, err := toGormNonLand(&card)
-		if err != nil {
-			return 0, err
-		}
-
-		gormNonLands[i] = gormNonLand
-	}
-
-	res := c.GormDB.Save(gormNonLands)
 
 	return res.RowsAffected, res.Error
 }
