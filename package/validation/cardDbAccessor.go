@@ -2,81 +2,118 @@ package validation
 
 import (
 	"encoding/json"
-	"fmt"
-	"github.com/jackc/pgx/pgtype"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"manabase-simulation/package/model"
 	"time"
 )
 
-type Land struct {
+type GormCard struct {
 	gorm.Model
-	Name              string       `gorm:"uniqueIndex"`
-	Colors            pgtype.JSONB `gorm:"type:jsonb"`
-	EntersTapped      bool
-	Types             pgtype.JSONB `gorm:"type:jsonb"`
-	UntappedCondition pgtype.JSONB `gorm:"type:jsonb"`
-	ActivationCost    pgtype.JSONB `gorm:"type:jsonb"`
+	Name    string `gorm:"uniqueIndex"`
+	Land    string
+	NonLand string
 }
 
-func toGormModel(card *model.Card) (*Land, error) {
-	l := &Land{
-		Name:         card.Name,
-		EntersTapped: card.Land.EntersTapped,
-	}
-	err := l.Colors.Set(card.Land.Colors)
+type GormLand struct {
+	gorm.Model
+	Name              string `gorm:"uniqueIndex"`
+	EntersTapped      bool
+	Colors            string
+	Types             string
+	UntappedCondition string
+	ActivationCost    string
+}
+
+type GormNonLand struct {
+	gorm.Model
+	Name        string `gorm:"uniqueIndex"`
+	CastingCost string
+	Quantity    int
+}
+
+func toGormCard(card *model.Card) (*GormCard, error) {
+	var land []byte
+	land, err := json.Marshal(card.Land)
 	if err != nil {
 		return nil, err
 	}
-	err = l.Types.Set(card.Land.Types)
+
+	var nonLand []byte
+	nonLand, err = json.Marshal(card.NonLand)
 	if err != nil {
 		return nil, err
 	}
-	err = l.UntappedCondition.Set(card.Land.UntappedCondition)
+
+	return &GormCard{
+		Name:    card.Name,
+		Land:    string(land),
+		NonLand: string(nonLand),
+	}, nil
+}
+
+func toModelCard(card *GormCard) (*model.Card, error) {
+	var land *model.Land
+	err := json.Unmarshal([]byte(card.Land), &land)
 	if err != nil {
 		return nil, err
 	}
-	err = l.ActivationCost.Set(card.Land.ActivationCost)
+
+	var nonLand *model.NonLand
+	err = json.Unmarshal([]byte(card.NonLand), &nonLand)
 	if err != nil {
 		return nil, err
+	}
+
+	return &model.Card{
+		Name:    card.Name,
+		Land:    land,
+		NonLand: nonLand,
+	}, nil
+}
+
+func toGormLand(land *model.Land) (*GormLand, error) {
+	c, err := json.Marshal(land.Colors)
+	if err != nil {
+		return nil, err
+	}
+
+	t, err := json.Marshal(land.Types)
+	if err != nil {
+		return nil, err
+	}
+
+	u, err := json.Marshal(land.UntappedCondition)
+	if err != nil {
+		return nil, err
+	}
+
+	ac, err := json.Marshal(land.ActivationCost)
+	if err != nil {
+		return nil, err
+	}
+	l := &GormLand{
+		Name:              land.Name,
+		EntersTapped:      land.EntersTapped,
+		Colors:            string(c),
+		Types:             string(t),
+		UntappedCondition: string(u),
+		ActivationCost:    string(ac),
 	}
 
 	return l, nil
 }
 
-func (l *Land) Get() (*model.Land, error) {
-	var untappedCondition *model.UntappedCondition
-	var activationCost *model.ActivationCost
-	var colors []model.ManaColor
-	var landTypes []model.LandType
-
-	err := l.UntappedCondition.AssignTo(&untappedCondition)
+func toGormNonLand(nonLand *model.NonLand) (*GormNonLand, error) {
+	c, err := json.Marshal(nonLand.CastingCost)
 	if err != nil {
 		return nil, err
 	}
 
-	err = l.ActivationCost.AssignTo(&activationCost)
-	if err != nil {
-		return nil, err
-	}
-	err = l.Colors.AssignTo(&colors)
-	if err != nil {
-		return nil, err
-	}
-
-	err = l.Types.AssignTo(&landTypes)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.Land{
-		Name:              l.Name,
-		Colors:            colors,
-		EntersTapped:      l.EntersTapped,
-		Types:             landTypes,
-		UntappedCondition: untappedCondition,
-		ActivationCost:    activationCost,
+	return &GormNonLand{
+		Name:        nonLand.Name,
+		CastingCost: string(c),
+		Quantity:    nonLand.Quantity,
 	}, nil
 }
 
@@ -84,17 +121,9 @@ type CardDbAccessor interface {
 	// CreateTables creates all necessary tables for the card database to work.
 	CreateTables() error
 
-	// GetCard returns a card by name.
 	GetCard(name string) (*model.Card, error)
 
-	// GetCards returns a list of cards. This is more efficient for bulk lookups of cards.
-	GetCards(names []string) ([]model.Card, error)
-
-	// WriteCard writes a card.
 	WriteCard(card *model.Card) (int64, error)
-
-	// WriteCards writes a list of cards.
-	WriteCards(cards []model.Card) (int64, error)
 }
 
 var _ CardDbAccessor = &CardDbAccessorImpl{}
@@ -128,66 +157,32 @@ func NewCardDbAccessor(d gorm.Dialector) (*CardDbAccessorImpl, error) {
 }
 
 func (c *CardDbAccessorImpl) CreateTables() error {
-	err := c.GormDB.AutoMigrate(&Land{})
+	err := c.GormDB.AutoMigrate(&GormLand{})
+	if err != nil {
+		return err
+	}
+
+	err = c.GormDB.AutoMigrate(&GormCard{})
+	if err != nil {
+		return err
+	}
+
+	err = c.GormDB.AutoMigrate(&GormNonLand{})
 	return err
 }
 
 func (c *CardDbAccessorImpl) GetCard(name string) (*model.Card, error) {
-	var card *Land
+	var card *GormCard
 	res := c.GormDB.Where("name = ?", name).First(&card)
 	if res.Error != nil {
 		return nil, res.Error
 	}
 
-	var colors []string
-	_ = json.Unmarshal(card.Colors.Bytes, &colors)
-	println(fmt.Sprintf("Colors: %s", string(card.Colors.Bytes)))
-	err := card.Colors.AssignTo(&colors)
-	if err != nil {
-		return nil, err
-	}
-
-	var untappedCondition *model.UntappedCondition
-	err = card.UntappedCondition.Set(untappedCondition)
-	if err != nil {
-		return nil, err
-	}
-
-	var activationCost *model.ActivationCost
-	err = card.ActivationCost.Set(activationCost)
-	if err != nil {
-		return nil, err
-	}
-
-	var types []model.LandType
-	err = card.Types.Set(&types)
-	if err != nil {
-		return nil, err
-	}
-
-	l := &model.Land{
-		Name: card.Name,
-		//Colors:            colors,
-		EntersTapped:      card.EntersTapped,
-		Types:             types,
-		UntappedCondition: untappedCondition,
-		ActivationCost:    activationCost,
-	}
-
-	return &model.Card{
-		Name:    card.Name,
-		Land:    l,
-		NonLand: nil,
-	}, nil
-}
-
-func (c *CardDbAccessorImpl) GetCards(types []string) ([]model.Card, error) {
-	//TODO implement me
-	panic("implement me")
+	return toModelCard(card)
 }
 
 func (c *CardDbAccessorImpl) WriteCard(card *model.Card) (int64, error) {
-	gormCard, err := toGormModel(card)
+	gormCard, err := toGormCard(card)
 	if err != nil {
 		return 0, err
 	}
@@ -195,10 +190,10 @@ func (c *CardDbAccessorImpl) WriteCard(card *model.Card) (int64, error) {
 	return result.RowsAffected, result.Error
 }
 
-func (c *CardDbAccessorImpl) WriteCards(cards []model.Card) (int64, error) {
-	gormCards := make([]*Land, len(cards))
+func (c *CardDbAccessorImpl) WriteCards(cards []*model.Card) (int64, error) {
+	gormCards := make([]*GormCard, len(cards))
 	for i, card := range cards {
-		gormCard, err := toGormModel(&card)
+		gormCard, err := toGormCard(card)
 		if err != nil {
 			return 0, err
 		}
@@ -207,6 +202,38 @@ func (c *CardDbAccessorImpl) WriteCards(cards []model.Card) (int64, error) {
 	}
 
 	res := c.GormDB.Save(gormCards)
+
+	return res.RowsAffected, res.Error
+}
+
+func (c *CardDbAccessorImpl) WriteLands(lands []model.Land) (int64, error) {
+	gormLands := make([]*GormLand, len(lands))
+	for i, card := range lands {
+		gormCard, err := toGormLand(&card)
+		if err != nil {
+			return 0, err
+		}
+
+		gormLands[i] = gormCard
+	}
+
+	res := c.GormDB.Save(gormLands)
+
+	return res.RowsAffected, res.Error
+}
+
+func (c *CardDbAccessorImpl) WriteNonLands(nonLands []model.NonLand) (int64, error) {
+	gormNonLands := make([]*GormNonLand, len(nonLands))
+	for i, card := range nonLands {
+		gormNonLand, err := toGormNonLand(&card)
+		if err != nil {
+			return 0, err
+		}
+
+		gormNonLands[i] = gormNonLand
+	}
+
+	res := c.GormDB.Save(gormNonLands)
 
 	return res.RowsAffected, res.Error
 }

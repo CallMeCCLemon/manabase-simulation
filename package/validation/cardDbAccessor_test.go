@@ -22,9 +22,6 @@ var _ = Describe("CardDbAccessor", func() {
 		db, err = NewPsqlDbAccessor(cfg)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(db).ToNot(BeNil())
-
-		err = db.CreateTables()
-		Expect(err).ToNot(HaveOccurred())
 	})
 
 	It("Sets up the tables", func() {
@@ -33,25 +30,7 @@ var _ = Describe("CardDbAccessor", func() {
 	})
 
 	When("Working with the db accessor", func() {
-		It("Can create a card", func() {
-			card := test.NewLandCard("test-land")
-			rowsAffected, err := db.WriteCard(card)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(rowsAffected).To(Equal(int64(1)))
-		})
-
-		It("Can create multiple cards", func() {
-			count := 1000
-			cards := make([]model.Card, count)
-			for i := 0; i < count; i++ {
-				cards[i] = *test.NewLandCard(fmt.Sprintf("test-land-%d", i))
-			}
-			rows, errs := db.WriteCards(cards)
-			Expect(errs).ToNot(HaveOccurred())
-			Expect(rows).To(Equal(int64(count)))
-		})
-
-		It("Can get a card", func() {
+		It("Can Read and write a Non-land card", func() {
 			card := test.NewLandCard("test-land")
 			rowsAffected, err := db.WriteCard(card)
 			Expect(err).ToNot(HaveOccurred())
@@ -60,40 +39,35 @@ var _ = Describe("CardDbAccessor", func() {
 			newCard, err := db.GetCard(card.Name)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(newCard).ToNot(BeNil())
-			Expect(newCard.Land.Name).To(Equal(card.Name))
-			Expect(newCard.Land.Colors).To(Equal(card.Land.Colors))
-			Expect(newCard.Land.EntersTapped).To(Equal(card.Land.EntersTapped))
-			Expect(newCard.Land.Types).To(Equal(card.Land.Types))
-			Expect(newCard.Land.UntappedCondition).To(Equal(card.Land.UntappedCondition))
-			Expect(newCard.Land.ActivationCost).To(Equal(card.Land.ActivationCost))
+			Expect(newCard.NonLand).To(Equal(card.NonLand))
+			Expect(newCard.Land).To(Equal(card.Land))
 		})
 
-		//It("Can get a card", func() {
-		//	card := model.NewCard(&model.Land{}, nil)
-		//	err = db.WriteCard(card)
-		//	Expect(err).ToNot(HaveOccurred())
-		//
-		//	card, err = db.GetCard(card.Land.Name)
-		//	Expect(err).ToNot(HaveOccurred())
-		//	Expect(card).ToNot(BeNil())
-		//	Expect(card.Land.Name).To(Equal(card.Land.Name))
-		//})
-	})
+		It("Can Read and write a Land card", func() {
+			card := test.NewLandCard("test-land")
+			rowsAffected, err := db.WriteCard(card)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(rowsAffected).To(Equal(int64(1)))
 
-})
+			newCard, err := db.GetCard(card.Name)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(newCard).ToNot(BeNil())
+			Expect(newCard.Land).To(Equal(card.Land))
+			Expect(newCard.NonLand).To(Equal(card.NonLand))
+		})
 
-var _ = Describe("toGormModel", func() {
-	It("Correctly translates a land to a gorm model", func() {
-		card := test.NewLandCard("test-land")
-		land, err := toGormModel(card)
-
-		newCard, err := land.Get()
-		Expect(err).ToNot(HaveOccurred())
-		Expect(newCard.Name).To(Equal(card.Name))
-		Expect(newCard.Colors).To(Equal(card.Land.Colors))
-		Expect(newCard.EntersTapped).To(Equal(card.Land.EntersTapped))
-		Expect(newCard.Types).To(Equal(card.Land.Types))
-		Expect(newCard.UntappedCondition).To(Equal(card.Land.UntappedCondition))
-		Expect(newCard.ActivationCost).To(Equal(card.Land.ActivationCost))
+		It("Can Do batch reads and writes of lands and nonlands", func() {
+			count := 1000
+			cards := make([]*model.Card, 2*count)
+			for i := 0; i < count; i++ {
+				cards[i] = test.NewLandCard(fmt.Sprintf("test-land-%d", i))
+			}
+			for i := 0; i < count; i++ {
+				cards[i+count] = test.NewNonLandCard(fmt.Sprintf("test-land-%d", i))
+			}
+			row, err := db.WriteCards(cards)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(row).To(Equal(int64(2 * count)))
+		})
 	})
 })
