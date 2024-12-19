@@ -26,6 +26,14 @@ service ManabaseSimulator {
       name: "simulate" // query name
     };
   };
+
+  // ValidateDeckList validates a deckList is allowed to be played and can be simulated.
+  rpc ValidateDeckList(ValidateDeckListRequest) returns (ValidateDeckListResponse) {
+    option (graphql.schema) = {
+      type: QUERY
+      name: "validate"
+    };
+  };
 }
 
 message EchoRequest {
@@ -47,6 +55,20 @@ message SimulateDeckResponse {
   string message = 1;
   float successRate = 2;
   repeated ResultCheckpoint checkpoints = 3;
+}
+
+message ValidateDeckListRequest {
+  string deckList = 1;
+}
+
+message ValidateDeckListResponse {
+  bool isValid = 1;
+  repeated InvalidCard invalidCards = 2;
+}
+
+message InvalidCard {
+  string name = 1;
+  string reason = 2;
 }
 
 message DeckList {

@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ManabaseSimulator_Echo_FullMethodName         = "/manabase_simulation.ManabaseSimulator/Echo"
-	ManabaseSimulator_SimulateDeck_FullMethodName = "/manabase_simulation.ManabaseSimulator/SimulateDeck"
+	ManabaseSimulator_Echo_FullMethodName             = "/manabase_simulation.ManabaseSimulator/Echo"
+	ManabaseSimulator_SimulateDeck_FullMethodName     = "/manabase_simulation.ManabaseSimulator/SimulateDeck"
+	ManabaseSimulator_ValidateDeckList_FullMethodName = "/manabase_simulation.ManabaseSimulator/ValidateDeckList"
 )
 
 // ManabaseSimulatorClient is the client API for ManabaseSimulator service.
@@ -30,6 +31,8 @@ type ManabaseSimulatorClient interface {
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 	// SimulateDeck simulates a deck against a given objective with the provided configuration.
 	SimulateDeck(ctx context.Context, in *SimulateDeckRequest, opts ...grpc.CallOption) (*SimulateDeckResponse, error)
+	// ValidateDecklist validates a decklist is allowed to be played and can be simulated.
+	ValidateDeckList(ctx context.Context, in *ValidateDeckListRequest, opts ...grpc.CallOption) (*ValidateDeckListResponse, error)
 }
 
 type manabaseSimulatorClient struct {
@@ -60,6 +63,16 @@ func (c *manabaseSimulatorClient) SimulateDeck(ctx context.Context, in *Simulate
 	return out, nil
 }
 
+func (c *manabaseSimulatorClient) ValidateDeckList(ctx context.Context, in *ValidateDeckListRequest, opts ...grpc.CallOption) (*ValidateDeckListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ValidateDeckListResponse)
+	err := c.cc.Invoke(ctx, ManabaseSimulator_ValidateDeckList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ManabaseSimulatorServer is the server API for ManabaseSimulator service.
 // All implementations must embed UnimplementedManabaseSimulatorServer
 // for forward compatibility.
@@ -67,6 +80,8 @@ type ManabaseSimulatorServer interface {
 	Echo(context.Context, *EchoRequest) (*EchoResponse, error)
 	// SimulateDeck simulates a deck against a given objective with the provided configuration.
 	SimulateDeck(context.Context, *SimulateDeckRequest) (*SimulateDeckResponse, error)
+	// ValidateDecklist validates a decklist is allowed to be played and can be simulated.
+	ValidateDeckList(context.Context, *ValidateDeckListRequest) (*ValidateDeckListResponse, error)
 	mustEmbedUnimplementedManabaseSimulatorServer()
 }
 
@@ -82,6 +97,9 @@ func (UnimplementedManabaseSimulatorServer) Echo(context.Context, *EchoRequest) 
 }
 func (UnimplementedManabaseSimulatorServer) SimulateDeck(context.Context, *SimulateDeckRequest) (*SimulateDeckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SimulateDeck not implemented")
+}
+func (UnimplementedManabaseSimulatorServer) ValidateDeckList(context.Context, *ValidateDeckListRequest) (*ValidateDeckListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateDeckList not implemented")
 }
 func (UnimplementedManabaseSimulatorServer) mustEmbedUnimplementedManabaseSimulatorServer() {}
 func (UnimplementedManabaseSimulatorServer) testEmbeddedByValue()                           {}
@@ -140,6 +158,24 @@ func _ManabaseSimulator_SimulateDeck_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ManabaseSimulator_ValidateDeckList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateDeckListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ManabaseSimulatorServer).ValidateDeckList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ManabaseSimulator_ValidateDeckList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ManabaseSimulatorServer).ValidateDeckList(ctx, req.(*ValidateDeckListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ManabaseSimulator_ServiceDesc is the grpc.ServiceDesc for ManabaseSimulator service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -154,6 +190,10 @@ var ManabaseSimulator_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SimulateDeck",
 			Handler:    _ManabaseSimulator_SimulateDeck_Handler,
+		},
+		{
+			MethodName: "ValidateDeckList",
+			Handler:    _ManabaseSimulator_ValidateDeckList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
