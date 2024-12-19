@@ -61,4 +61,34 @@ const (
 
 	// Whatever Represents any color of mana. This is used primarily for wildcard mana producers, but I'm unsure if this is really necessary.
 	Whatever ManaColor = "Whatever"
+
+	// Azorius Represents White and Blue mana hybrid.
+	Azorius ManaColor = "Azorius"
+
+	// Orzhov Represents White and Black mana hybrid.
+	Orzhov ManaColor = "Orzhov"
+
+	// Boros Represents White and Red mana hybrid.
+	Boros ManaColor = "Boros"
+
+	// Selesnya Represents White and Green mana hybrid.
+	Selesnya ManaColor = "Selesnya"
+
+	// Dimir Represents Blue and Black mana hybrid.
+	Dimir ManaColor = "Dimir"
+
+	// Izzet Represents Blue and Red mana hybrid.
+	Izzet ManaColor = "Izzet"
+
+	// Simic Represents Blue and Green mana hybrid.
+	Simic ManaColor = "Simic"
+
+	// Rakdos Represents Black and Red mana hybrid.
+	Rakdos ManaColor = "Rakdos"
+
+	// Golgari Represents Black and Green mana hybrid.
+	Golgari ManaColor = "Golgari"
+
+	// Gruul Represents Red and Green mana hybrid.
+	Gruul ManaColor = "Gruul"
 )

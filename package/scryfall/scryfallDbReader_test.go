@@ -25,7 +25,7 @@ var _ = Describe("ScryfallDbReader", func() {
 	})
 })
 
-var _ = Describe("ScryfallDbReader Do theThing", func() {
+var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-lands in Standard", func() {
 	When("Parsing lands cards", func() {
 		It("Can parse all of the provided land cards in one go and write them to the DB", func() {
 			cfg := postgres.Config{
@@ -127,6 +127,47 @@ var _ = Describe("ScryfallDbReader Do theThing", func() {
 			Expect(card.Land.Colors).To(ConsistOf(model.Green))
 			Expect(card.Land.EntersTapped).To(BeTrue())
 			Expect(card.Land.UntappedCondition.Type).To(Equal(model.ArgothLand))
+		})
+	})
+
+	When("Parsing non-lands cards", func() {
+		It("Can parse all of the provided non-land cards in one go and write them to the DB", func() {
+			cfg := postgres.Config{
+				DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("HOST"), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), "app", os.Getenv("PORT")),
+			}
+
+			db, err := validation.NewPsqlDbAccessor(cfg)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(db).ToNot(BeNil())
+
+			nonLands, err := reader.ReadJSONFile[[]ScryfallCard]("../../data/non-lands.json")
+			Expect(err).ToNot(HaveOccurred())
+			parsedNonLands, err := WriteNonLandsToDB(db, nonLands, false)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(parsedNonLands).To(HaveLen(3080))
+		})
+
+		It("Can correctly parse a casting cost", func() {
+			cost := `{5}{W}{U}{B}{R}{G}{C}`
+			manacost := parseNonLandCastingCost(cost)
+			Expect(manacost.ColorRequirements).To(HaveLen(6))
+			Expect(manacost.ColorRequirements).To(ConsistOf(model.White, model.Blue, model.Red, model.Black, model.Green, model.Colorless))
+			Expect(manacost.GenericCost).To(Equal(5))
+		})
+
+		It("Can correctly parse a casting cost", func() {
+			cost := `{0}`
+			manacost := parseNonLandCastingCost(cost)
+			Expect(manacost.ColorRequirements).To(HaveLen(0))
+			Expect(manacost.GenericCost).To(Equal(0))
+		})
+
+		It("Can correclty parse color pairs", func() {
+			cost := `{W/U}{W/B}{W/R}{W/G}{U/B}{U/R}{U/G}{B/R}{B/G}{R/G}`
+			manacost := parseNonLandCastingCost(cost)
+			Expect(manacost.ColorRequirements).To(HaveLen(10))
+			Expect(manacost.ColorRequirements).To(ConsistOf(model.Azorius, model.Orzhov, model.Boros, model.Selesnya, model.Dimir, model.Izzet, model.Simic, model.Rakdos, model.Golgari, model.Gruul))
+			Expect(manacost.GenericCost).To(Equal(0))
 		})
 	})
 })

@@ -6,6 +6,7 @@ import (
 	"manabase-simulation/package/reader"
 	"manabase-simulation/package/validation"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -129,10 +130,64 @@ func ReadScryfallDataJSONFile(filename string) (map[string]ScryfallCard, error) 
 	return cardsLookup, nil
 }
 
+// WriteNonLandsToDB Reads all the non-lands from Scryfall and uploads them to the database in a parsed format.
+func WriteNonLandsToDB(accessor validation.CardDbAccessor, nonLands []ScryfallCard, writeToDB bool) ([]*model.Card, error) {
+	parsedNonLands := make([]*model.Card, len(nonLands))
+	for i, nonLand := range nonLands {
+		card := parseNonLandCard(nonLand)
+		if writeToDB {
+			_, err := accessor.WriteCard(parseNonLandCard(nonLand))
+			if err != nil {
+				return parsedNonLands, err
+			}
+		}
+		println(fmt.Sprintf("Adding %s", card.Name))
+		parsedNonLands[i] = card
+	}
+	return parsedNonLands, nil
+}
+
+func parseNonLandCard(card ScryfallCard) *model.Card {
+	nonLand := &model.NonLand{
+		Name:        card.Name,
+		CastingCost: parseNonLandCastingCost(card.ManaCost),
+		Quantity:    1,
+	}
+
+	return &model.Card{
+		Name:    card.Name,
+		Land:    nil,
+		NonLand: nonLand,
+	}
+
+}
+
+func parseNonLandCastingCost(cost string) model.ManaCost {
+	re := regexp.MustCompile(`\{([^{}]*)\}`)
+	matches := re.FindAllStringSubmatch(cost, -1)
+
+	manaCost := model.ManaCost{}
+
+	// Extract and print the captured groups
+	for _, m := range matches {
+		if len(m) > 1 {
+			// Kind of a funky way to determine if it's a number, but whatever.
+			if i, err := strconv.Atoi(m[1]); err == nil {
+				manaCost.GenericCost = i
+			} else {
+				color := charToManaColor(m[1])
+				manaCost.ColorRequirements = append(manaCost.ColorRequirements, color)
+			}
+		}
+	}
+
+	return manaCost
+}
+
 // WriteLandsToDB Reads all the lands from Scryfall and uploads them to the database in a parsed format.
 func WriteLandsToDB(accessor validation.CardDbAccessor, lands []ScryfallCard, writeToDB bool) ([]*model.Card, error) {
-	parsedLands := make([]*model.Card, 0)
-	for _, land := range lands {
+	parsedLands := make([]*model.Card, len(lands))
+	for i, land := range lands {
 		card := parseLandCard(land)
 		if writeToDB {
 			_, err := accessor.WriteCard(parseLandCard(land))
@@ -141,7 +196,7 @@ func WriteLandsToDB(accessor validation.CardDbAccessor, lands []ScryfallCard, wr
 			}
 		}
 		println(fmt.Sprintf("Adding %s", card.Name))
-		parsedLands = append(parsedLands, card)
+		parsedLands[i] = card
 	}
 	return parsedLands, nil
 }
@@ -215,6 +270,26 @@ func charToManaColor(c string) model.ManaColor {
 		return model.Red
 	case "G":
 		return model.Green
+	case "W/U":
+		return model.Azorius
+	case "W/B":
+		return model.Orzhov
+	case "W/R":
+		return model.Boros
+	case "W/G":
+		return model.Selesnya
+	case "U/B":
+		return model.Dimir
+	case "U/R":
+		return model.Izzet
+	case "U/G":
+		return model.Simic
+	case "B/R":
+		return model.Rakdos
+	case "B/G":
+		return model.Golgari
+	case "R/G":
+		return model.Gruul
 	default:
 		return model.Colorless
 	}
