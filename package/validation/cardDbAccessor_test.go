@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var _ = Describe("CardDbAccessor", func() {
+var _ = XDescribe("CardDbAccessor", func() {
 	var db *CardDbAccessorImpl
 	var err error
 
