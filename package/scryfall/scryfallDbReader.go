@@ -1,6 +1,12 @@
-package reader
+package scryfall
 
 import (
+	"fmt"
+	"manabase-simulation/package/model"
+	"manabase-simulation/package/reader"
+	"manabase-simulation/package/validation"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -111,7 +117,7 @@ func (c *CustomDate) UnmarshalJSON(b []byte) error {
 // ReadScryfallDataJSONFile Reads a Scryfall JSON Dump file.
 func ReadScryfallDataJSONFile(filename string) (map[string]ScryfallCard, error) {
 	var cards []ScryfallCard
-	cards, err := ReadJSONFile[[]ScryfallCard](filename)
+	cards, err := reader.ReadJSONFile[[]ScryfallCard](filename)
 	if err != nil {
 		return nil, err
 	}
@@ -121,4 +127,127 @@ func ReadScryfallDataJSONFile(filename string) (map[string]ScryfallCard, error) 
 		cardsLookup[card.Name] = card
 	}
 	return cardsLookup, nil
+}
+
+// WriteLandsToDB Reads all the lands from Scryfall and uploads them to the database in a parsed format.
+func WriteLandsToDB(accessor validation.CardDbAccessor, lands []ScryfallCard, writeToDB bool) ([]*model.Card, error) {
+	parsedLands := make([]*model.Card, 0)
+	for _, land := range lands {
+		card := parseLandCard(land)
+		if writeToDB {
+			_, err := accessor.WriteCard(parseLandCard(land))
+			if err != nil {
+				return parsedLands, err
+			}
+		}
+		println(fmt.Sprintf("Adding %s", card.Name))
+		parsedLands = append(parsedLands, card)
+	}
+	return parsedLands, nil
+}
+
+// parseLandCard parses a land card from Scryfall and returns a model.Card.
+func parseLandCard(card ScryfallCard) *model.Card {
+	l := model.Land{
+		Name:         card.Name,
+		Colors:       make([]model.ManaColor, 0),
+		EntersTapped: false,
+		Quantity:     1,
+		Types:        make([]model.LandType, 0),
+	}
+	for _, manaColor := range card.ProducedMana {
+		l.Colors = append(l.Colors, charToManaColor(manaColor))
+	}
+	l.Types = parseLandTypes(card.TypeLine)
+
+	entersTapped, untappedCondition := parseOracleTextForEntersTapped(l.Name, card.OracleText)
+	l.EntersTapped = entersTapped
+	l.UntappedCondition = untappedCondition
+
+	return &model.Card{
+		Name:    l.Name,
+		Land:    &l,
+		NonLand: nil,
+	}
+}
+
+func parseOracleTextForEntersTapped(name string, s string) (entersTapped bool, cond *model.UntappedCondition) {
+	cond = nil
+	entersTapped = false
+	pattern := fmt.Sprintf("%s enters tapped", name)
+	re := regexp.MustCompile(pattern)
+
+	regexmatch := re.FindStringSubmatch(s)
+	if len(regexmatch) >= 1 {
+		entersTapped = true
+		pattern = fmt.Sprintf("%s enters tapped unless (.*)", name)
+		re = regexp.MustCompile(pattern)
+		regexmatch = re.FindStringSubmatch(s)
+		if len(regexmatch) > 1 {
+			cond = &model.UntappedCondition{}
+			switch regexmatch[1] {
+			case "a player has 13 or less life.":
+				cond.Type = model.UnluckyLand
+			case "you control two or fewer other lands.":
+				cond.Type = model.FastLand
+			case "you revealed a Soldier card this way or you control a Soldier.":
+				cond.Type = model.TypalLand
+			case "you control a legendary green creature.":
+				cond.Type = model.ArgothLand
+			default:
+				println(fmt.Sprintf("Unknown condition for %s", name))
+				cond = nil
+			}
+		}
+	}
+	return entersTapped, cond
+}
+
+func charToManaColor(c string) model.ManaColor {
+	switch c {
+	case "W":
+		return model.White
+	case "U":
+		return model.Blue
+	case "B":
+		return model.Black
+	case "R":
+		return model.Red
+	case "G":
+		return model.Green
+	default:
+		return model.Colorless
+	}
+}
+
+func parseLandTypes(s string) []model.LandType {
+	parsedLandTypes := make([]model.LandType, 0)
+
+	types := match(s)
+	if types != nil {
+		landTypes := strings.Split(strings.TrimSpace(*types), " ")
+		for _, landType := range landTypes {
+			lType := strToLandType(landType)
+			if lType != nil {
+				parsedLandTypes = append(parsedLandTypes, *lType)
+			}
+		}
+	}
+	return parsedLandTypes
+}
+
+func strToLandType(s string) *model.LandType {
+	landType := model.LandType(s)
+	return &landType
+}
+
+func match(s string) *string {
+	pattern := `Land —\s*(.*)`
+	re := regexp.MustCompile(pattern)
+
+	regexmatch := re.FindStringSubmatch(s)
+	if len(regexmatch) > 1 {
+		return &regexmatch[1]
+	}
+	return nil
 }

@@ -25,7 +25,7 @@ test: fetch-data
 fetch-data:
 	if [ ! -d "data" ]; then mkdir data; fi
 	echo "Checking for missing scryfall-db"
-	if [ ! -f "data/scryfall-db.json" ]; then curl -o data/scryfall-db.json https://data.scryfall.io/oracle-cards/oracle-cards-20241112220333.json; fi
+	if [ ! -f "data/scryfall-db.json" ]; then curl -o data/scryfall-db.json https://data.scryfall.io/oracle-cards/oracle-cards-20241217220246.json; fi
 
 clean:
 	rm -r ./build

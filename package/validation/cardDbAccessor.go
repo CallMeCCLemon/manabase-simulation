@@ -15,23 +15,6 @@ type GormCard struct {
 	NonLand string
 }
 
-type GormLand struct {
-	gorm.Model
-	Name              string `gorm:"uniqueIndex"`
-	EntersTapped      bool
-	Colors            string
-	Types             string
-	UntappedCondition string
-	ActivationCost    string
-}
-
-type GormNonLand struct {
-	gorm.Model
-	Name        string `gorm:"uniqueIndex"`
-	CastingCost string
-	Quantity    int
-}
-
 func toGormCard(card *model.Card) (*GormCard, error) {
 	var land []byte
 	land, err := json.Marshal(card.Land)
@@ -118,18 +101,7 @@ func NewCardDbAccessor(d gorm.Dialector) (*CardDbAccessorImpl, error) {
 }
 
 func (c *CardDbAccessorImpl) CreateTables() error {
-	err := c.GormDB.AutoMigrate(&GormLand{})
-	if err != nil {
-		return err
-	}
-
-	err = c.GormDB.AutoMigrate(&GormCard{})
-	if err != nil {
-		return err
-	}
-
-	err = c.GormDB.AutoMigrate(&GormNonLand{})
-	return err
+	return c.GormDB.AutoMigrate(&GormCard{})
 }
 
 func (c *CardDbAccessorImpl) GetCard(name string) (*model.Card, error) {

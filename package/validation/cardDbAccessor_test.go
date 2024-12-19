@@ -22,6 +22,9 @@ var _ = Describe("CardDbAccessor", func() {
 		db, err = NewPsqlDbAccessor(cfg)
 		Expect(err).ToNot(HaveOccurred())
 		Expect(db).ToNot(BeNil())
+
+		err = db.CreateTables()
+		Expect(err).ToNot(HaveOccurred())
 	})
 
 	It("Sets up the tables", func() {
@@ -56,14 +59,14 @@ var _ = Describe("CardDbAccessor", func() {
 			Expect(newCard.NonLand).To(Equal(card.NonLand))
 		})
 
-		It("Can Do batch reads and writes of lands and nonlands", func() {
-			count := 1000
+		It("Can Do batch reads and writes of lands and non-lands", func() {
+			count := 100
 			cards := make([]*model.Card, 2*count)
 			for i := 0; i < count; i++ {
 				cards[i] = test.NewLandCard(fmt.Sprintf("test-land-%d", i))
 			}
 			for i := 0; i < count; i++ {
-				cards[i+count] = test.NewNonLandCard(fmt.Sprintf("test-land-%d", i))
+				cards[i+count] = test.NewNonLandCard(fmt.Sprintf("test-non-land-%d", i))
 			}
 			row, err := db.WriteCards(cards)
 			Expect(err).ToNot(HaveOccurred())

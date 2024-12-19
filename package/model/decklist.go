@@ -128,6 +128,15 @@ const (
 
 	// CheckLand is a condition where a land enters untapped if there is a land of the specified type on the board.
 	CheckLand ConditionType = "CheckLand"
+
+	// UnluckyLand is a condition where a land enters untapped if any player has 13 or less life.
+	UnluckyLand ConditionType = "UnluckyLand"
+
+	// TypalLand is a condition where a land enters untapped if the specified type is on the board.
+	TypalLand ConditionType = "TypalLand"
+
+	// ArgothLand is a condition where a land enters untapped if a legendary green creature is on the board.
+	ArgothLand ConditionType = "ArgothLand"
 )
 
 // CheckLandData is supplemental data provided with a CheckLand condition.
