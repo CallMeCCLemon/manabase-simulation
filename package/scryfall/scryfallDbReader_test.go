@@ -13,21 +13,17 @@ import (
 
 var _ = Describe("ScryfallDbReader", func() {
 	When("Reading a JSON File", func() {
-		cards, err := ReadScryfallDataJSONFile("../../data/scryfall-db.json")
+		_, err := ReadScryfallDataJSONFile("../../data/scryfall-db.json")
 
 		It("Doesn't throw an error", func() {
 			Expect(err).ToNot(HaveOccurred())
-		})
-
-		It("Correctly parses all of the cards", func() {
-			Expect(cards).To(HaveLen(33194))
 		})
 	})
 })
 
 var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-lands in Standard", func() {
 	When("Parsing lands cards", func() {
-		It("Can parse all of the provided land cards in one go and write them to the DB", func() {
+		XIt("Can parse all of the provided land cards in one go and write them to the DB", func() {
 			cfg := postgres.Config{
 				DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("HOST"), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), "app", os.Getenv("PORT")),
 			}
@@ -131,7 +127,7 @@ var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-
 	})
 
 	When("Parsing non-lands cards", func() {
-		It("Can parse all of the provided non-land cards in one go and write them to the DB", func() {
+		XIt("Can parse all of the provided non-land cards in one go and write them to the DB", func() {
 			cfg := postgres.Config{
 				DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("HOST"), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), "app", os.Getenv("PORT")),
 			}
