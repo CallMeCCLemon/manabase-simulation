@@ -21,7 +21,7 @@ run-gql: build-gql
 	./build/gql-main
 
 test: fetch-data
-	go test ./...
+	go test -cover ./...
 
 fetch-data:
 	if [ ! -d "data" ]; then mkdir data; fi

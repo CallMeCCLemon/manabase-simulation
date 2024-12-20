@@ -1,0 +1,93 @@
+package service
+
+import (
+	"context"
+	"fmt"
+	"google.golang.org/grpc/health"
+	"gorm.io/driver/postgres"
+	"log"
+	"manabase-simulation/api"
+	"manabase-simulation/package/facade"
+	"manabase-simulation/package/logging"
+	"manabase-simulation/package/simulation"
+	"manabase-simulation/package/validation"
+	"sync"
+)
+
+type ManabaseSimulatorServer struct {
+	api.UnimplementedManabaseSimulatorServer
+
+	mu sync.Mutex // protects routeNotes
+
+	cfg postgres.Config
+}
+
+func NewManabaseSimulatorServer(cfg postgres.Config) *ManabaseSimulatorServer {
+	s := &ManabaseSimulatorServer{
+		cfg: cfg,
+	}
+	return s
+}
+
+func NewHealthServer() *health.Server {
+	s := health.NewServer()
+	return s
+}
+
+func (s *ManabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.SimulateDeckRequest) (*api.SimulateDeckResponse, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	logger := logging.CreateLogger()
+	logger.Info(fmt.Sprintf("SimulateDeckRequest: %s", in))
+
+	deckList := facade.ToInternalDeckList(in.DeckList)
+	gameConfig := facade.ToInternalGameConfiguration(in.GameConfiguration)
+	objective := facade.ToInternalTestObjective(in.Objective)
+
+	checkpoints := simulation.Simulate(ctx, deckList, gameConfig, objective)
+	externalCheckpoints := make([]*api.ResultCheckpoint, len(checkpoints))
+	for i, c := range checkpoints {
+		externalCheckpoints[i] = facade.ToExternalResultCheckpoint(c)
+	}
+
+	response := &api.SimulateDeckResponse{
+		Message:     "The server did the thing!",
+		SuccessRate: checkpoints[len(checkpoints)-1].GetSuccessRate(),
+		Checkpoints: externalCheckpoints,
+	}
+	logger.Info(fmt.Sprintf("SimulateDeckResponse SuccessRate: %f, Message: %s", response.SuccessRate, response.Message))
+	return response, nil
+}
+
+func (s *ManabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest) (*api.EchoResponse, error) {
+	log.Println(fmt.Sprintf("EchoRequest: %s", in.Message))
+	return &api.EchoResponse{
+		Message: in.Message,
+	}, nil
+}
+
+func (s *ManabaseSimulatorServer) ValidateDeckList(ctx context.Context, in *api.ValidateDeckListRequest) (*api.ValidateDeckListResponse, error) {
+	log.Println(fmt.Sprintf("ValidateDeckListRequest: %s", in.DeckList))
+
+	parser := validation.NewDefaultParser(s.cfg)
+
+	_, invalidCards, err := parser.Parse(in.DeckList)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(invalidCards) > 0 {
+		externalInvalidCards := make([]*api.InvalidCard, len(invalidCards))
+		for i, c := range invalidCards {
+			externalInvalidCards[i] = facade.ToExternalInvalidCard(c)
+		}
+		return &api.ValidateDeckListResponse{
+			IsValid:      false,
+			InvalidCards: externalInvalidCards,
+		}, nil
+	}
+
+	return &api.ValidateDeckListResponse{
+		IsValid: true,
+	}, nil
+}
