@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/reflection"
 	"manabase-simulation/package/logging"
 	"manabase-simulation/package/simulation"
+	"manabase-simulation/package/util/test"
 
 	"log"
 	"manabase-simulation/api"
@@ -57,7 +58,7 @@ func main() {
 		opts = []grpc.ServerOption{grpc.Creds(creds)}
 	}
 	grpcServer := grpc.NewServer(opts...)
-	api.RegisterManabaseSimulatorServer(grpcServer, newManabaseSimulatorServer())
+	api.RegisterManabaseSimulatorServer(grpcServer, newManabaseSimulatorServer(test.GetDBConfig()))
 	grpc_health_v1.RegisterHealthServer(grpcServer, newHealthServer())
 	reflection.Register(grpcServer)
 	log.Println("Serving gRPC traffic now")

@@ -140,6 +140,9 @@ spec:
               cpu: "500m"
               memory: "128Mi"
           imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: mtg-mana-sim-app-psql-db-app
 ---
 apiVersion: v1
 kind: Service

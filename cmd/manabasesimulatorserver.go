@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc/health"
+	"gorm.io/driver/postgres"
 	"log"
 	"manabase-simulation/api"
 	"manabase-simulation/package/facade"
 	"manabase-simulation/package/logging"
+	"manabase-simulation/package/validation"
 	"sync"
 )
 
@@ -15,10 +17,14 @@ type manabaseSimulatorServer struct {
 	api.UnimplementedManabaseSimulatorServer
 
 	mu sync.Mutex // protects routeNotes
+
+	cfg postgres.Config
 }
 
-func newManabaseSimulatorServer() *manabaseSimulatorServer {
-	s := &manabaseSimulatorServer{}
+func newManabaseSimulatorServer(cfg postgres.Config) *manabaseSimulatorServer {
+	s := &manabaseSimulatorServer{
+		cfg: cfg,
+	}
 	return s
 }
 
@@ -61,6 +67,24 @@ func (s *manabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest)
 
 func (s *manabaseSimulatorServer) ValidateDeckList(ctx context.Context, in *api.ValidateDeckListRequest) (*api.ValidateDeckListResponse, error) {
 	log.Println(fmt.Sprintf("ValidateDeckListRequest: %s", in.DeckList))
+
+	parser := validation.NewDefaultParser(s.cfg)
+
+	_, invalidCards, err := parser.Parse(in.DeckList)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(invalidCards) > 0 {
+		externalInvalidCards := make([]*api.InvalidCard, len(invalidCards))
+		for i, c := range invalidCards {
+			externalInvalidCards[i] = facade.ToExternalInvalidCard(c)
+		}
+		return &api.ValidateDeckListResponse{
+			IsValid:      false,
+			InvalidCards: externalInvalidCards,
+		}, nil
+	}
 
 	return &api.ValidateDeckListResponse{
 		IsValid: true,
