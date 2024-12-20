@@ -12,4 +12,4 @@ COPY --from=builder /app/main .
 
 ENV GODEBUG="http2debug=1"
 EXPOSE 9000
-CMD ["./main", "-port=9000"]
+CMD ["./main", "-server-port=9000"]

@@ -71,7 +71,7 @@ func NewNonLand(name string) *model.NonLand {
 
 func GetDBConfig() postgres.Config {
 	cfg := postgres.Config{
-		DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("HOST"), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), "app", os.Getenv("PORT")),
+		DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("host"), os.Getenv("username"), os.Getenv("password"), "app", os.Getenv("port")),
 	}
 	return cfg
 }

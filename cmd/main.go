@@ -13,8 +13,8 @@ import (
 	"manabase-simulation/package/facade"
 	"manabase-simulation/package/logging"
 	"manabase-simulation/package/simulation"
-	"manabase-simulation/package/util/test"
 	"manabase-simulation/package/validation"
+	"os"
 
 	"log"
 	"manabase-simulation/api"
@@ -30,7 +30,7 @@ var (
 	tls      = flag.Bool("tls", false, "Connection uses TLS if true, else plain TCP")
 	certFile = flag.String("cert_file", "", "The TLS cert file")
 	keyFile  = flag.String("key_file", "", "The TLS key file")
-	port     = flag.Int("port", 8889, "The server port")
+	port     = flag.Int("server-port", 8889, "The server port")
 )
 
 const (
@@ -136,7 +136,7 @@ func main() {
 		opts = []grpc.ServerOption{grpc.Creds(creds)}
 	}
 	grpcServer := grpc.NewServer(opts...)
-	api.RegisterManabaseSimulatorServer(grpcServer, newManabaseSimulatorServer(test.GetDBConfig()))
+	api.RegisterManabaseSimulatorServer(grpcServer, newManabaseSimulatorServer(getDBConfig()))
 	grpc_health_v1.RegisterHealthServer(grpcServer, newHealthServer())
 	reflection.Register(grpcServer)
 	log.Println("Serving gRPC traffic now")
@@ -199,4 +199,11 @@ func simulate(ctx context.Context, decklist model.DeckList, configuration model.
 func start(ctx context.Context, deckList model.DeckList, gameConfiguration model.GameConfiguration, objective model.TestObjective, c chan bool, wg *sync.WaitGroup) {
 	defer wg.Done()
 	c <- simulation.SimulateDeck(ctx, deckList, gameConfiguration, objective)
+}
+
+func getDBConfig() postgres.Config {
+	cfg := postgres.Config{
+		DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("host"), os.Getenv("username"), os.Getenv("password"), "app", os.Getenv("port")),
+	}
+	return cfg
 }
