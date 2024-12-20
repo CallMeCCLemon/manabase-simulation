@@ -9,16 +9,14 @@ var _ = Describe("DeckList", func() {
 	When("Getting the card count", func() {
 		It("correctly counts all of the lands and nonlands", func() {
 			deckList := DeckList{
-				Lands: []Land{
-					*CreateUntappedLand([]ManaColor{White}),
-					*CreateUntappedLand([]ManaColor{White, Blue}),
-					*CreateUntappedLand([]ManaColor{Red, Blue}),
-					*CreateUntappedLand([]ManaColor{Red, Blue, White}),
-				},
-				NonLands: []NonLand{
-					*CreateSampleNonLand(),
-					*CreateSampleNonLand(),
-					*CreateSampleNonLand(),
+				Cards: []Card{
+					*CreateUntappedLandCard([]ManaColor{White}),
+					*CreateUntappedLandCard([]ManaColor{White, Blue}),
+					*CreateUntappedLandCard([]ManaColor{Red, Blue}),
+					*CreateUntappedLandCard([]ManaColor{Red, Blue, White}),
+					*CreateSampleNonLandCard(),
+					*CreateSampleNonLandCard(),
+					*CreateSampleNonLandCard(),
 				},
 			}
 

@@ -5,6 +5,15 @@ import (
 	"sort"
 )
 
+func CreateUntappedLandCard(colors []ManaColor) *Card {
+	return &Card{
+		Name:     "dummy-untapped-land",
+		Land:     CreateUntappedLand(colors),
+		NonLand:  nil,
+		Quantity: 1,
+	}
+}
+
 func CreateUntappedLand(colors []ManaColor) *Land {
 	return &Land{
 		Name:           "dummy-untapped-land",
@@ -22,6 +31,15 @@ func CreateTappedLand(colors []ManaColor) *Land {
 		EntersTapped:   true,
 		ActivationCost: nil,
 		Quantity:       1,
+	}
+}
+
+func CreateSampleNonLandCard() *Card {
+	return &Card{
+		Name:     "dummy-nonland",
+		Land:     nil,
+		NonLand:  CreateSampleNonLand(),
+		Quantity: 1,
 	}
 }
 

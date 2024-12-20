@@ -3,8 +3,10 @@ package test
 
 import (
 	"fmt"
+	"gorm.io/driver/postgres"
 	"manabase-simulation/package/model"
 	"math/rand"
+	"os"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
@@ -65,6 +67,13 @@ func NewNonLand(name string) *model.NonLand {
 		},
 		Quantity: 1,
 	}
+}
+
+func GetDBConfig() postgres.Config {
+	cfg := postgres.Config{
+		DSN: fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", os.Getenv("HOST"), os.Getenv("USERNAME"), os.Getenv("PASSWORD"), "app", os.Getenv("PORT")),
+	}
+	return cfg
 }
 
 func randSeq(n int) string {

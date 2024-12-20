@@ -63,6 +63,9 @@ type CardDbAccessor interface {
 	// GetCard returns a card from the database.
 	GetCard(name string) (*model.Card, error)
 
+	// GetCards returns a batch of cards from the database. A nil pointer to a card for a key indicates it doesn't exist.
+	GetCards(names []string) (map[string]*model.Card, error)
+
 	// WriteCard writes a single card to the database.
 	WriteCard(card *model.Card) (int64, error)
 
@@ -112,6 +115,32 @@ func (c *CardDbAccessorImpl) GetCard(name string) (*model.Card, error) {
 	}
 
 	return toModelCard(card)
+}
+
+func (c *CardDbAccessorImpl) GetCards(names []string) (map[string]*model.Card, error) {
+	cards := make(map[string]*model.Card, len(names))
+	// Initialize the map with nil values to ensure every card has a key.
+	for _, name := range names {
+		cards[name] = nil
+	}
+
+	gormCards := make([]*GormCard, len(names))
+
+	res := c.GormDB.Where("name IN (?)", names).Find(&gormCards)
+
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	for _, card := range gormCards {
+		modelCard, err := toModelCard(card)
+		if err != nil {
+			return nil, err
+		}
+		cards[card.Name] = modelCard
+	}
+
+	return cards, nil
 }
 
 func (c *CardDbAccessorImpl) WriteCard(card *model.Card) (int64, error) {

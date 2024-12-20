@@ -31,7 +31,7 @@ type ManabaseSimulatorClient interface {
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 	// SimulateDeck simulates a deck against a given objective with the provided configuration.
 	SimulateDeck(ctx context.Context, in *SimulateDeckRequest, opts ...grpc.CallOption) (*SimulateDeckResponse, error)
-	// ValidateDecklist validates a decklist is allowed to be played and can be simulated.
+	// ValidateDeckList validates a deckList is allowed to be played and can be simulated.
 	ValidateDeckList(ctx context.Context, in *ValidateDeckListRequest, opts ...grpc.CallOption) (*ValidateDeckListResponse, error)
 }
 
@@ -80,7 +80,7 @@ type ManabaseSimulatorServer interface {
 	Echo(context.Context, *EchoRequest) (*EchoResponse, error)
 	// SimulateDeck simulates a deck against a given objective with the provided configuration.
 	SimulateDeck(context.Context, *SimulateDeckRequest) (*SimulateDeckResponse, error)
-	// ValidateDecklist validates a decklist is allowed to be played and can be simulated.
+	// ValidateDeckList validates a deckList is allowed to be played and can be simulated.
 	ValidateDeckList(context.Context, *ValidateDeckListRequest) (*ValidateDeckListResponse, error)
 	mustEmbedUnimplementedManabaseSimulatorServer()
 }

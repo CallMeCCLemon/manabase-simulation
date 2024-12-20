@@ -3,3 +3,4 @@ data/scryfall-db.json
 .DS_Store
 main
 build/**/*
+.env

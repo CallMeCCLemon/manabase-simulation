@@ -9,6 +9,7 @@ import (
 
 // DeckList Represents a playable deck of cards. Quantities are not guaranteed to be 1. This is what a user should be uploading for simplicity.
 type DeckList struct {
+	Cards    []Card    `json:"cards"`
 	Lands    []Land    `json:"lands"`
 	NonLands []NonLand `json:"nonLands"`
 }
@@ -25,6 +26,11 @@ func (d *DeckList) ToString() string {
 // GetTotalCardCount Returns the total number of cards in the deck.
 func (d *DeckList) GetTotalCardCount() int {
 	count := 0
+
+	for _, c := range d.Cards {
+		count += c.Quantity
+	}
+
 	for _, l := range d.Lands {
 		count += l.Quantity
 	}
@@ -81,6 +87,7 @@ type Land struct {
 	UntappedCondition *UntappedCondition `json:"untappedCondition,omitempty"`
 
 	// Quantity is the number of copies of this card in a deck.
+	// Deprecated: Quantity is no longer used.
 	Quantity int `json:"quantity"`
 }
 
@@ -259,5 +266,6 @@ type NonLand struct {
 	CastingCost ManaCost `json:"castingCost"`
 
 	// Quantity is the number of copies of this card in a deck.
+	// Deprecated: Quantity is no longer used.
 	Quantity int `json:"quantity"`
 }
