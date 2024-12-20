@@ -142,7 +142,7 @@ spec:
           imagePullPolicy: Always
           envFrom:
             - secretRef:
-                name: mtg-mana-sim-app-psql-db-app
+                name: mtg-mana-sim-app-psql-db-superuser
 ---
 apiVersion: v1
 kind: Service
