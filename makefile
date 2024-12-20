@@ -21,7 +21,10 @@ run-gql: build-gql
 	./build/gql-main
 
 test: fetch-data
-	go test -cover ./...
+	go test ./...
+
+test-k8s:
+	HOST=10.0.0.108:30003 go test ./... --ginkgo.label-filter "integration"
 
 fetch-data:
 	if [ ! -d "data" ]; then mkdir data; fi
