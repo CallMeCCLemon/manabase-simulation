@@ -1,6 +1,7 @@
 package integration_test
 
 import (
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"manabase-simulation/api"
@@ -24,10 +25,15 @@ func TestIntegrationTest(t *testing.T) {
 }
 
 var _ = BeforeSuite(func() {
+	err := godotenv.Load()
+	if err != nil {
+		Fail(err.Error())
+	}
+
 	go func() {
 		service.Start()
 	}()
-	
+
 	grpcEndpoint := os.Getenv("HOST")
 	if grpcEndpoint == "" {
 		grpcEndpoint = "localhost:8889"
