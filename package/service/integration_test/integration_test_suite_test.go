@@ -4,6 +4,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"manabase-simulation/api"
+	"manabase-simulation/package/service"
 	"os"
 	"testing"
 
@@ -13,12 +14,20 @@ import (
 
 var Client api.ManabaseSimulatorClient
 
+const (
+	IntegrationTestLabel = "integration"
+)
+
 func TestIntegrationTest(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "IntegrationTest Suite")
 }
 
 var _ = BeforeSuite(func() {
+	go func() {
+		service.Start()
+	}()
+	
 	grpcEndpoint := os.Getenv("HOST")
 	if grpcEndpoint == "" {
 		grpcEndpoint = "localhost:8889"

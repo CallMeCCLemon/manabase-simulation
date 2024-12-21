@@ -53,7 +53,7 @@ Sideboard
 `
 )
 
-var _ = Describe("ValidateDeckList Integration Test", Label("integration"), func() {
+var _ = Describe("ValidateDeckList Integration Test", Label(IntegrationTestLabel), func() {
 
 	It("Validates a valid deck list", func() {
 		resp, err := Client.ValidateDeckList(context.Background(), &api.ValidateDeckListRequest{
