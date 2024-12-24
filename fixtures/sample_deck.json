@@ -1,104 +1,122 @@
 {
-  "lands": [
+  "cards": [
     {
       "name": "Test-Mountain",
-      "colors": [
-        "red"
-      ],
-      "entersTapped": false,
+      "land": {
+        "colors": [
+          "red"
+        ],
+        "entersTapped": false
+      },
       "quantity": 1
     },
     {
       "name": "Test-Plains",
-      "colors": [
-        "white"
-      ],
-      "entersTapped": false,
+      "land": {
+        "colors": [
+          "white"
+        ],
+        "entersTapped": false
+      },
       "quantity": 1
     },
     {
       "name": "Test-Swamp",
-      "colors": [
-        "black"
-      ],
-      "entersTapped": false,
+      "land": {
+        "colors": [
+          "black"
+        ],
+        "entersTapped": false
+      },
       "quantity": 1
     },
     {
       "name": "Test-Island",
-      "colors": [
-        "blue"
-      ],
-      "entersTapped": false,
+      "land": {
+        "colors": [
+          "blue"
+        ],
+        "entersTapped": false
+      },
       "quantity": 1
     },
     {
       "name": "Test-Forest",
-      "colors": [
-        "green"
-      ],
-      "entersTapped": false,
+      "land": {
+        "colors": [
+          "green"
+        ],
+        "entersTapped": false
+      },
       "quantity": 1
-    }
-  ],
-  "nonLands": [
+    },
     {
       "name": "Test-Nonland-1",
-      "castingCost": {
-        "colorRequirements": [
-          "white",
-          "white",
-          "white"
-        ],
-        "genericCost": 1
+      "nonLand": {
+        "castingCost": {
+          "colorRequirements": [
+            "white",
+            "white",
+            "white"
+          ],
+          "genericCost": 1
+        }
       },
       "quantity": 1
     },
     {
       "name": "Test-Nonland-2",
-      "castingCost": {
-        "colorRequirements": [
-          "white",
-          "white",
-          "white"
-        ],
-        "genericCost": 1
+      "nonLand": {
+        "castingCost": {
+          "colorRequirements": [
+            "white",
+            "white",
+            "white"
+          ],
+          "genericCost": 1
+        }
       },
       "quantity": 1
     },
     {
       "name": "Test-Nonland-3",
-      "castingCost": {
-        "colorRequirements": [
-          "white",
-          "white",
-          "white"
-        ],
-        "genericCost": 1
+      "nonLand": {
+        "castingCost": {
+          "colorRequirements": [
+            "white",
+            "white",
+            "white"
+          ],
+          "genericCost": 1
+        }
       },
       "quantity": 1
     },
     {
       "name": "Test-Nonland-4",
-      "castingCost": {
-        "colorRequirements": [
-          "white",
-          "white",
-          "white"
-        ],
-        "genericCost": 1
+      "nonLand": {
+        "castingCost": {
+          "colorRequirements": [
+            "white",
+            "white",
+            "white"
+          ],
+          "genericCost": 1
+        }
       },
       "quantity": 1
     },
     {
       "name": "Test-Nonland-5",
-      "castingCost": {
-        "colorRequirements": [
-          "white",
-          "white",
-          "white"
-        ],
-        "genericCost": 1
+      "nonLand": {
+        "castingCost": {
+          "colorRequirements": [
+            "white",
+            "white",
+            "white"
+          ],
+          "genericCost": 1
+        }
       },
       "quantity": 1
     }

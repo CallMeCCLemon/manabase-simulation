@@ -24,6 +24,15 @@ func CreateUntappedLand(colors []ManaColor) *Land {
 	}
 }
 
+func CreateTappedLandCard(colors []ManaColor) *Card {
+	return &Card{
+		Name:     "dummy-tapped-land",
+		Land:     CreateTappedLand(colors),
+		NonLand:  nil,
+		Quantity: 1,
+	}
+}
+
 func CreateTappedLand(colors []ManaColor) *Land {
 	return &Land{
 		Name:           "dummy-tapped-land",

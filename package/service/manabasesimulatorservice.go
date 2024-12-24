@@ -57,12 +57,16 @@ type ManabaseSimulatorServer struct {
 
 	mu sync.Mutex // protects routeNotes
 
-	cfg postgres.Config
+	cfg    postgres.Config
+	Parser validation.Parser
 }
 
 func NewManabaseSimulatorServer(cfg postgres.Config) *ManabaseSimulatorServer {
+	var p validation.Parser
+	p = validation.NewDefaultParser(cfg)
 	s := &ManabaseSimulatorServer{
-		cfg: cfg,
+		cfg:    cfg,
+		Parser: p,
 	}
 	return s
 }
@@ -78,11 +82,14 @@ func (s *ManabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 	logger := logging.CreateLogger()
 	logger.Info(fmt.Sprintf("SimulateDeckRequest: %s", in))
 
-	deckList := facade.ToInternalDeckList(in.DeckList)
+	deckList, _, err := s.Parser.Parse(in.DeckList)
+	if err != nil {
+		return nil, err
+	}
 	gameConfig := facade.ToInternalGameConfiguration(in.GameConfiguration)
 	objective := facade.ToInternalTestObjective(in.Objective)
 
-	checkpoints := simulation.Simulate(ctx, deckList, gameConfig, objective)
+	checkpoints := simulation.Simulate(ctx, *deckList, gameConfig, objective)
 	externalCheckpoints := make([]*api.ResultCheckpoint, len(checkpoints))
 	for i, c := range checkpoints {
 		externalCheckpoints[i] = facade.ToExternalResultCheckpoint(c)

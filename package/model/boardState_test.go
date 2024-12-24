@@ -248,12 +248,12 @@ var _ = Describe("BoardState", func() {
 	})
 
 	When("Selecting a land", func() {
-		var lands []Land
+		var lands []Card
 
 		BeforeEach(func() {
-			lands = []Land{
-				*CreateUntappedLand([]ManaColor{White}),
-				*CreateTappedLand([]ManaColor{White, Blue}),
+			lands = []Card{
+				*CreateUntappedLandCard([]ManaColor{White}),
+				*CreateTappedLandCard([]ManaColor{White, Blue}),
 			}
 		})
 
@@ -300,12 +300,12 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Selects a land in a more complex scenario", func() {
-			lands = []Land{
-				*CreateUntappedLand([]ManaColor{White}),
-				*CreateTappedLand([]ManaColor{Black, Red}),
-				*CreateTappedLand([]ManaColor{Green, Red}),
-				*CreateTappedLand([]ManaColor{White, Blue, Green}),
-				*CreateTappedLand([]ManaColor{White, Black, Red}),
+			lands = []Card{
+				*CreateUntappedLandCard([]ManaColor{White}),
+				*CreateTappedLandCard([]ManaColor{Black, Red}),
+				*CreateTappedLandCard([]ManaColor{Green, Red}),
+				*CreateTappedLandCard([]ManaColor{White, Blue, Green}),
+				*CreateTappedLandCard([]ManaColor{White, Black, Red}),
 			}
 
 			costOptions := []ManaCost{
@@ -321,12 +321,12 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Selects a land in a more complex scenario where untapped is priority", func() {
-			lands = []Land{
-				*CreateUntappedLand([]ManaColor{White}),
-				*CreateUntappedLand([]ManaColor{Black, Red}),
-				*CreateTappedLand([]ManaColor{Green, Red}),
-				*CreateTappedLand([]ManaColor{White, Blue, Green}),
-				*CreateTappedLand([]ManaColor{White, Black, Red}),
+			lands = []Card{
+				*CreateUntappedLandCard([]ManaColor{White}),
+				*CreateUntappedLandCard([]ManaColor{Black, Red}),
+				*CreateTappedLandCard([]ManaColor{Green, Red}),
+				*CreateTappedLandCard([]ManaColor{White, Blue, Green}),
+				*CreateTappedLandCard([]ManaColor{White, Black, Red}),
 			}
 
 			costOptions := []ManaCost{

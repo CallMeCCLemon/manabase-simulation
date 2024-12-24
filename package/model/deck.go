@@ -4,7 +4,7 @@ import "math/rand/v2"
 
 // Deck Represents a deck of cards where each card has a quantity of 1. This is the primary data model used during the simulation.
 type Deck struct {
-	Cards []Card
+	Cards []Card `json:"cards"`
 }
 
 // NewDeck Creates a new Deck instance.

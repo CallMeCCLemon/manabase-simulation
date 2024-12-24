@@ -15,12 +15,8 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		It("Correctly parses all of the lands", func() {
-			Expect(deck.Lands).To(HaveLen(5))
-		})
-
-		It("Correctly parses all of the non-lands", func() {
-			Expect(deck.NonLands).To(HaveLen(5))
+		It("Correctly parses all of the lands and nonlands", func() {
+			Expect(deck.Cards).To(HaveLen(10))
 		})
 
 		It("Has the right card count", func() {
@@ -35,14 +31,10 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		It("Correctly parses all of the lands", func() {
-			Expect(deck.Lands).To(HaveLen(9))
+		It("Correctly parses all of the lands and nonlands", func() {
+			Expect(deck.Cards).To(HaveLen(10))
 		})
-
-		It("Correctly parses all of the non-lands", func() {
-			Expect(deck.NonLands).To(HaveLen(1))
-		})
-
+		
 		It("Has the right card count", func() {
 			Expect(deck.GetTotalCardCount()).To(Equal(60))
 		})

@@ -12,40 +12,28 @@ import (
 
 var (
 	gql__enum_ManaColor                 *graphql.Enum        // enum ManaColor in api/manabase-simulation.proto
-	gql__enum_LandType                  *graphql.Enum        // enum LandType in api/manabase-simulation.proto
-	gql__enum_ConditionType             *graphql.Enum        // enum ConditionType in api/manabase-simulation.proto
 	gql__type_ValidateDeckListResponse  *graphql.Object      // message ValidateDeckListResponse in api/manabase-simulation.proto
 	gql__type_ValidateDeckListRequest   *graphql.Object      // message ValidateDeckListRequest in api/manabase-simulation.proto
-	gql__type_UntappedCondition         *graphql.Object      // message UntappedCondition in api/manabase-simulation.proto
 	gql__type_SimulateDeckResponse      *graphql.Object      // message SimulateDeckResponse in api/manabase-simulation.proto
 	gql__type_SimulateDeckRequest       *graphql.Object      // message SimulateDeckRequest in api/manabase-simulation.proto
 	gql__type_ResultCheckpoint          *graphql.Object      // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__type_Objective                 *graphql.Object      // message Objective in api/manabase-simulation.proto
-	gql__type_NonLand                   *graphql.Object      // message NonLand in api/manabase-simulation.proto
 	gql__type_ManaCost                  *graphql.Object      // message ManaCost in api/manabase-simulation.proto
-	gql__type_Land                      *graphql.Object      // message Land in api/manabase-simulation.proto
 	gql__type_InvalidCard               *graphql.Object      // message InvalidCard in api/manabase-simulation.proto
 	gql__type_GameConfiguration         *graphql.Object      // message GameConfiguration in api/manabase-simulation.proto
 	gql__type_EchoResponse              *graphql.Object      // message EchoResponse in api/manabase-simulation.proto
 	gql__type_EchoRequest               *graphql.Object      // message EchoRequest in api/manabase-simulation.proto
-	gql__type_DeckList                  *graphql.Object      // message DeckList in api/manabase-simulation.proto
-	gql__type_ActivationCost            *graphql.Object      // message ActivationCost in api/manabase-simulation.proto
 	gql__input_ValidateDeckListResponse *graphql.InputObject // message ValidateDeckListResponse in api/manabase-simulation.proto
 	gql__input_ValidateDeckListRequest  *graphql.InputObject // message ValidateDeckListRequest in api/manabase-simulation.proto
-	gql__input_UntappedCondition        *graphql.InputObject // message UntappedCondition in api/manabase-simulation.proto
 	gql__input_SimulateDeckResponse     *graphql.InputObject // message SimulateDeckResponse in api/manabase-simulation.proto
 	gql__input_SimulateDeckRequest      *graphql.InputObject // message SimulateDeckRequest in api/manabase-simulation.proto
 	gql__input_ResultCheckpoint         *graphql.InputObject // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__input_Objective                *graphql.InputObject // message Objective in api/manabase-simulation.proto
-	gql__input_NonLand                  *graphql.InputObject // message NonLand in api/manabase-simulation.proto
 	gql__input_ManaCost                 *graphql.InputObject // message ManaCost in api/manabase-simulation.proto
-	gql__input_Land                     *graphql.InputObject // message Land in api/manabase-simulation.proto
 	gql__input_InvalidCard              *graphql.InputObject // message InvalidCard in api/manabase-simulation.proto
 	gql__input_GameConfiguration        *graphql.InputObject // message GameConfiguration in api/manabase-simulation.proto
 	gql__input_EchoResponse             *graphql.InputObject // message EchoResponse in api/manabase-simulation.proto
 	gql__input_EchoRequest              *graphql.InputObject // message EchoRequest in api/manabase-simulation.proto
-	gql__input_DeckList                 *graphql.InputObject // message DeckList in api/manabase-simulation.proto
-	gql__input_ActivationCost           *graphql.InputObject // message ActivationCost in api/manabase-simulation.proto
 )
 
 func Gql__enum_ManaColor() *graphql.Enum {
@@ -75,52 +63,6 @@ func Gql__enum_ManaColor() *graphql.Enum {
 		})
 	}
 	return gql__enum_ManaColor
-}
-
-func Gql__enum_LandType() *graphql.Enum {
-	if gql__enum_LandType == nil {
-		gql__enum_LandType = graphql.NewEnum(graphql.EnumConfig{
-			Name: "Api_Enum_LandType",
-			Values: graphql.EnumValueConfigMap{
-				"PLAINS": &graphql.EnumValueConfig{
-					Value: LandType(0),
-				},
-				"MOUNTAIN": &graphql.EnumValueConfig{
-					Value: LandType(1),
-				},
-				"FOREST": &graphql.EnumValueConfig{
-					Value: LandType(2),
-				},
-				"ISLAND": &graphql.EnumValueConfig{
-					Value: LandType(3),
-				},
-				"SWAMP": &graphql.EnumValueConfig{
-					Value: LandType(4),
-				},
-			},
-		})
-	}
-	return gql__enum_LandType
-}
-
-func Gql__enum_ConditionType() *graphql.Enum {
-	if gql__enum_ConditionType == nil {
-		gql__enum_ConditionType = graphql.NewEnum(graphql.EnumConfig{
-			Name: "Api_Enum_ConditionType",
-			Values: graphql.EnumValueConfigMap{
-				"SHOCK_LAND": &graphql.EnumValueConfig{
-					Value: ConditionType(0),
-				},
-				"FAST_LAND": &graphql.EnumValueConfig{
-					Value: ConditionType(1),
-				},
-				"CHECK_LAND": &graphql.EnumValueConfig{
-					Value: ConditionType(2),
-				},
-			},
-		})
-	}
-	return gql__enum_ConditionType
 }
 
 func Gql__type_ValidateDeckListResponse() *graphql.Object {
@@ -154,23 +96,6 @@ func Gql__type_ValidateDeckListRequest() *graphql.Object {
 	return gql__type_ValidateDeckListRequest
 }
 
-func Gql__type_UntappedCondition() *graphql.Object {
-	if gql__type_UntappedCondition == nil {
-		gql__type_UntappedCondition = graphql.NewObject(graphql.ObjectConfig{
-			Name: "Api_Type_UntappedCondition",
-			Fields: graphql.Fields{
-				"type": &graphql.Field{
-					Type: Gql__enum_ConditionType(),
-				},
-				"data": &graphql.Field{
-					Type: graphql.String,
-				},
-			},
-		})
-	}
-	return gql__type_UntappedCondition
-}
-
 func Gql__type_SimulateDeckResponse() *graphql.Object {
 	if gql__type_SimulateDeckResponse == nil {
 		gql__type_SimulateDeckResponse = graphql.NewObject(graphql.ObjectConfig{
@@ -198,7 +123,7 @@ func Gql__type_SimulateDeckRequest() *graphql.Object {
 			Description: `SimulateDeckRequest Represents the request to simulate a deck.`,
 			Fields: graphql.Fields{
 				"deckList": &graphql.Field{
-					Type: Gql__type_DeckList(),
+					Type: graphql.String,
 				},
 				"gameConfiguration": &graphql.Field{
 					Type: Gql__type_GameConfiguration(),
@@ -246,26 +171,6 @@ func Gql__type_Objective() *graphql.Object {
 	return gql__type_Objective
 }
 
-func Gql__type_NonLand() *graphql.Object {
-	if gql__type_NonLand == nil {
-		gql__type_NonLand = graphql.NewObject(graphql.ObjectConfig{
-			Name: "Api_Type_NonLand",
-			Fields: graphql.Fields{
-				"name": &graphql.Field{
-					Type: graphql.String,
-				},
-				"castingCost": &graphql.Field{
-					Type: Gql__type_ManaCost(),
-				},
-				"quantity": &graphql.Field{
-					Type: graphql.Int,
-				},
-			},
-		})
-	}
-	return gql__type_NonLand
-}
-
 func Gql__type_ManaCost() *graphql.Object {
 	if gql__type_ManaCost == nil {
 		gql__type_ManaCost = graphql.NewObject(graphql.ObjectConfig{
@@ -281,38 +186,6 @@ func Gql__type_ManaCost() *graphql.Object {
 		})
 	}
 	return gql__type_ManaCost
-}
-
-func Gql__type_Land() *graphql.Object {
-	if gql__type_Land == nil {
-		gql__type_Land = graphql.NewObject(graphql.ObjectConfig{
-			Name: "Api_Type_Land",
-			Fields: graphql.Fields{
-				"name": &graphql.Field{
-					Type: graphql.NewNonNull(graphql.String),
-				},
-				"colors": &graphql.Field{
-					Type: graphql.NewList(Gql__enum_ManaColor()),
-				},
-				"entersTapped": &graphql.Field{
-					Type: graphql.Boolean,
-				},
-				"activationCost": &graphql.Field{
-					Type: Gql__type_ActivationCost(),
-				},
-				"types": &graphql.Field{
-					Type: graphql.NewList(Gql__enum_LandType()),
-				},
-				"untappedCondition": &graphql.Field{
-					Type: Gql__type_UntappedCondition(),
-				},
-				"quantity": &graphql.Field{
-					Type: graphql.Int,
-				},
-			},
-		})
-	}
-	return gql__type_Land
 }
 
 func Gql__type_InvalidCard() *graphql.Object {
@@ -380,40 +253,6 @@ func Gql__type_EchoRequest() *graphql.Object {
 	return gql__type_EchoRequest
 }
 
-func Gql__type_DeckList() *graphql.Object {
-	if gql__type_DeckList == nil {
-		gql__type_DeckList = graphql.NewObject(graphql.ObjectConfig{
-			Name: "Api_Type_DeckList",
-			Fields: graphql.Fields{
-				"lands": &graphql.Field{
-					Type: graphql.NewList(Gql__type_Land()),
-				},
-				"nonLands": &graphql.Field{
-					Type: graphql.NewList(Gql__type_NonLand()),
-				},
-			},
-		})
-	}
-	return gql__type_DeckList
-}
-
-func Gql__type_ActivationCost() *graphql.Object {
-	if gql__type_ActivationCost == nil {
-		gql__type_ActivationCost = graphql.NewObject(graphql.ObjectConfig{
-			Name: "Api_Type_ActivationCost",
-			Fields: graphql.Fields{
-				"life": &graphql.Field{
-					Type: graphql.Int,
-				},
-				"manaCost": &graphql.Field{
-					Type: Gql__type_ManaCost(),
-				},
-			},
-		})
-	}
-	return gql__type_ActivationCost
-}
-
 func Gql__input_ValidateDeckListResponse() *graphql.InputObject {
 	if gql__input_ValidateDeckListResponse == nil {
 		gql__input_ValidateDeckListResponse = graphql.NewInputObject(graphql.InputObjectConfig{
@@ -445,23 +284,6 @@ func Gql__input_ValidateDeckListRequest() *graphql.InputObject {
 	return gql__input_ValidateDeckListRequest
 }
 
-func Gql__input_UntappedCondition() *graphql.InputObject {
-	if gql__input_UntappedCondition == nil {
-		gql__input_UntappedCondition = graphql.NewInputObject(graphql.InputObjectConfig{
-			Name: "Api_Input_UntappedCondition",
-			Fields: graphql.InputObjectConfigFieldMap{
-				"type": &graphql.InputObjectFieldConfig{
-					Type: Gql__enum_ConditionType(),
-				},
-				"data": &graphql.InputObjectFieldConfig{
-					Type: graphql.String,
-				},
-			},
-		})
-	}
-	return gql__input_UntappedCondition
-}
-
 func Gql__input_SimulateDeckResponse() *graphql.InputObject {
 	if gql__input_SimulateDeckResponse == nil {
 		gql__input_SimulateDeckResponse = graphql.NewInputObject(graphql.InputObjectConfig{
@@ -488,7 +310,7 @@ func Gql__input_SimulateDeckRequest() *graphql.InputObject {
 			Name: "Api_Input_SimulateDeckRequest",
 			Fields: graphql.InputObjectConfigFieldMap{
 				"deckList": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_DeckList(),
+					Type: graphql.String,
 				},
 				"gameConfiguration": &graphql.InputObjectFieldConfig{
 					Type: Gql__input_GameConfiguration(),
@@ -536,26 +358,6 @@ func Gql__input_Objective() *graphql.InputObject {
 	return gql__input_Objective
 }
 
-func Gql__input_NonLand() *graphql.InputObject {
-	if gql__input_NonLand == nil {
-		gql__input_NonLand = graphql.NewInputObject(graphql.InputObjectConfig{
-			Name: "Api_Input_NonLand",
-			Fields: graphql.InputObjectConfigFieldMap{
-				"name": &graphql.InputObjectFieldConfig{
-					Type: graphql.String,
-				},
-				"castingCost": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_ManaCost(),
-				},
-				"quantity": &graphql.InputObjectFieldConfig{
-					Type: graphql.Int,
-				},
-			},
-		})
-	}
-	return gql__input_NonLand
-}
-
 func Gql__input_ManaCost() *graphql.InputObject {
 	if gql__input_ManaCost == nil {
 		gql__input_ManaCost = graphql.NewInputObject(graphql.InputObjectConfig{
@@ -571,38 +373,6 @@ func Gql__input_ManaCost() *graphql.InputObject {
 		})
 	}
 	return gql__input_ManaCost
-}
-
-func Gql__input_Land() *graphql.InputObject {
-	if gql__input_Land == nil {
-		gql__input_Land = graphql.NewInputObject(graphql.InputObjectConfig{
-			Name: "Api_Input_Land",
-			Fields: graphql.InputObjectConfigFieldMap{
-				"name": &graphql.InputObjectFieldConfig{
-					Type: graphql.NewNonNull(graphql.String),
-				},
-				"colors": &graphql.InputObjectFieldConfig{
-					Type: graphql.NewList(Gql__enum_ManaColor()),
-				},
-				"entersTapped": &graphql.InputObjectFieldConfig{
-					Type: graphql.Boolean,
-				},
-				"activationCost": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_ActivationCost(),
-				},
-				"types": &graphql.InputObjectFieldConfig{
-					Type: graphql.NewList(Gql__enum_LandType()),
-				},
-				"untappedCondition": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_UntappedCondition(),
-				},
-				"quantity": &graphql.InputObjectFieldConfig{
-					Type: graphql.Int,
-				},
-			},
-		})
-	}
-	return gql__input_Land
 }
 
 func Gql__input_InvalidCard() *graphql.InputObject {
@@ -668,40 +438,6 @@ func Gql__input_EchoRequest() *graphql.InputObject {
 		})
 	}
 	return gql__input_EchoRequest
-}
-
-func Gql__input_DeckList() *graphql.InputObject {
-	if gql__input_DeckList == nil {
-		gql__input_DeckList = graphql.NewInputObject(graphql.InputObjectConfig{
-			Name: "Api_Input_DeckList",
-			Fields: graphql.InputObjectConfigFieldMap{
-				"lands": &graphql.InputObjectFieldConfig{
-					Type: graphql.NewList(Gql__input_Land()),
-				},
-				"nonLands": &graphql.InputObjectFieldConfig{
-					Type: graphql.NewList(Gql__input_NonLand()),
-				},
-			},
-		})
-	}
-	return gql__input_DeckList
-}
-
-func Gql__input_ActivationCost() *graphql.InputObject {
-	if gql__input_ActivationCost == nil {
-		gql__input_ActivationCost = graphql.NewInputObject(graphql.InputObjectConfig{
-			Name: "Api_Input_ActivationCost",
-			Fields: graphql.InputObjectConfigFieldMap{
-				"life": &graphql.InputObjectFieldConfig{
-					Type: graphql.Int,
-				},
-				"manaCost": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_ManaCost(),
-				},
-			},
-		})
-	}
-	return gql__input_ActivationCost
 }
 
 // graphql__resolver_ManabaseSimulator is a struct for making query, mutation and resolve fields.
@@ -772,7 +508,7 @@ func (x *graphql__resolver_ManabaseSimulator) GetQueries(conn *grpc.ClientConn) 
 			Type: Gql__type_SimulateDeckResponse(),
 			Args: graphql.FieldConfigArgument{
 				"deckList": &graphql.ArgumentConfig{
-					Type: Gql__input_DeckList(),
+					Type: graphql.String,
 				},
 				"gameConfiguration": &graphql.ArgumentConfig{
 					Type: Gql__input_GameConfiguration(),

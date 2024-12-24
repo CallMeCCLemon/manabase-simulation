@@ -25,19 +25,19 @@ func NewBoardState() BoardState {
 // PlayLand plays the best land from the hand based on the turn and target condition.
 func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (updatedHand Deck) {
 	// PayUntappedCost a Land. If target turn, prioritize untapped. If not, prioritize tapped.
-	lands := make([]Land, 0)
-	nonLands := make([]Card, 0)
+	landCards := make([]Card, 0)
+	nonLandCards := make([]Card, 0)
 	newHand := NewDeck()
 	for _, c := range hand.Cards {
 		if c.Land != nil {
-			lands = append(lands, *c.Land)
+			landCards = append(landCards, c)
 		} else {
-			nonLands = append(nonLands, c)
+			nonLandCards = append(nonLandCards, c)
 		}
 	}
 
-	if len(lands) == 0 {
-		//b.Logger.Info(fmt.Sprintf("No lands found for turn %d", turn))
+	if len(landCards) == 0 {
+		//b.Logger.Info(fmt.Sprintf("No landCards found for turn %d", turn))
 		return hand
 	}
 
@@ -48,36 +48,36 @@ func (b *BoardState) PlayLand(hand Deck, objective TestObjective, turn int) (upd
 
 	_, combos := b.ValidateTestObjective(objective)
 
-	i, l := b.selectLand(lands, combos, prioritizeUntapped)
+	i, l := b.selectLand(landCards, combos, prioritizeUntapped)
 	if i < 0 && !prioritizeUntapped {
-		// This implies no lands in hand. Womp womp.
+		// This implies no landCards in hand. Womp womp.
 		return hand
 	}
 
 	if prioritizeUntapped {
-		err := l.PayUntappedCost(b)
+		err := l.Land.PayUntappedCost(b)
 		if err != nil {
 			return hand
 		}
 	}
 
-	lands = slices.Delete(lands, i, i+1)
-	newHand.Cards = nonLands
-	for _, land := range lands {
-		newHand.Cards = append(newHand.Cards, *NewCard(&land, nil))
+	landCards = slices.Delete(landCards, i, i+1)
+	newHand.Cards = nonLandCards
+	for _, c := range landCards {
+		newHand.Cards = append(newHand.Cards, *c.DeepCopy())
 	}
-	b.Lands = append(b.Lands, l)
+	b.Lands = append(b.Lands, *l.Land)
 	//b.Logger.Debug(fmt.Sprintf("Played %s for turn %d", l.Name, turn))
 	return newHand
 }
 
 // selectLand selects a land to play based on the lands score. Will take into account if it should prioritize untapped lands.
-func (b *BoardState) selectLand(lands []Land, costOptions []ManaCost, prioritizeUntapped bool) (int, Land) {
+func (b *BoardState) selectLand(lands []Card, costOptions []ManaCost, prioritizeUntapped bool) (int, Card) {
 	// try to select an untapped land
-	var remainingLands []Land
+	var remainingLands []Card
 	if prioritizeUntapped {
 		for _, l := range lands {
-			if !l.EntersTapped || l.CanEnterUntapped(*b) {
+			if !l.Land.EntersTapped || l.Land.CanEnterUntapped(*b) {
 				remainingLands = append(remainingLands, l)
 			}
 		}
@@ -92,9 +92,9 @@ func (b *BoardState) selectLand(lands []Land, costOptions []ManaCost, prioritize
 		remainingLands = lands
 	}
 
-	slices.SortFunc(remainingLands, func(a Land, b Land) int {
-		scoreA := scoreLand(a, costOptions)
-		scoreB := scoreLand(b, costOptions)
+	slices.SortFunc(remainingLands, func(a Card, b Card) int {
+		scoreA := scoreLand(*a.Land, costOptions)
+		scoreB := scoreLand(*b.Land, costOptions)
 		if scoreA < scoreB {
 			return -1
 		} else if scoreA == scoreB {
@@ -105,7 +105,7 @@ func (b *BoardState) selectLand(lands []Land, costOptions []ManaCost, prioritize
 	})
 	targetLand := remainingLands[len(remainingLands)-1]
 	for idx, l := range lands {
-		if l.Equals(targetLand) {
+		if l.Land.Equals(*targetLand.Land) {
 			return idx, targetLand
 		}
 	}

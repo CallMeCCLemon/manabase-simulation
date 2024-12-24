@@ -1,91 +1,133 @@
 {
-  "lands": [
+  "cards": [
     {
       "name": "Boseiju",
-      "colors": [
-        "Green"
-      ],
-      "entersTapped": false,
+      "land": {
+        "name": "Boseiju",
+        "colors": [
+          "Green"
+        ],
+        "entersTapped": false
+      },
+      "nonLand": null,
       "quantity": 2
     },
     {
       "name": "Forest",
-      "colors": [
-        "Green"
-      ],
-      "entersTapped": false,
+      "land": {
+        "name": "Forest",
+        "colors": [
+          "Green"
+        ],
+        "entersTapped": false
+      },
+      "nonLand": null,
       "quantity": 1
     },
     {
       "name": "Lotus Field",
-      "colors": [],
-      "entersTapped": true,
+      "land": {
+        "name": "Lotus Field",
+        "castingCost": {
+          "colorRequirements": [
+            "Green"
+          ],
+          "genericCost": 1
+        }
+      },
+      "nonLand": null,
       "quantity": 4
     },
     {
       "name": "Mana Confluence",
-      "colors": [
-        "White",
-        "Blue",
-        "Black",
-        "Red",
-        "Green"
-      ],
-      "entersTapped": false,
+      "land": {
+        "name": "Mana Confluence",
+        "colors": [
+          "White",
+          "Blue",
+          "Black",
+          "Red",
+          "Green"
+        ],
+        "entersTapped": false
+      },
+      "nonLand": null,
       "quantity": 4
     },
     {
       "name": "Otawara",
-      "colors": [
-        "Blue"
-      ],
-      "entersTapped": false,
+      "land": {
+        "name": "Otawara",
+        "colors": [
+          "Blue"
+        ],
+        "entersTapped": false
+      },
+      "nonLand": null,
       "quantity": 1
     },
     {
       "name": "Razorverge",
-      "colors": [
-        "White",
-        "Green"
-      ],
-      "entersTapped": false,
+      "land": {
+        "name": "Razorverge",
+        "colors": [
+          "White",
+          "Green"
+        ],
+        "entersTapped": false
+      },
+      "nonLand": null,
       "quantity": 4
     },
     {
       "name": "Spara's HQ",
-      "colors": [
-        "White",
-        "Green",
-        "Blue"
-      ],
-      "entersTapped": true,
+      "land": {
+        "name": "Spara's HQ",
+        "colors": [
+          "White",
+          "Green",
+          "Blue"
+        ],
+        "entersTapped": true
+      },
+      "nonLand": null,
       "quantity": 4
     },
     {
       "name": "Thespian Stage",
-      "colors": [
-        "colorless"
-      ],
-      "entersTapped": false,
+      "land": {
+        "name": "Thespian Stage",
+        "colors": [
+          "colorless"
+        ],
+        "entersTapped": false
+      },
+      "nonLand": null,
       "quantity": 3
     },
     {
       "name": "Bala-Ged Land",
-      "colors": [
-        "Green"
-      ],
-      "entersTapped": true,
-      "quantity": 3
-    }
-  ],
-  "nonLands": [
-    {
-      "name": "Llanowar Elves",
-      "castingCost": {
-        "colorRequirements": [
+      "land": {
+        "name": "Bala-Ged Land",
+        "colors": [
           "Green"
         ],
-        "genericCost": 1
+        "entersTapped": true
+      },
+      "nonLand": null,
+      "quantity": 3
+    },
+    {
+      "name": "Llanowar Elves",
+      "land": null,
+      "nonLand": {
+        "name": "Llanowar Elves",
+        "castingCost": {
+          "colorRequirements": [
+            "Green"
+          ],
+          "genericCost": 1
+        }
       },
       "quantity": 34
     }

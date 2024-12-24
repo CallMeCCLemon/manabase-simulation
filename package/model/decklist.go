@@ -46,19 +46,9 @@ func (d *DeckList) GetTotalCardCount() int {
 func (d *DeckList) GenerateDeck() Deck {
 	deck := NewDeck()
 
-	for _, l := range d.Lands {
-		quantity := l.Quantity
-		l.Quantity = 1
-		for range quantity {
-			deck.Cards = append(deck.Cards, *NewCard(&l, nil))
-		}
-	}
-
-	for _, n := range d.NonLands {
-		quantity := n.Quantity
-		n.Quantity = 1
-		for range quantity {
-			deck.Cards = append(deck.Cards, *NewCard(nil, &n))
+	for _, c := range d.Cards {
+		for range c.Quantity {
+			deck.Cards = append(deck.Cards, *NewCard(c.Name, c.Land, c.NonLand, 1))
 		}
 	}
 
@@ -69,6 +59,7 @@ func (d *DeckList) GenerateDeck() Deck {
 // Land Represents a Land type of card which can produce mana.
 type Land struct {
 	// Name the name of the land.
+	// Deprecated: Name is no longer used. Use Card.Name instead.
 	Name string `json:"name"`
 
 	// Types is a list of basic land types which the current land is.
@@ -260,6 +251,7 @@ func (l *Land) CanEnterUntapped(b BoardState) bool {
 // NonLand Represents a Non-Land type of card is will need mana to be cast.
 type NonLand struct {
 	// Name the name of the land.
+	// Deprecated: Name is no longer used. Use Card.Name instead.
 	Name string `json:"name"`
 
 	// CastingCost the mana which is required to cast the given spell.

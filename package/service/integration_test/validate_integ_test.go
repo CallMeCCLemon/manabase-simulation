@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	ValidDeckList = `
+	validDeckList = `
 Deck
 5 Mountain
 4 Manifold Mouse
@@ -41,7 +41,7 @@ Sideboard
 
 `
 
-	SampleDecklistWithInvalidCard = `
+	sampleDecklistWithInvalidCard = `
 Deck
 5 Mountain
 3 Soulstone Sanctuary
@@ -57,7 +57,7 @@ var _ = Describe("ValidateDeckList Integration Test", Label(IntegrationTestLabel
 
 	It("Validates a valid deck list", func() {
 		resp, err := Client.ValidateDeckList(context.Background(), &api.ValidateDeckListRequest{
-			DeckList: ValidDeckList,
+			DeckList: validDeckList,
 		})
 		Expect(err).ToNot(HaveOccurred())
 		Expect(resp.IsValid).To(BeTrue())
@@ -66,7 +66,7 @@ var _ = Describe("ValidateDeckList Integration Test", Label(IntegrationTestLabel
 
 	It("Validates an invalid deck list", func() {
 		resp, err := Client.ValidateDeckList(context.Background(), &api.ValidateDeckListRequest{
-			DeckList: SampleDecklistWithInvalidCard,
+			DeckList: sampleDecklistWithInvalidCard,
 		})
 		Expect(err).ToNot(HaveOccurred())
 		Expect(resp.IsValid).To(BeFalse())

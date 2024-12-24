@@ -4,6 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"log"
 	"manabase-simulation/api"
 	"manabase-simulation/package/service"
 	"os"
@@ -34,8 +35,9 @@ var _ = BeforeSuite(func() {
 		service.Start()
 	}()
 
-	grpcEndpoint := os.Getenv("HOST")
+	grpcEndpoint := os.Getenv("GRPC_HOST")
 	if grpcEndpoint == "" {
+		log.Println("No GRPC_HOST environment variable found. Defaulting to localhost:8889")
 		grpcEndpoint = "localhost:8889"
 	}
 
