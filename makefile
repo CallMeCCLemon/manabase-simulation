@@ -58,7 +58,7 @@ docker-push-gateway:
 k8s-rollout-all-updates: k8s-rollout-server-updates k8s-rollout-gql-updates
 
 k8s-rollout-server-updates:
-	microk8s kubectl rollout restart deployment manabase-simulation-server-deployment
+	kubectl rollout restart deployment -n mtg-mana-sim-app manabase-simulation-server-deployment
 
 k8s-rollout-gql-updates:
-	microk8s kubectl rollout restart deployment manabase-simulation-gql-deployment
+	kubectl rollout restart deployment -n mtg-mana-sim-app manabase-simulation-gql-deployment
