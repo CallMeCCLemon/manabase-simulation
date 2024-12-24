@@ -37,7 +37,7 @@ clean:
 generate:
 	protoc --go_out=.  --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative --graphql_out=.. "api/manabase-simulation.proto"
 
-deploy: docker-build docker-push
+deploy: docker-build docker-push k8s-rollout-all-updates
 
 docker-build: docker-build-server docker-build-gateway
 
@@ -54,3 +54,11 @@ docker-build-gateway:
 
 docker-push-gateway:
 	docker push 100.69.236.43:32000/manabase-simulation-gql-gateway:latest
+
+k8s-rollout-all-updates: k8s-rollout-server-updates k8s-rollout-gql-updates
+
+k8s-rollout-server-updates:
+	microk8s kubectl rollout restart deployment manabase-simulation-server-deployment
+
+k8s-rollout-gql-updates:
+	microk8s kubectl rollout restart deployment manabase-simulation-gql-deployment
