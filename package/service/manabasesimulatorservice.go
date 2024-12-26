@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/health"
@@ -80,7 +82,7 @@ func (s *ManabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	logger := logging.CreateLogger()
-	logger.Info(fmt.Sprintf("SimulateDeckRequest: %s", in))
+	logAsJson(logger, "SimulateDeck Request", in)
 
 	deckList, _, err := s.Parser.Parse(in.DeckList)
 	if err != nil {
@@ -100,19 +102,23 @@ func (s *ManabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 		SuccessRate: checkpoints[len(checkpoints)-1].GetSuccessRate(),
 		Checkpoints: externalCheckpoints,
 	}
-	logger.Info(fmt.Sprintf("SimulateDeckResponse SuccessRate: %f, Message: %s", response.SuccessRate, response.Message))
+	logAsJson(logger, "SimulateDeck Response", response)
 	return response, nil
 }
 
 func (s *ManabaseSimulatorServer) Echo(ctx context.Context, in *api.EchoRequest) (*api.EchoResponse, error) {
-	log.Println(fmt.Sprintf("EchoRequest: %s", in.Message))
-	return &api.EchoResponse{
+	logger := logging.CreateLogger()
+	logAsJson(logger, "Echo Request", in)
+	response := &api.EchoResponse{
 		Message: in.Message,
-	}, nil
+	}
+	logAsJson(logger, "Echo Response", response)
+	return response, nil
 }
 
 func (s *ManabaseSimulatorServer) ValidateDeckList(ctx context.Context, in *api.ValidateDeckListRequest) (*api.ValidateDeckListResponse, error) {
-	log.Println(fmt.Sprintf("ValidateDeckListRequest: %s", in.DeckList))
+	logger := logging.CreateLogger()
+	logAsJson(logger, "ValidateDeckList Request", in)
 
 	parser := validation.NewDefaultParser(s.cfg)
 
@@ -121,20 +127,29 @@ func (s *ManabaseSimulatorServer) ValidateDeckList(ctx context.Context, in *api.
 		return nil, err
 	}
 
+	response := &api.ValidateDeckListResponse{
+		IsValid: true,
+	}
+
 	if len(invalidCards) > 0 {
 		externalInvalidCards := make([]*api.InvalidCard, len(invalidCards))
 		for i, c := range invalidCards {
 			externalInvalidCards[i] = facade.ToExternalInvalidCard(c)
 		}
-		return &api.ValidateDeckListResponse{
+		response = &api.ValidateDeckListResponse{
 			IsValid:      false,
 			InvalidCards: externalInvalidCards,
-		}, nil
+		}
 	}
 
-	return &api.ValidateDeckListResponse{
-		IsValid: true,
-	}, nil
+	logAsJson(logger, "ValidateDeckList Response", response)
+
+	return response, nil
+}
+
+func logAsJson(logger *zap.Logger, message string, input interface{}) {
+	inputAsJson, _ := json.Marshal(input)
+	logger.Info(fmt.Sprintf("%s: %s", message, inputAsJson))
 }
 
 func getDBConfig() postgres.Config {
