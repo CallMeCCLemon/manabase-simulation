@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ysugimoto/grpc-graphql-gateway/runtime"
+	"go.uber.org/zap"
 	"google.golang.org/api/idtoken"
 	"log"
 	"manabase-simulation/api"
@@ -14,14 +15,15 @@ import (
 )
 
 func main() {
-	mux := runtime.NewServeMux(Cors(), AuthMiddleware())
+	logger := logging.CreateLogger()
+	mux := runtime.NewServeMux(Cors(), AuthMiddleware(logger))
 
 	if err := api.RegisterManabaseSimulatorGraphql(mux); err != nil {
 		log.Fatalln(err)
 	}
 	http.Handle("/graphql", mux)
 	port := ":8888"
-	log.Println(fmt.Sprintf("Listening on port %s", port))
+	logger.Info(fmt.Sprintf("Listening on port %s", port))
 	log.Fatalln(http.ListenAndServe(fmt.Sprintf("%s", port), nil))
 }
 
@@ -38,12 +40,11 @@ func Cors() runtime.MiddlewareFunc {
 }
 
 // AuthMiddleware checks if the request has a valid token and sets the user in the context
-func AuthMiddleware() runtime.MiddlewareFunc {
+func AuthMiddleware(logger *zap.Logger) runtime.MiddlewareFunc {
 	googleClientID := os.Getenv("GOOGLE_CLIENT_ID")
 	if googleClientID == "" {
 		panic("GOOGLE_CLIENT_ID is not set")
 	}
-	logger := logging.CreateLogger()
 
 	return func(ctx context.Context, w http.ResponseWriter, r *http.Request) (context.Context, error) {
 		tokenValidator, err := idtoken.NewValidator(ctx)
