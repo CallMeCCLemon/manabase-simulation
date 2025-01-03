@@ -23,6 +23,7 @@ var (
 	gql__type_GameConfiguration         *graphql.Object      // message GameConfiguration in api/manabase-simulation.proto
 	gql__type_EchoResponse              *graphql.Object      // message EchoResponse in api/manabase-simulation.proto
 	gql__type_EchoRequest               *graphql.Object      // message EchoRequest in api/manabase-simulation.proto
+	gql__type_DeckStats                 *graphql.Object      // message DeckStats in api/manabase-simulation.proto
 	gql__input_ValidateDeckListResponse *graphql.InputObject // message ValidateDeckListResponse in api/manabase-simulation.proto
 	gql__input_ValidateDeckListRequest  *graphql.InputObject // message ValidateDeckListRequest in api/manabase-simulation.proto
 	gql__input_SimulateDeckResponse     *graphql.InputObject // message SimulateDeckResponse in api/manabase-simulation.proto
@@ -34,6 +35,7 @@ var (
 	gql__input_GameConfiguration        *graphql.InputObject // message GameConfiguration in api/manabase-simulation.proto
 	gql__input_EchoResponse             *graphql.InputObject // message EchoResponse in api/manabase-simulation.proto
 	gql__input_EchoRequest              *graphql.InputObject // message EchoRequest in api/manabase-simulation.proto
+	gql__input_DeckStats                *graphql.InputObject // message DeckStats in api/manabase-simulation.proto
 )
 
 func Gql__enum_ManaColor() *graphql.Enum {
@@ -109,6 +111,9 @@ func Gql__type_SimulateDeckResponse() *graphql.Object {
 				},
 				"checkpoints": &graphql.Field{
 					Type: graphql.NewList(Gql__type_ResultCheckpoint()),
+				},
+				"deckStats": &graphql.Field{
+					Type: Gql__type_DeckStats(),
 				},
 			},
 		})
@@ -253,6 +258,29 @@ func Gql__type_EchoRequest() *graphql.Object {
 	return gql__type_EchoRequest
 }
 
+func Gql__type_DeckStats() *graphql.Object {
+	if gql__type_DeckStats == nil {
+		gql__type_DeckStats = graphql.NewObject(graphql.ObjectConfig{
+			Name: "Api_Type_DeckStats",
+			Fields: graphql.Fields{
+				"totalCards": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"lands": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"nonLands": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"totalManaPips": &graphql.Field{
+					Type: Gql__type_ManaCost(),
+				},
+			},
+		})
+	}
+	return gql__type_DeckStats
+}
+
 func Gql__input_ValidateDeckListResponse() *graphql.InputObject {
 	if gql__input_ValidateDeckListResponse == nil {
 		gql__input_ValidateDeckListResponse = graphql.NewInputObject(graphql.InputObjectConfig{
@@ -297,6 +325,9 @@ func Gql__input_SimulateDeckResponse() *graphql.InputObject {
 				},
 				"checkpoints": &graphql.InputObjectFieldConfig{
 					Type: graphql.NewList(Gql__input_ResultCheckpoint()),
+				},
+				"deckStats": &graphql.InputObjectFieldConfig{
+					Type: Gql__input_DeckStats(),
 				},
 			},
 		})
@@ -438,6 +469,29 @@ func Gql__input_EchoRequest() *graphql.InputObject {
 		})
 	}
 	return gql__input_EchoRequest
+}
+
+func Gql__input_DeckStats() *graphql.InputObject {
+	if gql__input_DeckStats == nil {
+		gql__input_DeckStats = graphql.NewInputObject(graphql.InputObjectConfig{
+			Name: "Api_Input_DeckStats",
+			Fields: graphql.InputObjectConfigFieldMap{
+				"totalCards": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"lands": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"nonLands": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"totalManaPips": &graphql.InputObjectFieldConfig{
+					Type: Gql__input_ManaCost(),
+				},
+			},
+		})
+	}
+	return gql__input_DeckStats
 }
 
 // graphql__resolver_ManabaseSimulator is a struct for making query, mutation and resolve fields.

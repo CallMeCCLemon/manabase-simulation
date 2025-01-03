@@ -62,7 +62,6 @@ func AuthMiddleware(logger *zap.Logger) runtime.MiddlewareFunc {
 		}
 
 		logger.Info(fmt.Sprintf("User: %v", payload.Claims))
-		fmt.Print(payload.Claims)
 		return ctx, nil
 	}
 }

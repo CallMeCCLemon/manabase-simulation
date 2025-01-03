@@ -55,6 +55,7 @@ message SimulateDeckResponse {
   string message = 1;
   float successRate = 2;
   repeated ResultCheckpoint checkpoints = 3;
+  DeckStats deckStats = 4;
 }
 
 message ValidateDeckListRequest {
@@ -99,4 +100,11 @@ message GameConfiguration {
 message ResultCheckpoint {
   int32 iterations = 1;
   int32 successes = 2;
+}
+
+message DeckStats {
+  int32 totalCards = 1;
+  int32 lands = 2;
+  int32 nonLands = 3;
+  ManaCost totalManaPips = 4;
 }
