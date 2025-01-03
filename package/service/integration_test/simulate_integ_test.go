@@ -33,8 +33,18 @@ var _ = Describe("SimulateDeck Integration Test", Label(IntegrationTestLabel), f
 		Expect(err).ToNot(HaveOccurred())
 		Expect(resp.Message).To(Equal("The server did the thing!"))
 		Expect(resp.SuccessRate > float32(0.1)).To(BeTrue())
+		Expect(resp.DeckStats.TotalCards).To(Equal(int32(60)))
+		Expect(resp.DeckStats.Lands).To(Equal(int32(22)))
+		Expect(resp.DeckStats.NonLands).To(Equal(int32(38)))
+		Expect(resp.DeckStats.TotalManaPips.WhiteMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.TotalManaPips.BlueMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.TotalManaPips.BlackMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.TotalManaPips.RedMana).To(Equal(int32(36)))
+		Expect(resp.DeckStats.TotalManaPips.GreenMana).To(Equal(int32(5)))
+		Expect(resp.DeckStats.TotalManaPips.ColorlessMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.TotalManaPips.GenericCost).To(Equal(int32(19)))
 	})
-	//
+
 	//It("Returns an error when given an invalid deck", func() {
 	//	resp, err := Client.SimulateDeck(context.Background(), &api.SimulateDeckRequest{
 	//		DeckList: sampleDecklistWithInvalidCard,

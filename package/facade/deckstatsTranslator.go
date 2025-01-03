@@ -8,9 +8,9 @@ import (
 // ToExternalDeckStats converts a DeckStats from the internal model to the API definition.
 func ToExternalDeckStats(deckStats model.DeckStats) *api.DeckStats {
 	return &api.DeckStats{
-		TotalCards:    deckStats.TotalCards,
-		Lands:         deckStats.Lands,
-		NonLands:      deckStats.NonLands,
-		TotalManaPips: ToExternalManaCost(&deckStats.TotalManaPips),
+		TotalCards:    int32(deckStats.TotalCards),
+		Lands:         int32(deckStats.Lands),
+		NonLands:      int32(deckStats.NonLands),
+		TotalManaPips: ToExternalSimplifiedManaCostFromSimplified(&deckStats.TotalManaPips),
 	}
 }

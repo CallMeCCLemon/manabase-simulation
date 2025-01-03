@@ -97,11 +97,15 @@ func (s *ManabaseSimulatorServer) SimulateDeck(ctx context.Context, in *api.Simu
 		externalCheckpoints[i] = facade.ToExternalResultCheckpoint(c)
 	}
 
+	deckStats := facade.ToExternalDeckStats(simulation.GetDeckStats(*deckList))
+
 	response := &api.SimulateDeckResponse{
 		Message:     "The server did the thing!",
 		SuccessRate: checkpoints[len(checkpoints)-1].GetSuccessRate(),
 		Checkpoints: externalCheckpoints,
+		DeckStats:   deckStats,
 	}
+
 	logAsJson(logger, "SimulateDeck Response", response)
 	return response, nil
 }

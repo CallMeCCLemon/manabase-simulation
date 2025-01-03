@@ -16,11 +16,9 @@ func CreateUntappedLandCard(colors []ManaColor) *Card {
 
 func CreateUntappedLand(colors []ManaColor) *Land {
 	return &Land{
-		Name:           "dummy-untapped-land",
 		Colors:         colors,
 		EntersTapped:   false,
 		ActivationCost: nil,
-		Quantity:       1,
 	}
 }
 
@@ -35,11 +33,9 @@ func CreateTappedLandCard(colors []ManaColor) *Card {
 
 func CreateTappedLand(colors []ManaColor) *Land {
 	return &Land{
-		Name:           "dummy-tapped-land",
 		Colors:         colors,
 		EntersTapped:   true,
 		ActivationCost: nil,
-		Quantity:       1,
 	}
 }
 

@@ -11,19 +11,29 @@ import (
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 
+func NewDeckList() *model.DeckList {
+	return &model.DeckList{
+		Cards: []model.Card{
+			*model.CreateUntappedLandCard([]model.ManaColor{model.White}),
+			*model.CreateUntappedLandCard([]model.ManaColor{model.White, model.Blue}),
+			*model.CreateSampleNonLandCard(),
+			*model.CreateSampleNonLandCard(),
+		},
+	}
+}
+
 // NewLandCard creates a new land card instance for testing.
 func NewLandCard(name string) *model.Card {
 	return &model.Card{
 		Name:    fmt.Sprintf("%s-%s", name, randSeq(8)),
-		Land:    NewLand(name),
+		Land:    NewLand(),
 		NonLand: nil,
 	}
 }
 
-func NewLand(name string) *model.Land {
+func NewLand() *model.Land {
 	life := 3
 	return &model.Land{
-		Name: fmt.Sprintf("%s-%s", name, randSeq(8)),
 		Colors: []model.ManaColor{
 			model.White,
 			model.Blue,
@@ -32,7 +42,6 @@ func NewLand(name string) *model.Land {
 		UntappedCondition: &model.UntappedCondition{
 			Type: model.ShockLand,
 		},
-		Quantity: 1,
 		ActivationCost: &model.ActivationCost{
 			Life: &life,
 			ManaCost: &model.ManaCost{

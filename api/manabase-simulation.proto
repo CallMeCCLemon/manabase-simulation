@@ -77,6 +77,16 @@ message ManaCost {
   int32 genericCost = 2;
 }
 
+message SimplifiedManaCost {
+  int32 whiteMana = 1;
+  int32 blueMana = 2;
+  int32 blackMana = 3;
+  int32 redMana = 4;
+  int32 greenMana = 5;
+  int32 colorlessMana = 6;
+  int32 genericCost = 7;
+}
+
 enum ManaColor {
   WHITE = 0;
   BLUE = 1;
@@ -106,5 +116,5 @@ message DeckStats {
   int32 totalCards = 1;
   int32 lands = 2;
   int32 nonLands = 3;
-  ManaCost totalManaPips = 4;
+  SimplifiedManaCost totalManaPips = 4;
 }

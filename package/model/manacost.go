@@ -11,6 +11,27 @@ type ManaCost struct {
 	GenericCost       int         `json:"genericCost"`
 }
 
+// SimplifiedManaCost is a simplified cost which can be paid to resolve a non-land card.
+type SimplifiedManaCost struct {
+	WhiteMana     int `json:"whiteMana"`
+	BlueMana      int `json:"blueMana"`
+	BlackMana     int `json:"blackMana"`
+	RedMana       int `json:"redMana"`
+	GreenMana     int `json:"greenMana"`
+	ColorlessMana int `json:"colorlessMana"`
+	AzoriusMana   int `json:"azoriusMana"`
+	OrzhovMana    int `json:"orzhovMana"`
+	BorosMana     int `json:"borosMana"`
+	SelesnyaMana  int `json:"selesnyaMana"`
+	DimirMana     int `json:"dimirMana"`
+	IzzetMana     int `json:"izzetMana"`
+	SimicMana     int `json:"simicMana"`
+	RakdosMana    int `json:"rakdosMana"`
+	GolgariMana   int `json:"golgariMana"`
+	GruulMana     int `json:"gruulMana"`
+	GenericMana   int `json:"genericMana"`
+}
+
 // DeepCopy Creates a deep copy of the ManaCost.
 func (m *ManaCost) DeepCopy() ManaCost {
 	requirements := make([]ManaColor, len(m.ColorRequirements))

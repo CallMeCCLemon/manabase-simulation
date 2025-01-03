@@ -204,10 +204,8 @@ func WriteLandsToDB(accessor validation.CardDbAccessor, lands []ScryfallCard, wr
 // parseLandCard parses a land card from Scryfall and returns a model.Card.
 func parseLandCard(card ScryfallCard) *model.Card {
 	l := model.Land{
-		Name:         card.Name,
 		Colors:       make([]model.ManaColor, 0),
 		EntersTapped: false,
-		Quantity:     1,
 		Types:        make([]model.LandType, 0),
 	}
 	for _, manaColor := range card.ProducedMana {
@@ -215,12 +213,12 @@ func parseLandCard(card ScryfallCard) *model.Card {
 	}
 	l.Types = parseLandTypes(card.TypeLine)
 
-	entersTapped, untappedCondition := parseOracleTextForEntersTapped(l.Name, card.OracleText)
+	entersTapped, untappedCondition := parseOracleTextForEntersTapped(card.Name, card.OracleText)
 	l.EntersTapped = entersTapped
 	l.UntappedCondition = untappedCondition
 
 	return &model.Card{
-		Name:    l.Name,
+		Name:    card.Name,
 		Land:    &l,
 		NonLand: nil,
 	}

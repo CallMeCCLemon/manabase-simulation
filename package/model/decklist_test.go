@@ -29,13 +29,11 @@ var _ = Describe("ShockLand", func() {
 	When("Determining if the land can enter untapped", func() {
 		It("Can enter untapped when there is 2 life", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: ShockLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -46,13 +44,11 @@ var _ = Describe("ShockLand", func() {
 
 		It("Can NOT enter untapped when there is not enough life", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: ShockLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -65,13 +61,11 @@ var _ = Describe("ShockLand", func() {
 	When("Paying the untapped cost", func() {
 		It("Pays the cost correctly", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: ShockLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -83,13 +77,11 @@ var _ = Describe("ShockLand", func() {
 
 		It("Doesn't pay the untapped cost when there is not enough life", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: ShockLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -101,13 +93,11 @@ var _ = Describe("ShockLand", func() {
 
 		It("Doesn't pay the untapped cost when it's not tapped", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: false,
 				UntappedCondition: &UntappedCondition{
 					Type: ShockLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -123,13 +113,11 @@ var _ = Describe("FastLand", func() {
 	When("Determining if the land can enter untapped", func() {
 		It("Can enter untapped when there are 2 or less lands", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: FastLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -144,13 +132,11 @@ var _ = Describe("FastLand", func() {
 
 		It("Can NOT enter untapped when there are 3 or more lands", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: FastLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -168,13 +154,11 @@ var _ = Describe("FastLand", func() {
 	When("Paying the untapped cost", func() {
 		It("Pays the cost correctly", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: FastLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -186,13 +170,11 @@ var _ = Describe("FastLand", func() {
 
 		It("Doesn't pay the untapped cost when there are too many lands", func() {
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: FastLand,
 				},
-				Quantity: 1,
 			}
 
 			boardState := BoardState{
@@ -216,14 +198,12 @@ var _ = Describe("CheckLand", func() {
 			cString, _ := c.ToString()
 
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: CheckLand,
 					Data: &cString,
 				},
-				Quantity: 1,
 			}
 
 			l := CreateUntappedLand([]ManaColor{White, Blue})
@@ -244,14 +224,12 @@ var _ = Describe("CheckLand", func() {
 			cString, _ := c.ToString()
 
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: CheckLand,
 					Data: &cString,
 				},
-				Quantity: 1,
 			}
 
 			l := CreateUntappedLand([]ManaColor{White, Blue})
@@ -274,14 +252,12 @@ var _ = Describe("CheckLand", func() {
 			cString, _ := c.ToString()
 
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: CheckLand,
 					Data: &cString,
 				},
-				Quantity: 1,
 			}
 
 			l := CreateUntappedLand([]ManaColor{White, Blue})
@@ -303,14 +279,12 @@ var _ = Describe("CheckLand", func() {
 			cString, _ := c.ToString()
 
 			land := Land{
-				Name:         "test-land-1",
 				Colors:       []ManaColor{White, Blue},
 				EntersTapped: true,
 				UntappedCondition: &UntappedCondition{
 					Type: CheckLand,
 					Data: &cString,
 				},
-				Quantity: 1,
 			}
 
 			l := CreateUntappedLand([]ManaColor{White, Blue})

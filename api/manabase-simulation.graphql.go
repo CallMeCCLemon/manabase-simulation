@@ -16,6 +16,7 @@ var (
 	gql__type_ValidateDeckListRequest   *graphql.Object      // message ValidateDeckListRequest in api/manabase-simulation.proto
 	gql__type_SimulateDeckResponse      *graphql.Object      // message SimulateDeckResponse in api/manabase-simulation.proto
 	gql__type_SimulateDeckRequest       *graphql.Object      // message SimulateDeckRequest in api/manabase-simulation.proto
+	gql__type_SimplifiedManaCost        *graphql.Object      // message SimplifiedManaCost in api/manabase-simulation.proto
 	gql__type_ResultCheckpoint          *graphql.Object      // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__type_Objective                 *graphql.Object      // message Objective in api/manabase-simulation.proto
 	gql__type_ManaCost                  *graphql.Object      // message ManaCost in api/manabase-simulation.proto
@@ -28,6 +29,7 @@ var (
 	gql__input_ValidateDeckListRequest  *graphql.InputObject // message ValidateDeckListRequest in api/manabase-simulation.proto
 	gql__input_SimulateDeckResponse     *graphql.InputObject // message SimulateDeckResponse in api/manabase-simulation.proto
 	gql__input_SimulateDeckRequest      *graphql.InputObject // message SimulateDeckRequest in api/manabase-simulation.proto
+	gql__input_SimplifiedManaCost       *graphql.InputObject // message SimplifiedManaCost in api/manabase-simulation.proto
 	gql__input_ResultCheckpoint         *graphql.InputObject // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__input_Objective                *graphql.InputObject // message Objective in api/manabase-simulation.proto
 	gql__input_ManaCost                 *graphql.InputObject // message ManaCost in api/manabase-simulation.proto
@@ -140,6 +142,38 @@ func Gql__type_SimulateDeckRequest() *graphql.Object {
 		})
 	}
 	return gql__type_SimulateDeckRequest
+}
+
+func Gql__type_SimplifiedManaCost() *graphql.Object {
+	if gql__type_SimplifiedManaCost == nil {
+		gql__type_SimplifiedManaCost = graphql.NewObject(graphql.ObjectConfig{
+			Name: "Api_Type_SimplifiedManaCost",
+			Fields: graphql.Fields{
+				"whiteMana": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"blueMana": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"blackMana": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"redMana": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"greenMana": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"colorlessMana": &graphql.Field{
+					Type: graphql.Int,
+				},
+				"genericCost": &graphql.Field{
+					Type: graphql.Int,
+				},
+			},
+		})
+	}
+	return gql__type_SimplifiedManaCost
 }
 
 func Gql__type_ResultCheckpoint() *graphql.Object {
@@ -273,7 +307,7 @@ func Gql__type_DeckStats() *graphql.Object {
 					Type: graphql.Int,
 				},
 				"totalManaPips": &graphql.Field{
-					Type: Gql__type_ManaCost(),
+					Type: Gql__type_SimplifiedManaCost(),
 				},
 			},
 		})
@@ -353,6 +387,38 @@ func Gql__input_SimulateDeckRequest() *graphql.InputObject {
 		})
 	}
 	return gql__input_SimulateDeckRequest
+}
+
+func Gql__input_SimplifiedManaCost() *graphql.InputObject {
+	if gql__input_SimplifiedManaCost == nil {
+		gql__input_SimplifiedManaCost = graphql.NewInputObject(graphql.InputObjectConfig{
+			Name: "Api_Input_SimplifiedManaCost",
+			Fields: graphql.InputObjectConfigFieldMap{
+				"whiteMana": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"blueMana": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"blackMana": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"redMana": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"greenMana": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"colorlessMana": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+				"genericCost": &graphql.InputObjectFieldConfig{
+					Type: graphql.Int,
+				},
+			},
+		})
+	}
+	return gql__input_SimplifiedManaCost
 }
 
 func Gql__input_ResultCheckpoint() *graphql.InputObject {
@@ -486,7 +552,7 @@ func Gql__input_DeckStats() *graphql.InputObject {
 					Type: graphql.Int,
 				},
 				"totalManaPips": &graphql.InputObjectFieldConfig{
-					Type: Gql__input_ManaCost(),
+					Type: Gql__input_SimplifiedManaCost(),
 				},
 			},
 		})

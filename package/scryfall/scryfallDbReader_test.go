@@ -48,7 +48,6 @@ var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-
 			}
 			card := parseLandCard(land)
 			Expect(card.Name).To(Equal(land.Name))
-			Expect(card.Land.Name).To(Equal(land.Name))
 			Expect(card.Land.Types).To(HaveLen(1))
 			Expect(card.Land.Types[0]).To(Equal(model.Plains))
 			Expect(card.Land.Colors).To(HaveLen(1))
@@ -66,7 +65,6 @@ var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-
 			}
 			card := parseLandCard(land)
 			Expect(card.Name).To(Equal(land.Name))
-			Expect(card.Land.Name).To(Equal(land.Name))
 			Expect(card.Land.Types).To(HaveLen(0))
 			Expect(card.Land.Colors).To(HaveLen(2))
 			Expect(card.Land.Colors).To(ConsistOf(model.Blue, model.Green))
@@ -83,7 +81,6 @@ var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-
 			}
 			card := parseLandCard(land)
 			Expect(card.Name).To(Equal(land.Name))
-			Expect(card.Land.Name).To(Equal(land.Name))
 			Expect(card.Land.Types).To(HaveLen(0))
 			Expect(card.Land.Colors).To(HaveLen(2))
 			Expect(card.Land.Colors).To(ConsistOf(model.Black, model.Red))
@@ -100,7 +97,6 @@ var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-
 			}
 			card := parseLandCard(land)
 			Expect(card.Name).To(Equal(land.Name))
-			Expect(card.Land.Name).To(Equal(land.Name))
 			Expect(card.Land.Types).To(HaveLen(0))
 			Expect(card.Land.Colors).To(HaveLen(1))
 			Expect(card.Land.Colors).To(ConsistOf(model.White))
@@ -117,7 +113,6 @@ var _ = Describe("ScryfallDbReader Can Parse and write all of the lands and non-
 			}
 			card := parseLandCard(land)
 			Expect(card.Name).To(Equal(land.Name))
-			Expect(card.Land.Name).To(Equal(land.Name))
 			Expect(card.Land.Types).To(HaveLen(0))
 			Expect(card.Land.Colors).To(HaveLen(1))
 			Expect(card.Land.Colors).To(ConsistOf(model.Green))

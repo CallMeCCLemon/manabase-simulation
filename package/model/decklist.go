@@ -31,10 +31,6 @@ func (d *DeckList) GetTotalCardCount() int {
 		count += c.Quantity
 	}
 
-	for _, l := range d.Lands {
-		count += l.Quantity
-	}
-
 	for _, n := range d.NonLands {
 		count += n.Quantity
 	}
@@ -58,10 +54,6 @@ func (d *DeckList) GenerateDeck() Deck {
 
 // Land Represents a Land type of card which can produce mana.
 type Land struct {
-	// Name the name of the land.
-	// Deprecated: Name is no longer used. Use Card.Name instead.
-	Name string `json:"name"`
-
 	// Types is a list of basic land types which the current land is.
 	Types []LandType `json:"types,omitempty"`
 
@@ -76,10 +68,6 @@ type Land struct {
 
 	// UntappedCondition is the condition which must be met to enter untapped.
 	UntappedCondition *UntappedCondition `json:"untappedCondition,omitempty"`
-
-	// Quantity is the number of copies of this card in a deck.
-	// Deprecated: Quantity is no longer used.
-	Quantity int `json:"quantity"`
 }
 
 // ActivationCost Represents the cost which must be paid to activate the land.
@@ -155,9 +143,7 @@ func (l *Land) Equals(land Land) bool {
 	if l.EntersTapped != land.EntersTapped {
 		return false
 	}
-	if l.Name != land.Name {
-		return false
-	}
+
 	if len(l.Colors) != len(land.Colors) {
 		return false
 	}

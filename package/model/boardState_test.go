@@ -345,11 +345,9 @@ var _ = Describe("BoardState", func() {
 	When("Scoring a land", func() {
 		It("computes a simple perfect score correctly", func() {
 			land := Land{
-				Name:           "test-land-1",
 				Colors:         []ManaColor{White, Blue},
 				EntersTapped:   false,
 				ActivationCost: nil,
-				Quantity:       1,
 			}
 
 			costOptions := []ManaCost{
@@ -364,11 +362,9 @@ var _ = Describe("BoardState", func() {
 
 		It("computes a perfect score with multiple mana costs correctly", func() {
 			land := Land{
-				Name:           "test-land-1",
 				Colors:         []ManaColor{White, Green, Blue},
 				EntersTapped:   false,
 				ActivationCost: nil,
-				Quantity:       1,
 			}
 
 			costOptions := []ManaCost{
@@ -391,11 +387,9 @@ var _ = Describe("BoardState", func() {
 
 		It("computes a simple 0 score correctly", func() {
 			land := Land{
-				Name:           "test-land-1",
 				Colors:         []ManaColor{Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
-				Quantity:       1,
 			}
 
 			costOptions := []ManaCost{
@@ -410,11 +404,9 @@ var _ = Describe("BoardState", func() {
 
 		It("computes a score == colors produced with multiple mana costs correctly", func() {
 			land := Land{
-				Name:           "test-land-1",
 				Colors:         []ManaColor{Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
-				Quantity:       1,
 			}
 
 			costOptions := []ManaCost{
@@ -437,11 +429,9 @@ var _ = Describe("BoardState", func() {
 
 		It("Computes a partially matching score correctly", func() {
 			land := Land{
-				Name:           "test-land-1",
 				Colors:         []ManaColor{White, Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
-				Quantity:       1,
 			}
 
 			costOptions := []ManaCost{
@@ -464,11 +454,9 @@ var _ = Describe("BoardState", func() {
 
 		It("Doesn't double-count duplicate colors in costs", func() {
 			land := Land{
-				Name:           "test-land-1",
 				Colors:         []ManaColor{White, Black},
 				EntersTapped:   false,
 				ActivationCost: nil,
-				Quantity:       1,
 			}
 
 			costOptions := []ManaCost{
