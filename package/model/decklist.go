@@ -30,10 +30,6 @@ func (d *DeckList) GetTotalCardCount() int {
 		count += c.Quantity
 	}
 
-	for _, n := range d.NonLands {
-		count += n.Quantity
-	}
-
 	return count
 }
 
@@ -157,14 +153,6 @@ func (l *Land) Equals(land Land) bool {
 
 // NonLand Represents a Non-Land type of card is will need mana to be cast.
 type NonLand struct {
-	// Name the name of the land.
-	// Deprecated: Name is no longer used. Use Card.Name instead.
-	Name string `json:"name"`
-
 	// CastingCost the mana which is required to cast the given spell.
 	CastingCost ManaCost `json:"castingCost"`
-
-	// Quantity is the number of copies of this card in a deck.
-	// Deprecated: Quantity is no longer used.
-	Quantity int `json:"quantity"`
 }

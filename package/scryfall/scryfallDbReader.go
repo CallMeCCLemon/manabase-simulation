@@ -149,9 +149,7 @@ func WriteNonLandsToDB(accessor validation.CardDbAccessor, nonLands []ScryfallCa
 
 func parseNonLandCard(card ScryfallCard) *model.Card {
 	nonLand := &model.NonLand{
-		Name:        card.Name,
 		CastingCost: parseNonLandCastingCost(card.ManaCost),
-		Quantity:    1,
 	}
 
 	return &model.Card{

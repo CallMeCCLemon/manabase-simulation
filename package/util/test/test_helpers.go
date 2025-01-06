@@ -59,13 +59,12 @@ func NewNonLandCard(name string) *model.Card {
 	return &model.Card{
 		Name:    fmt.Sprintf("%s-%s", name, randSeq(8)),
 		Land:    nil,
-		NonLand: NewNonLand(name),
+		NonLand: NewNonLand(),
 	}
 }
 
-func NewNonLand(name string) *model.NonLand {
+func NewNonLand() *model.NonLand {
 	return &model.NonLand{
-		Name: fmt.Sprintf("%s-%s", name, randSeq(8)),
 		CastingCost: model.ManaCost{
 			ColorRequirements: []model.ManaColor{
 				model.White,
@@ -74,7 +73,6 @@ func NewNonLand(name string) *model.NonLand {
 			},
 			GenericCost: 1,
 		},
-		Quantity: 1,
 	}
 }
 

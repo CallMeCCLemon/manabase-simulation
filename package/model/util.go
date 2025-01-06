@@ -50,12 +50,10 @@ func CreateSampleNonLandCard() *Card {
 
 func CreateSampleNonLand() *NonLand {
 	return &NonLand{
-		Name: "dummy-nonland",
 		CastingCost: ManaCost{
 			ColorRequirements: []ManaColor{White},
 			GenericCost:       1,
 		},
-		Quantity: 1,
 	}
 }
 
