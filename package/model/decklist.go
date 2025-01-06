@@ -2,7 +2,6 @@ package model
 
 import (
 	"encoding/json"
-	"errors"
 	"manabase-simulation/package/reader"
 	"slices"
 )
@@ -154,84 +153,6 @@ func (l *Land) Equals(land Land) bool {
 	}
 
 	return true
-}
-
-// PayUntappedCost Pays the cost of the land to enter untapped.
-func (l *Land) PayUntappedCost(b *BoardState) error {
-	if l.EntersTapped == false {
-		return nil
-	}
-
-	if l.UntappedCondition == nil {
-		return errors.New("untapped condition not found")
-	}
-
-	// Switch for all the untapped conditions.
-	switch l.UntappedCondition.Type {
-	case ShockLand:
-		if b.Life > 2 {
-			b.Life -= 2
-			return nil
-		} else {
-			return errors.New("not enough life to enter untapped")
-		}
-	case FastLand:
-		if l.CanEnterUntapped(*b) {
-			return nil
-		} else {
-			return errors.New("too many lands to enter untapped")
-		}
-	case CheckLand:
-		if l.CanEnterUntapped(*b) {
-			return nil
-		}
-
-		return errors.New("no lands of the right type found")
-	default:
-		return errors.New("unknown untapped condition")
-	}
-}
-
-// CanEnterUntapped checks if the land can enter untapped based on the BoardState and UntappedCondition.
-func (l *Land) CanEnterUntapped(b BoardState) bool {
-	if l.EntersTapped == false {
-		return true
-	}
-
-	if l.UntappedCondition == nil {
-		return false
-	}
-
-	switch l.UntappedCondition.Type {
-	case ShockLand:
-		if b.Life > 2 {
-			return true
-		} else {
-			return false
-		}
-	case FastLand:
-		return len(b.Lands) <= 2
-	case CheckLand:
-		if l.UntappedCondition.Data == nil {
-			return false
-		}
-		c, err := reader.ReadJSONString[CheckLandData](*l.UntappedCondition.Data)
-		if err != nil {
-			return false
-		}
-
-		for _, lands := range b.Lands {
-			for _, t := range c {
-				if slices.Contains(lands.Types, t) {
-					return true
-				}
-			}
-		}
-		// No lands of the right type found.
-		return false
-	default:
-		return false
-	}
 }
 
 // NonLand Represents a Non-Land type of card is will need mana to be cast.

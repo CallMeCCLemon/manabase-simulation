@@ -27,7 +27,7 @@ func SimulateDeck(ctx context.Context, deckList model.DeckList, gameConfiguratio
 	// Generate Randomized Deck
 	deck := deckList.GenerateDeck()
 	hand := model.NewDeck()
-	board := model.NewBoardState()
+	board := NewBoardState()
 
 	// TODO: Add validations like Validate deck is >= 60 cards
 
