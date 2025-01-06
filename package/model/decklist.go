@@ -22,17 +22,6 @@ func (d *DeckList) ToString() string {
 	return string(jsonPayload)
 }
 
-// GetTotalCardCount Returns the total number of cards in the deck.
-func (d *DeckList) GetTotalCardCount() int {
-	count := 0
-
-	for _, c := range d.Cards {
-		count += c.Quantity
-	}
-
-	return count
-}
-
 // GenerateDeck Creates a Deck instance from a DeckList.
 func (d *DeckList) GenerateDeck() Deck {
 	deck := NewDeck()

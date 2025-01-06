@@ -4,6 +4,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"manabase-simulation/package/model"
+	"manabase-simulation/package/util/test"
 )
 
 var _ = Describe("BoardState", func() {
@@ -21,9 +22,9 @@ var _ = Describe("BoardState", func() {
 
 	When("Validating a test objective", func() {
 		It("Is able to solve for a simple objective with basic lands as met", func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -43,9 +44,9 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Is able to solve for an objective with basic and dual lands as met", func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -82,10 +83,10 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Is able to solve for an objective with basic, dual, and triome lands as met", func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -107,10 +108,10 @@ var _ = Describe("BoardState", func() {
 
 		It("Is able to determine an infeasible solution with 'dead' lands", func() {
 			// Dead land is a plains here.
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -132,10 +133,10 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Verify Generic costs are able to be paid by unusable lands", func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -155,10 +156,10 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("Verify Generic costs are able to be paid when a validation doesn't pass", func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -182,10 +183,10 @@ var _ = Describe("BoardState", func() {
 		})
 
 		It("All generic objectives can be met with equal number of lands", func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue, model.Green}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			obj := model.TestObjective{
 				TargetTurn: 3,
@@ -206,22 +207,22 @@ var _ = Describe("BoardState", func() {
 		var obj model.TestObjective
 
 		BeforeEach(func() {
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
-			boardState.Lands = append(boardState.Lands, *model.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			boardState.Lands = append(boardState.Lands, *test.CreateUntappedLand([]model.ManaColor{model.Red, model.Blue}))
 
 			hand = model.NewDeck()
 			hand.Cards = []model.Card{
 				{
-					Land:    model.CreateUntappedLand([]model.ManaColor{model.White}),
+					Land:    test.CreateUntappedLand([]model.ManaColor{model.White}),
 					NonLand: nil,
 				},
 				{
-					Land:    model.CreateUntappedLand([]model.ManaColor{model.Blue}),
+					Land:    test.CreateUntappedLand([]model.ManaColor{model.Blue}),
 					NonLand: nil,
 				},
 				{
-					Land:    model.CreateUntappedLand([]model.ManaColor{model.Red}),
+					Land:    test.CreateUntappedLand([]model.ManaColor{model.Red}),
 					NonLand: nil,
 				},
 			}
@@ -253,8 +254,8 @@ var _ = Describe("BoardState", func() {
 
 		BeforeEach(func() {
 			lands = []model.Card{
-				*model.CreateUntappedLandCard([]model.ManaColor{model.White}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.White, model.Blue}),
+				*test.CreateUntappedLandCard([]model.ManaColor{model.White}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.White, model.Blue}),
 			}
 		})
 
@@ -302,11 +303,11 @@ var _ = Describe("BoardState", func() {
 
 		It("Selects a land in a more complex scenario", func() {
 			lands = []model.Card{
-				*model.CreateUntappedLandCard([]model.ManaColor{model.White}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.Black, model.Red}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.Green, model.Red}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.White, model.Blue, model.Green}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.White, model.Black, model.Red}),
+				*test.CreateUntappedLandCard([]model.ManaColor{model.White}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.Black, model.Red}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.Green, model.Red}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.White, model.Blue, model.Green}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.White, model.Black, model.Red}),
 			}
 
 			costOptions := []model.ManaCost{
@@ -323,11 +324,11 @@ var _ = Describe("BoardState", func() {
 
 		It("Selects a land in a more complex scenario where untapped is priority", func() {
 			lands = []model.Card{
-				*model.CreateUntappedLandCard([]model.ManaColor{model.White}),
-				*model.CreateUntappedLandCard([]model.ManaColor{model.Black, model.Red}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.Green, model.Red}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.White, model.Blue, model.Green}),
-				*model.CreateTappedLandCard([]model.ManaColor{model.White, model.Black, model.Red}),
+				*test.CreateUntappedLandCard([]model.ManaColor{model.White}),
+				*test.CreateUntappedLandCard([]model.ManaColor{model.Black, model.Red}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.Green, model.Red}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.White, model.Blue, model.Green}),
+				*test.CreateTappedLandCard([]model.ManaColor{model.White, model.Black, model.Red}),
 			}
 
 			costOptions := []model.ManaCost{
@@ -570,8 +571,8 @@ var _ = Describe("FastLand", func() {
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.CanEnterUntapped(land)).To(BeTrue())
@@ -589,9 +590,9 @@ var _ = Describe("FastLand", func() {
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.CanEnterUntapped(land)).To(BeFalse())
@@ -627,9 +628,9 @@ var _ = Describe("FastLand", func() {
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.PayUntappedCost(&land)).To(HaveOccurred())
@@ -653,14 +654,14 @@ var _ = Describe("CheckLand", func() {
 				},
 			}
 
-			l := model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
+			l := test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
 			l.Types = []model.LandType{model.Plains}
 
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
 					*l,
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.CanEnterUntapped(land)).To(BeTrue())
@@ -679,14 +680,14 @@ var _ = Describe("CheckLand", func() {
 				},
 			}
 
-			l := model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
+			l := test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
 			l.Types = []model.LandType{model.Swamp}
 
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
 					*l,
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.CanEnterUntapped(land)).To(BeFalse())
@@ -707,14 +708,14 @@ var _ = Describe("CheckLand", func() {
 				},
 			}
 
-			l := model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
+			l := test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
 			l.Types = []model.LandType{model.Plains}
 
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
 					*l,
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.PayUntappedCost(&land)).ToNot(HaveOccurred())
@@ -734,18 +735,39 @@ var _ = Describe("CheckLand", func() {
 				},
 			}
 
-			l := model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
+			l := test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue})
 			l.Types = []model.LandType{model.Swamp}
 
 			boardState := BoardState{
 				Life: 3,
 				Lands: []model.Land{
 					*l,
-					*model.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}),
 				},
 			}
 			Expect(boardState.PayUntappedCost(&land)).To(HaveOccurred())
 			Expect(boardState.Life).To(Equal(3))
+		})
+	})
+})
+
+var _ = Describe("Sorting a list of lands", func() {
+	When("Sorting a list of lands with different quantities of mana they can tap for", func() {
+		It("Returns a list where each subsequent len of land.Colors >= prevLand.Colors", func() {
+			var lands []model.Land
+			lands = append(lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Green, model.Red, model.Black}))
+			lands = append(lands, *test.CreateUntappedLand([]model.ManaColor{model.White}))
+			lands = append(lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Green, model.Red}))
+			lands = append(lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Blue}))
+			lands = append(lands, *test.CreateUntappedLand([]model.ManaColor{model.White, model.Green, model.Red, model.Black, model.Blue}))
+
+			sortedLands := SortLandsByRestrictiveness(lands)
+
+			Expect(sortedLands[0].Colors).To(HaveLen(1))
+			Expect(sortedLands[1].Colors).To(HaveLen(2))
+			Expect(sortedLands[2].Colors).To(HaveLen(3))
+			Expect(sortedLands[3].Colors).To(HaveLen(4))
+			Expect(sortedLands[4].Colors).To(HaveLen(5))
 		})
 	})
 })

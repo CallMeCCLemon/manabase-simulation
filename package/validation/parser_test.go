@@ -3,6 +3,7 @@ package validation
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"manabase-simulation/package/simulation"
 	"manabase-simulation/package/util/test"
 )
 
@@ -62,7 +63,7 @@ var _ = Describe("DefaultParser", func() {
 			deckList, invalidCards, err := parser.Parse(SampleDecklist)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(deckList.Cards).To(HaveLen(18))
-			Expect(deckList.GetTotalCardCount()).To(Equal(60))
+			Expect(simulation.GetTotalCardCount(deckList)).To(Equal(60))
 			Expect(invalidCards).To(HaveLen(0))
 		})
 
@@ -70,7 +71,7 @@ var _ = Describe("DefaultParser", func() {
 			deckList, invalidCards, err := parser.Parse(SampleDecklistWithInvalidCard)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(deckList.Cards).To(HaveLen(2))
-			Expect(deckList.GetTotalCardCount()).To(Equal(8))
+			Expect(simulation.GetTotalCardCount(deckList)).To(Equal(8))
 			Expect(invalidCards).To(HaveLen(1))
 			Expect(invalidCards[0].Name).To(Equal("Questing Druid"))
 			Expect(invalidCards[0].Reason).To(Equal(MissingCardReason))

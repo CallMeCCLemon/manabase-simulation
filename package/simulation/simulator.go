@@ -112,3 +112,14 @@ func StartSimulation(ctx context.Context, deckList model.DeckList, gameConfigura
 	defer wg.Done()
 	c <- SimulateDeck(ctx, deckList, gameConfiguration, objective)
 }
+
+// GetTotalCardCount Returns the total number of cards in the deck.
+func GetTotalCardCount(d *model.DeckList) int {
+	count := 0
+
+	for _, c := range d.Cards {
+		count += c.Quantity
+	}
+
+	return count
+}

@@ -5,6 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 	"manabase-simulation/package/model"
 	"manabase-simulation/package/reader"
+	"manabase-simulation/package/simulation"
 )
 
 var _ = Describe("Decklist JSON Parsing Functions", func() {
@@ -20,7 +21,7 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 		})
 
 		It("Has the right card count", func() {
-			Expect(deck.GetTotalCardCount()).To(Equal(10))
+			Expect(simulation.GetTotalCardCount(&deck)).To(Equal(10))
 		})
 	})
 
@@ -34,9 +35,9 @@ var _ = Describe("Decklist JSON Parsing Functions", func() {
 		It("Correctly parses all of the lands and nonlands", func() {
 			Expect(deck.Cards).To(HaveLen(10))
 		})
-		
+
 		It("Has the right card count", func() {
-			Expect(deck.GetTotalCardCount()).To(Equal(60))
+			Expect(simulation.GetTotalCardCount(&deck)).To(Equal(60))
 		})
 	})
 })

@@ -4,6 +4,7 @@ import (
 	"context"
 	"manabase-simulation/package/model"
 	"manabase-simulation/package/reader"
+	"manabase-simulation/package/util/test"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -54,6 +55,26 @@ var _ = Describe("DeckSimulation", func() {
 			Eventually(func() bool {
 				return SimulateDeck(ctx, deck, gameConfig, objective)
 			}, 3).Should(BeTrue())
+		})
+	})
+})
+
+var _ = Describe("DeckList", func() {
+	When("Getting the card count", func() {
+		It("correctly counts all of the lands and nonlands", func() {
+			deckList := &model.DeckList{
+				Cards: []model.Card{
+					*test.CreateUntappedLandCard([]model.ManaColor{model.White}),
+					*test.CreateUntappedLandCard([]model.ManaColor{model.White, model.Blue}),
+					*test.CreateUntappedLandCard([]model.ManaColor{model.Red, model.Blue}),
+					*test.CreateUntappedLandCard([]model.ManaColor{model.Red, model.Blue, model.White}),
+					*test.CreateSampleNonLandCard(),
+					*test.CreateSampleNonLandCard(),
+					*test.CreateSampleNonLandCard(),
+				},
+			}
+
+			Expect(GetTotalCardCount(deckList)).To(Equal(7))
 		})
 	})
 })

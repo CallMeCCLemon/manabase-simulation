@@ -14,10 +14,10 @@ var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345
 func NewDeckList() *model.DeckList {
 	return &model.DeckList{
 		Cards: []model.Card{
-			*model.CreateUntappedLandCard([]model.ManaColor{model.White}),
-			*model.CreateUntappedLandCard([]model.ManaColor{model.White, model.Blue}),
-			*model.CreateSampleNonLandCard(),
-			*model.CreateSampleNonLandCard(),
+			*CreateUntappedLandCard([]model.ManaColor{model.White}),
+			*CreateUntappedLandCard([]model.ManaColor{model.White, model.Blue}),
+			*CreateSampleNonLandCard(),
+			*CreateSampleNonLandCard(),
 		},
 	}
 }
@@ -89,4 +89,63 @@ func randSeq(n int) string {
 		b[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(b)
+}
+
+func CreateUntappedLandCard(colors []model.ManaColor) *model.Card {
+	return &model.Card{
+		Name:     "dummy-untapped-land",
+		Land:     CreateUntappedLand(colors),
+		NonLand:  nil,
+		Quantity: 1,
+	}
+}
+
+func CreateUntappedLand(colors []model.ManaColor) *model.Land {
+	return &model.Land{
+		Colors:         colors,
+		EntersTapped:   false,
+		ActivationCost: nil,
+	}
+}
+
+func CreateTappedLandCard(colors []model.ManaColor) *model.Card {
+	return &model.Card{
+		Name:     "dummy-tapped-land",
+		Land:     CreateTappedLand(colors),
+		NonLand:  nil,
+		Quantity: 1,
+	}
+}
+
+func CreateTappedLand(colors []model.ManaColor) *model.Land {
+	return &model.Land{
+		Colors:         colors,
+		EntersTapped:   true,
+		ActivationCost: nil,
+	}
+}
+
+func CreateSampleNonLandCard() *model.Card {
+	return &model.Card{
+		Name:     "dummy-nonland",
+		Land:     nil,
+		NonLand:  CreateSampleNonLand(),
+		Quantity: 1,
+	}
+}
+
+func CreateSampleNonLand() *model.NonLand {
+	return &model.NonLand{
+		CastingCost: model.ManaCost{
+			ColorRequirements: []model.ManaColor{model.White},
+			GenericCost:       1,
+		},
+	}
+}
+
+func CreateManaCost(colors []model.ManaColor, genericCost int) model.ManaCost {
+	return model.ManaCost{
+		ColorRequirements: colors,
+		GenericCost:       genericCost,
+	}
 }

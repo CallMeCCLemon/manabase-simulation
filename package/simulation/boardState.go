@@ -5,6 +5,7 @@ import (
 	"manabase-simulation/package/model"
 	"manabase-simulation/package/reader"
 	"slices"
+	"sort"
 )
 
 // BoardState Represents the state of the board. This is the primary data model used during the simulation.
@@ -143,7 +144,7 @@ func (b *BoardState) ValidateTestObjective(objective model.TestObjective) (bool,
 	// TODO: Evaluate how we can do this for multiple costs.
 
 	// Sort lands by most restrictive production where the first have most restricted colors
-	sortedLands := model.SortLandsByRestrictiveness(b.Lands)
+	sortedLands := SortLandsByRestrictiveness(b.Lands)
 
 	manaCosts := make([]model.ManaCost, 0)
 	upcomingManaCosts := []model.ManaCost{objective.ManaCosts[0]}
@@ -317,4 +318,13 @@ func (b *BoardState) CanEnterUntapped(l model.Land) bool {
 	default:
 		return false
 	}
+}
+
+// SortLandsByRestrictiveness Sorts a list of lands by the number of colors they produce.
+func SortLandsByRestrictiveness(lands []model.Land) []model.Land {
+	sort.Slice(lands, func(i, j int) bool {
+		return len(lands[i].Colors) < len(lands[j].Colors)
+	})
+
+	return lands
 }
