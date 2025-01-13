@@ -18,6 +18,13 @@ var _ = Describe("DeckStatsTranslator", func() {
 					BlueMana:    2,
 					GenericMana: 3,
 				},
+				LandStats: model.LandStats{
+					LandManaProduction: model.SimplifiedManaCost{
+						WhiteMana:   4,
+						BlueMana:    5,
+						GenericMana: 6,
+					},
+				},
 			}
 			externalDeckStats := ToExternalDeckStats(deckStats)
 			Expect(externalDeckStats.TotalCards).To(Equal(int32(10)))
@@ -26,6 +33,10 @@ var _ = Describe("DeckStatsTranslator", func() {
 			Expect(externalDeckStats.TotalManaPips.WhiteMana).To(Equal(int32(1)))
 			Expect(externalDeckStats.TotalManaPips.BlueMana).To(Equal(int32(2)))
 			Expect(externalDeckStats.TotalManaPips.GenericCost).To(Equal(int32(3)))
+			Expect(externalDeckStats.LandStats.LandManaProduction.WhiteMana).To(Equal(int32(4)))
+			Expect(externalDeckStats.LandStats.LandManaProduction.BlueMana).To(Equal(int32(5)))
+			Expect(externalDeckStats.LandStats.LandManaProduction.GenericCost).To(Equal(int32(6)))
+
 		})
 	})
 })

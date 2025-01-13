@@ -43,6 +43,14 @@ var _ = Describe("SimulateDeck Integration Test", Label(IntegrationTestLabel), f
 		Expect(resp.DeckStats.TotalManaPips.GreenMana).To(Equal(int32(5)))
 		Expect(resp.DeckStats.TotalManaPips.ColorlessMana).To(Equal(int32(0)))
 		Expect(resp.DeckStats.TotalManaPips.GenericCost).To(Equal(int32(19)))
+
+		Expect(resp.DeckStats.LandStats.LandManaProduction.WhiteMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.LandStats.LandManaProduction.BlueMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.LandStats.LandManaProduction.BlackMana).To(Equal(int32(0)))
+		Expect(resp.DeckStats.LandStats.LandManaProduction.RedMana).To(Equal(int32(19)))
+		Expect(resp.DeckStats.LandStats.LandManaProduction.GreenMana).To(Equal(int32(12)))
+		Expect(resp.DeckStats.LandStats.LandManaProduction.ColorlessMana).To(Equal(int32(9)))
+		Expect(resp.DeckStats.LandStats.LandManaProduction.GenericCost).To(Equal(int32(0)))
 	})
 
 	//It("Returns an error when given an invalid deck", func() {

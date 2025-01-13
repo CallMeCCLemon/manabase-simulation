@@ -8,59 +8,76 @@ func GetDeckStats(deckList model.DeckList) model.DeckStats {
 	nonLandCount := 0
 	cardCount := 0
 
-	manaCost := model.SimplifiedManaCost{}
+	spellManaCosts := model.SimplifiedManaCost{}
+	landManaProduction := model.SimplifiedManaCost{}
 
 	for _, c := range deckList.Cards {
 		cardCount += c.Quantity
 		if c.Land != nil {
 			landCount += c.Quantity
+			for _, color := range c.Land.Colors {
+				switch color {
+				case model.White:
+					landManaProduction.WhiteMana += c.Quantity
+				case model.Blue:
+					landManaProduction.BlueMana += c.Quantity
+				case model.Black:
+					landManaProduction.BlackMana += c.Quantity
+				case model.Red:
+					landManaProduction.RedMana += c.Quantity
+				case model.Green:
+					landManaProduction.GreenMana += c.Quantity
+				case model.Colorless:
+					landManaProduction.ColorlessMana += c.Quantity
+				}
+			}
 		} else {
 			nonLandCount += c.Quantity
-			manaCost.GenericMana += c.Quantity * c.NonLand.CastingCost.GenericCost
+			spellManaCosts.GenericMana += c.Quantity * c.NonLand.CastingCost.GenericCost
 			for _, color := range c.NonLand.CastingCost.ColorRequirements {
 				switch color {
 				case model.White:
-					manaCost.WhiteMana += c.Quantity
+					spellManaCosts.WhiteMana += c.Quantity
 				case model.Blue:
-					manaCost.BlueMana += c.Quantity
+					spellManaCosts.BlueMana += c.Quantity
 				case model.Black:
-					manaCost.BlackMana += c.Quantity
+					spellManaCosts.BlackMana += c.Quantity
 				case model.Red:
-					manaCost.RedMana += c.Quantity
+					spellManaCosts.RedMana += c.Quantity
 				case model.Green:
-					manaCost.GreenMana += c.Quantity
+					spellManaCosts.GreenMana += c.Quantity
 				case model.Colorless:
-					manaCost.ColorlessMana += c.Quantity
+					spellManaCosts.ColorlessMana += c.Quantity
 				case model.Azorius:
-					manaCost.WhiteMana += c.Quantity
-					manaCost.BlueMana += c.Quantity
+					spellManaCosts.WhiteMana += c.Quantity
+					spellManaCosts.BlueMana += c.Quantity
 				case model.Orzhov:
-					manaCost.WhiteMana += c.Quantity
-					manaCost.BlackMana += c.Quantity
+					spellManaCosts.WhiteMana += c.Quantity
+					spellManaCosts.BlackMana += c.Quantity
 				case model.Boros:
-					manaCost.WhiteMana += c.Quantity
-					manaCost.RedMana += c.Quantity
+					spellManaCosts.WhiteMana += c.Quantity
+					spellManaCosts.RedMana += c.Quantity
 				case model.Selesnya:
-					manaCost.WhiteMana += c.Quantity
-					manaCost.GreenMana += c.Quantity
+					spellManaCosts.WhiteMana += c.Quantity
+					spellManaCosts.GreenMana += c.Quantity
 				case model.Dimir:
-					manaCost.BlueMana += c.Quantity
-					manaCost.BlackMana += c.Quantity
+					spellManaCosts.BlueMana += c.Quantity
+					spellManaCosts.BlackMana += c.Quantity
 				case model.Izzet:
-					manaCost.BlueMana += c.Quantity
-					manaCost.RedMana += c.Quantity
+					spellManaCosts.BlueMana += c.Quantity
+					spellManaCosts.RedMana += c.Quantity
 				case model.Simic:
-					manaCost.BlueMana += c.Quantity
-					manaCost.GreenMana += c.Quantity
+					spellManaCosts.BlueMana += c.Quantity
+					spellManaCosts.GreenMana += c.Quantity
 				case model.Rakdos:
-					manaCost.BlackMana += c.Quantity
-					manaCost.RedMana += c.Quantity
+					spellManaCosts.BlackMana += c.Quantity
+					spellManaCosts.RedMana += c.Quantity
 				case model.Golgari:
-					manaCost.RedMana += c.Quantity
-					manaCost.GreenMana += c.Quantity
+					spellManaCosts.RedMana += c.Quantity
+					spellManaCosts.GreenMana += c.Quantity
 				case model.Gruul:
-					manaCost.GreenMana += c.Quantity
-					manaCost.RedMana += c.Quantity
+					spellManaCosts.GreenMana += c.Quantity
+					spellManaCosts.RedMana += c.Quantity
 				}
 			}
 		}
@@ -70,6 +87,9 @@ func GetDeckStats(deckList model.DeckList) model.DeckStats {
 		TotalCards:    cardCount,
 		Lands:         landCount,
 		NonLands:      nonLandCount,
-		TotalManaPips: manaCost,
+		TotalManaPips: spellManaCosts,
+		LandStats: model.LandStats{
+			LandManaProduction: landManaProduction,
+		},
 	}
 }
