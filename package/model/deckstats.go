@@ -5,4 +5,9 @@ type DeckStats struct {
 	Lands         int                `json:"lands"`
 	NonLands      int                `json:"nonLands"`
 	TotalManaPips SimplifiedManaCost `json:"totalManaPips"`
+	LandStats     LandStats          `json:"landStats"`
+}
+
+type LandStats struct {
+	LandManaProduction SimplifiedManaCost `json:"landManaProduction"`
 }

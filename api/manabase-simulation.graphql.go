@@ -20,6 +20,7 @@ var (
 	gql__type_ResultCheckpoint          *graphql.Object      // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__type_Objective                 *graphql.Object      // message Objective in api/manabase-simulation.proto
 	gql__type_ManaCost                  *graphql.Object      // message ManaCost in api/manabase-simulation.proto
+	gql__type_LandStats                 *graphql.Object      // message LandStats in api/manabase-simulation.proto
 	gql__type_InvalidCard               *graphql.Object      // message InvalidCard in api/manabase-simulation.proto
 	gql__type_GameConfiguration         *graphql.Object      // message GameConfiguration in api/manabase-simulation.proto
 	gql__type_EchoResponse              *graphql.Object      // message EchoResponse in api/manabase-simulation.proto
@@ -33,6 +34,7 @@ var (
 	gql__input_ResultCheckpoint         *graphql.InputObject // message ResultCheckpoint in api/manabase-simulation.proto
 	gql__input_Objective                *graphql.InputObject // message Objective in api/manabase-simulation.proto
 	gql__input_ManaCost                 *graphql.InputObject // message ManaCost in api/manabase-simulation.proto
+	gql__input_LandStats                *graphql.InputObject // message LandStats in api/manabase-simulation.proto
 	gql__input_InvalidCard              *graphql.InputObject // message InvalidCard in api/manabase-simulation.proto
 	gql__input_GameConfiguration        *graphql.InputObject // message GameConfiguration in api/manabase-simulation.proto
 	gql__input_EchoResponse             *graphql.InputObject // message EchoResponse in api/manabase-simulation.proto
@@ -227,6 +229,20 @@ func Gql__type_ManaCost() *graphql.Object {
 	return gql__type_ManaCost
 }
 
+func Gql__type_LandStats() *graphql.Object {
+	if gql__type_LandStats == nil {
+		gql__type_LandStats = graphql.NewObject(graphql.ObjectConfig{
+			Name: "Api_Type_LandStats",
+			Fields: graphql.Fields{
+				"landManaProduction": &graphql.Field{
+					Type: Gql__type_SimplifiedManaCost(),
+				},
+			},
+		})
+	}
+	return gql__type_LandStats
+}
+
 func Gql__type_InvalidCard() *graphql.Object {
 	if gql__type_InvalidCard == nil {
 		gql__type_InvalidCard = graphql.NewObject(graphql.ObjectConfig{
@@ -308,6 +324,9 @@ func Gql__type_DeckStats() *graphql.Object {
 				},
 				"totalManaPips": &graphql.Field{
 					Type: Gql__type_SimplifiedManaCost(),
+				},
+				"landStats": &graphql.Field{
+					Type: Gql__type_LandStats(),
 				},
 			},
 		})
@@ -472,6 +491,20 @@ func Gql__input_ManaCost() *graphql.InputObject {
 	return gql__input_ManaCost
 }
 
+func Gql__input_LandStats() *graphql.InputObject {
+	if gql__input_LandStats == nil {
+		gql__input_LandStats = graphql.NewInputObject(graphql.InputObjectConfig{
+			Name: "Api_Input_LandStats",
+			Fields: graphql.InputObjectConfigFieldMap{
+				"landManaProduction": &graphql.InputObjectFieldConfig{
+					Type: Gql__input_SimplifiedManaCost(),
+				},
+			},
+		})
+	}
+	return gql__input_LandStats
+}
+
 func Gql__input_InvalidCard() *graphql.InputObject {
 	if gql__input_InvalidCard == nil {
 		gql__input_InvalidCard = graphql.NewInputObject(graphql.InputObjectConfig{
@@ -553,6 +586,9 @@ func Gql__input_DeckStats() *graphql.InputObject {
 				},
 				"totalManaPips": &graphql.InputObjectFieldConfig{
 					Type: Gql__input_SimplifiedManaCost(),
+				},
+				"landStats": &graphql.InputObjectFieldConfig{
+					Type: Gql__input_LandStats(),
 				},
 			},
 		})

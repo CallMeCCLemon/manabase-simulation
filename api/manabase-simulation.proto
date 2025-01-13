@@ -117,4 +117,9 @@ message DeckStats {
   int32 lands = 2;
   int32 nonLands = 3;
   SimplifiedManaCost totalManaPips = 4;
+  LandStats landStats = 5;
+}
+
+message LandStats {
+  SimplifiedManaCost landManaProduction = 1;
 }
